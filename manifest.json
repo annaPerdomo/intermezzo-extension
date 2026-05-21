@@ -3,7 +3,7 @@
   "name": "MoveMore",
   "version": "1.0.0",
   "description": "Gentle reminders to take breaks, stretch, and fix your posture throughout the work day.",
-  "permissions": ["alarms", "storage", "notifications"],
+  "permissions": ["alarms", "storage", "notifications", "idle"],
   "background": {
     "service_worker": "background.js"
   },

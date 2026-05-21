@@ -4,8 +4,28 @@ const stretchNowBtn = document.getElementById("stretchNow");
 const streakEl = document.getElementById("streak");
 const indicator = document.getElementById("intervalIndicator");
 const nextReminderEl = document.getElementById("nextReminder");
+const sessionTimeEl = document.getElementById("sessionTime");
+const sessionPhraseEl = document.getElementById("sessionPhrase");
 
 const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3 };
+
+const ENCOURAGING_PHRASES = [
+  "A quick stretch does wonders for focus.",
+  "Your body will thank you for moving!",
+  "Movement is medicine — even a little helps.",
+  "Time to give your body some love!",
+  "Small movements make a big difference.",
+  "Take a breath. Move a little. Feel better.",
+  "You deserve a moment to move and recharge.",
+  "Stretching now = fewer aches later!",
+  "A little stretch goes a long way.",
+  "Your future self will thank you for stretching.",
+  "Be kind to your body — it works hard for you.",
+  "Even 30 seconds of movement can reset your energy.",
+  "Your muscles are cheering for a stretch!",
+  "A short break now means better focus later.",
+  "Your body wasn't built to sit all day — move it!"
+];
 
 // Load saved settings
 chrome.storage.local.get(["enabled", "intervalMinutes", "streak"], (data) => {
@@ -69,6 +89,34 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// Session timer & encouraging phrases
+function formatActiveTime(ms) {
+  const totalMinutes = Math.floor(ms / 60000);
+  if (totalMinutes < 1) return "just now";
+  const hours = Math.floor(totalMinutes / 60);
+  const mins = totalMinutes % 60;
+  if (hours === 0) return `${mins}m`;
+  return mins === 0 ? `${hours}h` : `${hours}h ${mins}m`;
+}
+
+function randomPhrase() {
+  return ENCOURAGING_PHRASES[Math.floor(Math.random() * ENCOURAGING_PHRASES.length)];
+}
+
+sessionPhraseEl.textContent = randomPhrase();
+setInterval(() => { sessionPhraseEl.textContent = randomPhrase(); }, 60000);
+
+function updateSessionTimer() {
+  chrome.storage.local.get(["activeStartTime", "accumulatedInactiveMs"], (data) => {
+    const accumulated = data.accumulatedInactiveMs || 0;
+    const currentPeriod = data.activeStartTime ? Date.now() - data.activeStartTime : 0;
+    const total = accumulated + currentPeriod;
+    sessionTimeEl.textContent = `Inactive for ${formatActiveTime(total)}`;
+  });
+}
+updateSessionTimer();
+setInterval(updateSessionTimer, 30000);
 
 // Load today's stretch history
 const historySection = document.getElementById("historySection");

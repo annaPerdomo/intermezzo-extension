@@ -454,9 +454,13 @@ async function showReminder() {
   // Store chosen stretches so the reminder page can read them
   await chrome.storage.local.set({ currentStretches: stretches });
 
-  // Update the streak
+  // Update the streak and reset inactivity timer
   const { streak = 0 } = await chrome.storage.local.get("streak");
-  await chrome.storage.local.set({ streak: streak + 1 });
+  await chrome.storage.local.set({
+    streak: streak + 1,
+    activeStartTime: Date.now(),
+    accumulatedInactiveMs: 0
+  });
 
   // Open the reminder as a new tab
   chrome.tabs.create({
@@ -472,14 +476,63 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// Inactivity timer — pauses when idle, locked, or asleep
+// ---------------------------------------------------------------------------
+// accumulatedInactiveMs: sitting time banked from previous active periods
+// activeStartTime: timestamp when current active period began (null if idle)
+
+async function initSessionTimer() {
+  const data = await chrome.storage.local.get(["activeStartTime", "accumulatedInactiveMs", "inactiveTimerDate"]);
+  const today = todayKey();
+
+  if (data.inactiveTimerDate !== today) {
+    // New day — reset
+    await chrome.storage.local.set({
+      activeStartTime: Date.now(),
+      accumulatedInactiveMs: 0,
+      inactiveTimerDate: today
+    });
+  } else if (!data.activeStartTime) {
+    // Was idle when service worker last ran — resume as active now
+    await chrome.storage.local.set({ activeStartTime: Date.now() });
+  }
+}
+
+// Detect idle/locked/active transitions
+chrome.idle.setDetectionInterval(60); // 60 seconds of no input = idle
+
+chrome.idle.onStateChanged.addListener(async (newState) => {
+  const data = await chrome.storage.local.get(["activeStartTime", "accumulatedInactiveMs"]);
+  const accumulated = data.accumulatedInactiveMs || 0;
+
+  if (newState === "active") {
+    // Woke up — start a new active period
+    await chrome.storage.local.set({ activeStartTime: Date.now() });
+  } else {
+    // idle or locked — bank the time from this active period
+    if (data.activeStartTime) {
+      const elapsed = Date.now() - data.activeStartTime;
+      await chrome.storage.local.set({
+        accumulatedInactiveMs: accumulated + elapsed,
+        activeStartTime: null
+      });
+    }
+  }
+});
+
 // Set up alarm on install or update
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({ enabled: true, intervalMinutes: 30, streak: 0 });
+  chrome.storage.local.set({
+    enabled: true, intervalMinutes: 30, streak: 0,
+    activeStartTime: Date.now(), accumulatedInactiveMs: 0, inactiveTimerDate: todayKey()
+  });
   setupAlarm();
 });
 
 // Re-establish alarm on service worker startup
 setupAlarm();
+initSessionTimer();
 
 // Listen for setting changes
 chrome.storage.onChanged.addListener((changes) => {

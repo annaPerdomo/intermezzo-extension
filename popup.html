@@ -283,6 +283,42 @@
     .content > :nth-child(2) { animation-delay: 0.1s; }
     .content > :nth-child(3) { animation-delay: 0.15s; }
     .content > :nth-child(4) { animation-delay: 0.2s; }
+    .content > :nth-child(5) { animation-delay: 0.25s; }
+
+    /* === Session Timer === */
+    .session-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .session-icon { font-size: 18px; line-height: 1; opacity: 0.7; }
+    .session-info { flex: 1; }
+
+    .session-time {
+      font-family: 'Cormorant', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--olive);
+      display: block;
+    }
+
+    .session-phrase {
+      font-size: 12px;
+      color: var(--sage);
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* === Recommended Tag === */
+    .rec-tag {
+      display: block;
+      font-size: 9px;
+      color: var(--forest);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-top: 1px;
+    }
 
     @keyframes cardEnter {
       from { opacity: 0; transform: translateY(8px); }
@@ -339,6 +375,14 @@
   </div>
 
   <div class="content">
+    <div class="card session-card">
+      <span class="session-icon">&#x23F3;</span>
+      <div class="session-info">
+        <span class="session-time" id="sessionTime">Inactive for 0m</span>
+        <span class="session-phrase" id="sessionPhrase"></span>
+      </div>
+    </div>
+
     <div class="card toggle-card">
       <div class="toggle-info">
         <span class="card-label">Reminders</span>
@@ -356,7 +400,7 @@
         <div class="interval-track">
           <div class="interval-indicator" id="intervalIndicator"></div>
           <button class="interval-btn" data-minutes="15">15m</button>
-          <button class="interval-btn" data-minutes="30">30m</button>
+          <button class="interval-btn" data-minutes="30">30m<span class="rec-tag">Recommended</span></button>
           <button class="interval-btn" data-minutes="45">45m</button>
           <button class="interval-btn" data-minutes="60">1hr</button>
         </div>
