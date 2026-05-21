@@ -1,9 +1,17 @@
-const stretchList = document.getElementById("stretchList");
+// DOM elements
+const cardMedia = document.getElementById("cardMedia");
+const stretchInfo = document.getElementById("stretchInfo");
+const exercisePanel = document.getElementById("exercisePanel");
 const timerDisplay = document.getElementById("timer");
 const timerRing = document.getElementById("timerRing");
 const timerGlow = document.getElementById("timerGlow");
+const phaseLabel = document.getElementById("phaseLabel");
+const exerciseProgress = document.getElementById("exerciseProgress");
+const progressLabel = document.getElementById("progressLabel");
 const startBtn = document.getElementById("startBtn");
 const skipBtn = document.getElementById("skipBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
 const activeScreen = document.getElementById("activeScreen");
 const doneScreen = document.getElementById("doneScreen");
 const doneMessage = document.getElementById("doneMessage");
@@ -14,7 +22,7 @@ const CIRCUMFERENCE = 2 * Math.PI * 84;
 
 const MOTIVATIONAL_QUOTES = [
   "Small breaks lead to big breakthroughs.",
-  "You can't pour from an empty cup. Rest refills it.",
+  "You can\u2019t pour from an empty cup. Rest refills it.",
   "Movement is medicine for the mind.",
   "The best code is written by people who take care of themselves.",
   "Your posture today is your health tomorrow.",
@@ -22,98 +30,200 @@ const MOTIVATIONAL_QUOTES = [
   "Sitting is the new smoking. You just put it out.",
   "Your future self just sent a thank-you note.",
   "Consistency beats intensity. One stretch at a time.",
-  "You showed up for yourself. That's the hardest part.",
+  "You showed up for yourself. That\u2019s the hardest part.",
 ];
 
-let totalSeconds = 120;
-let remainingSeconds = totalSeconds;
+// State
+let stretches = [];
+let currentIndex = 0;
+let phases = [];
+let currentPhase = 0;
+let totalPhaseSeconds = 0;
+let remainingSeconds = 0;
 let timerInterval = null;
+let state = "READY"; // READY, RUNNING, EXERCISE_DONE
 
-// Build a stretch card — uses video if available, SVG illustration otherwise
-function buildStretchCard(stretch) {
-  const card = document.createElement("div");
-  card.className = "stretch-card";
+// ---------------------------------------------------------------------------
+// Duration & phase parsing
+// ---------------------------------------------------------------------------
 
+function parseDuration(str) {
+  const match = str.match(/(\d+)\s*(second|minute)/i);
+  if (!match) return 30;
+  const num = parseInt(match[1], 10);
+  return match[2].toLowerCase().startsWith("minute") ? num * 60 : num;
+}
+
+function parsePhases(stretch) {
+  const desc = stretch.description;
+  const totalSec = parseDuration(stretch.duration);
+
+  if (
+    /per\s+(side|hand|arm|leg)/i.test(desc) ||
+    /switch\s+(sides|which)/i.test(desc) ||
+    /then\s+switch/i.test(desc) ||
+    /other\s+(side|shoulder)/i.test(desc)
+  ) {
+    const half = Math.round(totalSec / 2);
+    return [
+      { label: "First side", seconds: half },
+      { label: "Other side", seconds: totalSec - half },
+    ];
+  }
+
+  if (/each\s+direction/i.test(desc)) {
+    const half = Math.round(totalSec / 2);
+    return [
+      { label: "First direction", seconds: half },
+      { label: "Other direction", seconds: totalSec - half },
+    ];
+  }
+
+  if (/both\s+sides/i.test(desc)) {
+    const half = Math.round(totalSec / 2);
+    return [
+      { label: "First side", seconds: half },
+      { label: "Other side", seconds: totalSec - half },
+    ];
+  }
+
+  return [{ label: null, seconds: totalSec }];
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+
+function buildMediaHTML(stretch) {
   const videoId = getVideoId(stretch.name);
 
-  const infoHTML = `
-    <div class="stretch-info">
-      <div class="stretch-header">
-        <span class="stretch-name">${stretch.name}</span>
-        <span class="stretch-duration">${stretch.duration}</span>
-      </div>
-      <div class="stretch-focus">${stretch.focus}</div>
-      <p class="stretch-description">${stretch.description}</p>
-    </div>
-  `;
-
   if (videoId) {
-    card.classList.add("has-video");
-    card.innerHTML = `
-      <div class="video-wrapper" data-video-id="${videoId}">
-        <img
-          class="video-thumb"
-          src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg"
-          alt="${stretch.name} demonstration"
-        >
-        <div class="video-play">
-          <div class="video-play-circle">
-            <svg viewBox="0 0 24 24" fill="#2d6b6b"><path d="M8 5v14l11-7z"/></svg>
+    return `
+      <div class="video-container" data-video-id="${videoId}">
+        <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${stretch.name} demonstration">
+        <div class="video-play-overlay">
+          <div class="video-play-btn">
+            <svg viewBox="0 0 24 24" fill="#3A4A35"><path d="M8 5v14l11-7z"/></svg>
           </div>
         </div>
       </div>
-      ${infoHTML}
-    `;
-
-    // Open video in new tab (iframes blocked on chrome-extension:// pages)
-    const wrapper = card.querySelector(".video-wrapper");
-    wrapper.addEventListener("click", () => {
-      window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
-    });
-  } else {
-    card.innerHTML = `
-      <div class="stretch-illustration">${getStretchSVG(stretch.name)}</div>
-      ${infoHTML}
     `;
   }
 
-  return card;
+  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>`;
 }
 
-// Load stretches from storage
-chrome.storage.local.get("currentStretches", (data) => {
-  const stretches = data.currentStretches || [];
+function buildInfoHTML(stretch) {
+  return `
+    <h2 class="stretch-name">${stretch.name}</h2>
+    <hr class="stretch-divider">
+    <p class="stretch-description">${stretch.description}</p>
+  `;
+}
 
-  let totalTime = 0;
-  stretches.forEach((s) => {
-    const match = s.duration.match(/(\d+)/);
-    if (match) totalTime += parseInt(match[1], 10);
-  });
-  totalSeconds = Math.max(totalTime + 15, 60);
-  remainingSeconds = totalSeconds;
+function updateProgressDots() {
+  progressLabel.textContent = `Exercise ${currentIndex + 1} of ${stretches.length}`;
+
+  let html = "";
+  for (let i = 0; i < stretches.length; i++) {
+    const cls =
+      i === currentIndex ? "active" : i < currentIndex ? "done" : "";
+    html += `<div class="progress-dot ${cls}"></div>`;
+  }
+  exerciseProgress.innerHTML = html;
+}
+
+function updateArrows() {
+  prevBtn.disabled = currentIndex === 0 || state === "RUNNING";
+  nextBtn.disabled = currentIndex >= stretches.length - 1 || state === "RUNNING";
+}
+
+// ---------------------------------------------------------------------------
+// Exercise flow
+// ---------------------------------------------------------------------------
+
+function showExercise(index) {
+  currentIndex = index;
+  const stretch = stretches[index];
+  phases = parsePhases(stretch);
+  currentPhase = 0;
+  state = "READY";
+
+  updateProgressDots();
+  updateArrows();
+
+  // Animate panel
+  exercisePanel.classList.remove("card-enter");
+  void exercisePanel.offsetWidth;
+  exercisePanel.classList.add("card-enter");
+
+  // Render left column (media)
+  cardMedia.innerHTML = buildMediaHTML(stretch);
+
+  // Open video in new tab (iframes blocked on chrome-extension:// pages)
+  const videoEl = cardMedia.querySelector(".video-container");
+  if (videoEl) {
+    videoEl.addEventListener("click", () => {
+      const vid = videoEl.dataset.videoId;
+      window.open(`https://www.youtube.com/watch?v=${vid}`, "_blank");
+    });
+  }
+
+  // Render right column (info)
+  stretchInfo.innerHTML = buildInfoHTML(stretch);
+
+  // Set up timer for first phase
+  setupPhase(0);
+
+  // Reset button
+  startBtn.textContent = "Done \u2713";
+  startBtn.disabled = false;
+  startBtn.style.opacity = "1";
+  startBtn.style.cursor = "pointer";
+}
+
+function setupPhase(phaseIndex) {
+  const phase = phases[phaseIndex];
+  totalPhaseSeconds = phase.seconds;
+  remainingSeconds = phase.seconds;
+
+  // Reset ring instantly then re-enable transition
+  timerRing.style.transition = "none";
+  timerGlow.style.transition = "none";
+  timerRing.style.strokeDashoffset = CIRCUMFERENCE;
+  timerGlow.style.strokeDashoffset = CIRCUMFERENCE;
+  void timerRing.offsetWidth;
+  timerRing.style.transition = "stroke-dashoffset 1s linear";
+  timerGlow.style.transition = "stroke-dashoffset 1s linear";
+
   updateTimerDisplay();
 
-  stretches.forEach((stretch) => {
-    stretchList.appendChild(buildStretchCard(stretch));
-  });
-});
+  if (phase.label) {
+    phaseLabel.textContent = phase.label;
+    phaseLabel.style.display = "block";
+  } else {
+    phaseLabel.style.display = "none";
+  }
+}
 
 function updateTimerDisplay() {
   const mins = Math.floor(remainingSeconds / 60);
   const secs = remainingSeconds % 60;
   timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
 
-  const progress = (totalSeconds - remainingSeconds) / totalSeconds;
+  const progress = (totalPhaseSeconds - remainingSeconds) / totalPhaseSeconds;
   const offset = CIRCUMFERENCE * (1 - progress);
   timerRing.style.strokeDashoffset = offset;
   timerGlow.style.strokeDashoffset = offset;
 }
 
-function startTimer() {
-  startBtn.textContent = "Stretching...";
+function startRunning() {
+  state = "RUNNING";
+  startBtn.textContent = "Stretching\u2026";
   startBtn.disabled = true;
-  startBtn.style.opacity = "0.6";
+  startBtn.style.opacity = "0.5";
   startBtn.style.cursor = "default";
+  updateArrows();
 
   timerInterval = setInterval(() => {
     remainingSeconds--;
@@ -121,10 +231,54 @@ function startTimer() {
 
     if (remainingSeconds <= 0) {
       clearInterval(timerInterval);
-      showDone();
+      timerInterval = null;
+      onPhaseComplete();
     }
   }, 1000);
 }
+
+function onPhaseComplete() {
+  currentPhase++;
+
+  if (currentPhase < phases.length) {
+    // Switch sides prompt then auto-start
+    phaseLabel.textContent = "\u2728 Switch sides";
+    phaseLabel.style.display = "block";
+    phaseLabel.classList.add("phase-switch-anim");
+
+    setTimeout(() => {
+      phaseLabel.classList.remove("phase-switch-anim");
+      setupPhase(currentPhase);
+      startRunning();
+    }, 1800);
+  } else {
+    onExerciseComplete();
+  }
+}
+
+function onExerciseComplete() {
+  if (currentIndex < stretches.length - 1) {
+    // Brief pause then advance to next exercise
+    phaseLabel.textContent = "\u2713 Complete";
+    phaseLabel.style.display = "block";
+    state = "EXERCISE_DONE";
+    updateArrows();
+
+    setTimeout(() => {
+      exercisePanel.classList.add("card-exit");
+      setTimeout(() => {
+        exercisePanel.classList.remove("card-exit");
+        showExercise(currentIndex + 1);
+      }, 250);
+    }, 800);
+  } else {
+    showDone();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Done screen
+// ---------------------------------------------------------------------------
 
 function showDone() {
   activeScreen.classList.add("fade-out");
@@ -133,18 +287,21 @@ function showDone() {
     activeScreen.style.display = "none";
     doneScreen.style.display = "block";
     launchConfetti();
-  }, 400);
+  }, 350);
 
   chrome.storage.local.get("streak", (data) => {
     const streak = data.streak || 0;
-    doneMessage.textContent = `That's ${streak} stretch break${streak === 1 ? "" : "s"} completed today. Keep it going!`;
+    doneMessage.textContent = `That\u2019s ${streak} stretch break${streak === 1 ? "" : "s"} completed today. Keep it going!`;
   });
 
   motivationalEl.textContent =
     MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 }
 
-// Confetti — green / pink / gold theme
+// ---------------------------------------------------------------------------
+// Confetti
+// ---------------------------------------------------------------------------
+
 function launchConfetti() {
   const canvas = document.createElement("canvas");
   canvas.style.cssText =
@@ -155,9 +312,9 @@ function launchConfetti() {
   canvas.height = window.innerHeight;
 
   const colors = [
-    "#5eaaa8", "#a8d8d8", "#d4eded",
-    "#e8929a", "#f2b5c8", "#f8d0dc",
-    "#c9a8b8", "#fefaf6",
+    "#8FA67E", "#A8BC9A", "#D0DFC4",
+    "#C4907A", "#D4A894", "#E8D8CB",
+    "#6B8A5A", "#F7F3E8",
   ];
   const particles = [];
 
@@ -210,9 +367,18 @@ function launchConfetti() {
   requestAnimationFrame(animate);
 }
 
-startBtn.addEventListener("click", startTimer);
+// ---------------------------------------------------------------------------
+// Event handlers
+// ---------------------------------------------------------------------------
+
+startBtn.addEventListener("click", () => {
+  if (state === "READY") {
+    startRunning();
+  }
+});
 
 skipBtn.addEventListener("click", () => {
+  if (timerInterval) clearInterval(timerInterval);
   chrome.storage.local.get("streak", (data) => {
     const streak = Math.max((data.streak || 1) - 1, 0);
     chrome.storage.local.set({ streak });
@@ -220,6 +386,37 @@ skipBtn.addEventListener("click", () => {
   window.close();
 });
 
+prevBtn.addEventListener("click", () => {
+  if (currentIndex > 0 && state !== "RUNNING") {
+    exercisePanel.classList.add("card-exit");
+    setTimeout(() => {
+      exercisePanel.classList.remove("card-exit");
+      showExercise(currentIndex - 1);
+    }, 250);
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (currentIndex < stretches.length - 1 && state !== "RUNNING") {
+    exercisePanel.classList.add("card-exit");
+    setTimeout(() => {
+      exercisePanel.classList.remove("card-exit");
+      showExercise(currentIndex + 1);
+    }, 250);
+  }
+});
+
 closeBtn.addEventListener("click", () => {
   window.close();
+});
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+
+chrome.storage.local.get("currentStretches", (data) => {
+  stretches = data.currentStretches || [];
+  if (stretches.length > 0) {
+    showExercise(0);
+  }
 });

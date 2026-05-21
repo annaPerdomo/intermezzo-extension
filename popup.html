@@ -4,30 +4,23 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     /* === Design Tokens === */
     :root {
-      --teal-50: #e8f4f4;
-      --teal-100: #d4eded;
-      --teal-200: #a8d8d8;
-      --teal-400: #5eaaa8;
-      --teal-500: #4a9896;
-      --teal-600: #3d8585;
-      --teal-700: #2d6b6b;
-      --blush-50: #fdf2f6;
-      --blush-100: #fce7ef;
-      --blush-200: #f8d0dc;
-      --blush-300: #f2b5c8;
-      --blush-400: #e8929a;
-      --cream: #fefaf6;
-      --warm-100: #f5f0ea;
-      --warm-200: #e8e0d4;
-      --warm-400: #b5a898;
-      --warm-700: #5c504a;
-      --warm-900: #2c2520;
-      --radius-lg: 16px;
-      --shadow-card: 0 1px 3px rgba(58,55,48,0.04), 0 4px 12px rgba(58,55,48,0.03);
+      --olive: #3A4A35;
+      --sage: #6B7A62;
+      --moss: #8FA67E;
+      --forest: #6B8A5A;
+      --forest-dark: #5A7A4A;
+      --terra: #C4907A;
+      --stone: #D4CBBF;
+      --soft-line: #C4CEBB;
+      --cream: #FFF8F0;
+      --card-bg: rgba(255, 255, 255, 0.55);
+      --card-border: rgba(255, 255, 255, 0.5);
+      --radius-lg: 14px;
+      --shadow-card: 0 2px 16px rgba(58, 74, 53, 0.06);
       --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -36,111 +29,93 @@
 
     body {
       width: 360px;
-      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(180deg, var(--teal-50) 0%, var(--cream) 50%, var(--blush-50) 100%);
-      color: var(--warm-900);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #F7F3E8 0%, #E6EDDF 35%, #D0DFC4 65%, #E8D8CB 100%);
+      color: var(--olive);
       -webkit-font-smoothing: antialiased;
     }
 
     /* === Header === */
     .header {
       position: relative;
-      padding: 28px 24px 22px;
+      padding: 26px 24px 20px;
       overflow: hidden;
-      background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-400) 35%, #c9a8b8 65%, var(--blush-400) 100%);
-      color: white;
     }
-
-    .header::before {
-      content: '';
-      position: absolute;
-      inset: -20%;
-      background:
-        radial-gradient(circle at 20% 40%, rgba(94,170,168,0.45) 0%, transparent 50%),
-        radial-gradient(circle at 80% 30%, rgba(232,146,154,0.4) 0%, transparent 45%),
-        radial-gradient(circle at 55% 85%, rgba(168,216,216,0.3) 0%, transparent 50%);
-      animation: meshShift 12s ease-in-out infinite alternate;
-    }
-
-    @keyframes meshShift {
-      0% { transform: scale(1) translate(0, 0); }
-      50% { transform: scale(1.06) translate(-2%, 1%); }
-      100% { transform: scale(1.03) translate(1%, -1%); }
-    }
-
-    /* Floating lotus petals */
-    .lotus-float {
-      position: absolute;
-      pointer-events: none;
-      opacity: 0.08;
-    }
-
-    .lotus-float svg { width: 100%; height: 100%; }
-
-    .lotus-1 { width: 90px; height: 70px; top: -8px; right: 10px; animation: petalDrift1 8s ease-in-out infinite; }
-    .lotus-2 { width: 60px; height: 46px; bottom: -5px; left: 15px; animation: petalDrift2 10s ease-in-out infinite; }
-    .lotus-3 { width: 45px; height: 35px; top: 35px; left: 55%; animation: petalDrift3 7s ease-in-out infinite; }
-
-    @keyframes petalDrift1 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-5px,4px) rotate(3deg); } }
-    @keyframes petalDrift2 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(4px,-5px) rotate(-4deg); } }
-    @keyframes petalDrift3 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-3px,3px) rotate(5deg); } }
 
     .header-content { position: relative; z-index: 1; }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
     }
 
-    .brand-lotus { width: 26px; height: 22px; opacity: 0.9; }
+    .brand-lotus { width: 22px; height: 22px; }
 
     .header h1 {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.3px;
+      font-family: 'Cormorant', Georgia, serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--olive);
+      line-height: 1.15;
     }
 
     .header .tagline {
       font-size: 13px;
-      opacity: 0.7;
-      margin-top: 3px;
-      font-weight: 500;
-      font-style: italic;
+      color: var(--sage);
+      margin-top: 4px;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+
+    /* Lotus divider */
+    .lotus-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .lotus-divider .divider-line {
+      width: 60px;
+      height: 1px;
+      background: var(--soft-line);
     }
 
     .stats-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     .stat-pill {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255,255,255,0.14);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 6px 13px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
+      color: var(--sage);
       transition: background 0.3s;
     }
 
-    .stat-pill:hover { background: rgba(255,255,255,0.2); }
+    .stat-pill:hover { background: rgba(255, 255, 255, 0.7); }
     .stat-icon { font-size: 13px; line-height: 1; }
 
     /* === Content === */
-    .content { padding: 14px 14px 6px; }
+    .content { padding: 0 14px 6px; }
 
     /* === Card === */
     .card {
-      background: white;
-      border: 1px solid var(--warm-100);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: var(--radius-lg);
       padding: 14px 16px;
       box-shadow: var(--shadow-card);
@@ -148,20 +123,17 @@
       transition: box-shadow 0.2s var(--ease-out);
     }
 
-    .card:hover {
-      box-shadow: 0 2px 6px rgba(58,55,48,0.06), 0 6px 16px rgba(58,55,48,0.04);
-    }
-
     .card-label {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--warm-900);
+      font-family: 'Cormorant', Georgia, serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--olive);
       display: block;
     }
 
     .card-sublabel {
       font-size: 12px;
-      color: var(--warm-400);
+      color: var(--sage);
       margin-top: 2px;
       display: block;
     }
@@ -175,14 +147,14 @@
 
     .toggle-info { flex: 1; }
 
-    .switch { position: relative; width: 48px; height: 28px; flex-shrink: 0; }
+    .switch { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
 
     .slider {
       position: absolute;
       inset: 0;
-      background: var(--warm-200);
-      border-radius: 28px;
+      background: var(--stone);
+      border-radius: 26px;
       cursor: pointer;
       transition: background 0.25s var(--ease-out);
     }
@@ -190,8 +162,8 @@
     .slider::before {
       content: "";
       position: absolute;
-      height: 22px;
-      width: 22px;
+      height: 20px;
+      width: 20px;
       left: 3px;
       bottom: 3px;
       background: white;
@@ -200,8 +172,8 @@
       transition: transform 0.35s var(--ease-spring);
     }
 
-    .switch input:checked + .slider { background: var(--teal-400); }
-    .switch input:checked + .slider::before { transform: translateX(20px); }
+    .switch input:checked + .slider { background: var(--forest); }
+    .switch input:checked + .slider::before { transform: translateX(18px); }
 
     /* === Interval Selector === */
     .interval-control { margin-top: 10px; }
@@ -210,7 +182,7 @@
       position: relative;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      background: var(--warm-100);
+      background: rgba(58, 74, 53, 0.06);
       border-radius: 10px;
       padding: 3px;
     }
@@ -219,9 +191,9 @@
       position: absolute;
       top: 3px; bottom: 3px; left: 3px;
       width: calc((100% - 6px) / 4);
-      background: white;
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px rgba(58, 74, 53, 0.08);
       transition: transform 0.4s var(--ease-spring);
       pointer-events: none;
     }
@@ -229,60 +201,37 @@
     .interval-btn {
       position: relative; z-index: 1;
       border: none; background: transparent;
-      padding: 8px 4px; font-size: 13px; font-weight: 700;
-      color: var(--warm-400); cursor: pointer;
+      padding: 8px 4px; font-size: 13px; font-weight: 500;
+      color: var(--sage); cursor: pointer;
       transition: color 0.2s var(--ease-out);
-      font-family: inherit;
+      font-family: 'DM Sans', sans-serif;
     }
 
-    .interval-btn:hover { color: var(--warm-700); }
-    .interval-btn.active { color: var(--teal-600); }
+    .interval-btn:hover { color: var(--olive); }
+    .interval-btn.active { color: var(--forest); font-weight: 500; }
 
     /* === CTA === */
     .cta-btn {
       position: relative;
-      width: 100%; padding: 14px;
-      border: none; border-radius: var(--radius-lg);
-      background: linear-gradient(135deg, var(--teal-400), var(--teal-200), var(--blush-200), var(--blush-400));
-      background-size: 200% 200%;
-      animation: ctaGradient 6s ease infinite;
-      color: white;
-      font-size: 15px; font-weight: 800;
+      width: 100%; padding: 13px;
+      border: none; border-radius: 50px;
+      background: var(--forest);
+      color: var(--cream);
+      font-size: 15px; font-weight: 500;
       cursor: pointer; overflow: hidden;
-      transition: transform 0.15s ease, box-shadow 0.25s var(--ease-out);
-      box-shadow: 0 4px 14px rgba(94,170,168,0.25), 0 2px 8px rgba(232,146,154,0.15);
+      transition: transform 0.15s ease, background 0.2s ease;
       margin-bottom: 10px;
-      font-family: inherit;
+      font-family: 'DM Sans', sans-serif;
       letter-spacing: 0.2px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-
-    @keyframes ctaGradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
     .cta-btn:hover {
+      background: var(--forest-dark);
       transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(94,170,168,0.3), 0 4px 12px rgba(232,146,154,0.2);
     }
 
     .cta-btn:active { transform: translateY(0) scale(0.98); }
     .cta-btn span { position: relative; z-index: 1; }
-
-    .cta-shimmer {
-      position: absolute; top: 0; left: -100%;
-      width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-      animation: shimmer 4s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes shimmer {
-      0% { left: -100%; }
-      40%, 100% { left: 160%; }
-    }
 
     /* === History === */
     .history-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
@@ -290,7 +239,7 @@
     .history-item {
       display: flex; align-items: center; justify-content: space-between;
       padding: 8px 10px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--teal-50), var(--blush-50));
+      background: rgba(255, 255, 255, 0.45);
       animation: fadeSlideIn 0.3s ease-out both;
     }
 
@@ -304,23 +253,24 @@
     }
 
     .history-item-name {
-      font-size: 12px; font-weight: 700; color: var(--warm-700);
+      font-size: 12px; font-weight: 500; color: var(--sage);
       flex: 1; min-width: 0;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 
     .history-item-count {
       flex-shrink: 0;
-      background: linear-gradient(135deg, var(--teal-400), var(--blush-400));
-      color: white; border-radius: 10px;
-      padding: 2px 8px; font-weight: 800; font-size: 11px; margin-left: 8px;
+      background: var(--forest);
+      color: var(--cream); border-radius: 10px;
+      padding: 2px 8px; font-weight: 500; font-size: 11px; margin-left: 8px;
     }
 
     /* === Footer === */
     .footer {
       text-align: center; padding: 6px 20px 14px;
-      font-size: 11px; color: var(--warm-400);
-      font-weight: 600; font-style: italic;
+      font-size: 11px; color: var(--sage);
+      font-weight: 400;
+      opacity: 0.6;
     }
 
     /* === Entrance Animations === */
@@ -341,39 +291,18 @@
 </head>
 <body>
   <div class="header">
-    <!-- Floating lotus decorations -->
-    <div class="lotus-float lotus-1">
-      <svg viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="50" cy="33" rx="10" ry="27" fill="white" opacity="0.85"/>
-        <ellipse cx="50" cy="34" rx="9.5" ry="25" transform="rotate(-20 50 60)" fill="white" opacity="0.6"/>
-        <ellipse cx="50" cy="34" rx="9.5" ry="25" transform="rotate(20 50 60)" fill="white" opacity="0.6"/>
-        <ellipse cx="50" cy="37" rx="8.5" ry="21" transform="rotate(-42 50 60)" fill="white" opacity="0.35"/>
-        <ellipse cx="50" cy="37" rx="8.5" ry="21" transform="rotate(42 50 60)" fill="white" opacity="0.35"/>
-      </svg>
-    </div>
-    <div class="lotus-float lotus-2">
-      <svg viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="50" cy="33" rx="10" ry="27" fill="white" opacity="0.85"/>
-        <ellipse cx="50" cy="34" rx="9.5" ry="25" transform="rotate(-20 50 60)" fill="white" opacity="0.6"/>
-        <ellipse cx="50" cy="34" rx="9.5" ry="25" transform="rotate(20 50 60)" fill="white" opacity="0.6"/>
-      </svg>
-    </div>
-    <div class="lotus-float lotus-3">
-      <svg viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="50" cy="35" rx="9" ry="23" fill="white" opacity="0.75"/>
-        <ellipse cx="50" cy="36" rx="8" ry="20" transform="rotate(-25 50 60)" fill="white" opacity="0.5"/>
-        <ellipse cx="50" cy="36" rx="8" ry="20" transform="rotate(25 50 60)" fill="white" opacity="0.5"/>
-      </svg>
-    </div>
-
     <div class="header-content">
       <div class="brand">
-        <svg class="brand-lotus" viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="50" cy="30" rx="11" ry="28" fill="white" opacity="0.95"/>
-          <ellipse cx="50" cy="32" rx="10" ry="26" transform="rotate(-22 50 60)" fill="white" opacity="0.7"/>
-          <ellipse cx="50" cy="32" rx="10" ry="26" transform="rotate(22 50 60)" fill="white" opacity="0.7"/>
-          <ellipse cx="50" cy="36" rx="9" ry="22" transform="rotate(-45 50 60)" fill="white" opacity="0.4"/>
-          <ellipse cx="50" cy="36" rx="9" ry="22" transform="rotate(45 50 60)" fill="white" opacity="0.4"/>
+        <svg class="brand-lotus" viewBox="0 0 24 24" fill="none">
+          <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
+          <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
+          <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
         </svg>
         <h1>MoveMore</h1>
       </div>
@@ -389,6 +318,23 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Lotus divider between header and content -->
+  <div class="lotus-divider">
+    <div class="divider-line"></div>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
+      <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
+      <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
+    </svg>
+    <div class="divider-line"></div>
   </div>
 
   <div class="content">
@@ -418,7 +364,6 @@
 
     <button class="cta-btn" id="stretchNow">
       <span>Stretch Now</span>
-      <div class="cta-shimmer"></div>
     </button>
 
     <div class="card" id="historySection" style="display:none;">
