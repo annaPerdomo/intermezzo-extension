@@ -765,6 +765,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "newStretches") {
+    // "New stretch" from the completion screen — hand back a fresh set so the
+    // user can keep going without closing the tab.
+    pickStretches().then(async (stretches) => {
+      await chrome.storage.local.set({ currentStretches: stretches });
+      sendResponse({ ok: true, stretches });
+    });
+    return true;
+  }
+
   if (message.action === "testWebhook") {
     postWebhook().then((result) => sendResponse(result));
     return true;

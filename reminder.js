@@ -65,6 +65,13 @@ const doneMessage = document.getElementById("doneMessage");
 const motivationalEl = document.getElementById("motivational");
 const subtitleEl = document.getElementById("subtitle");
 const closeBtn = document.getElementById("closeBtn");
+const newStretchBtn = document.getElementById("newStretchBtn");
+const statExercises = document.getElementById("statExercises");
+const statExercisesLabel = document.getElementById("statExercisesLabel");
+const statMinutes = document.getElementById("statMinutes");
+const statMinutesLabel = document.getElementById("statMinutesLabel");
+const statBreaks = document.getElementById("statBreaks");
+const statBreaksLabel = document.getElementById("statBreaksLabel");
 
 const CIRCUMFERENCE = 2 * Math.PI * 84;
 
@@ -454,17 +461,33 @@ function showDone() {
 
   setTimeout(() => {
     activeScreen.style.display = "none";
-    doneScreen.style.display = "block";
+    doneScreen.style.display = "flex";
     launchConfetti();
   }, 350);
 
+  // Stat chips \u2014 what you just did
+  const exCount = stretches.length;
+  statExercises.textContent = exCount;
+  statExercisesLabel.textContent = exCount === 1 ? "Exercise" : "Exercises";
+
+  const totalSeconds = stretches.reduce((sum, s) => sum + parseDuration(s.duration), 0);
+  const mins = Math.max(1, Math.round(totalSeconds / 60));
+  statMinutes.textContent = mins;
+  statMinutesLabel.textContent = mins === 1 ? "Minute moved" : "Minutes moved";
+
+  // A warm, rotating note in the sub spot
+  doneMessage.textContent =
+    MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
+
   chrome.storage.local.get("streak", (data) => {
     const streak = data.streak || 0;
-    doneMessage.textContent = `That\u2019s ${streak} stretch break${streak === 1 ? "" : "s"} completed today. Keep it going!`;
+    statBreaks.textContent = streak;
+    statBreaksLabel.textContent = streak === 1 ? "Break today" : "Breaks today";
+    motivationalEl.textContent =
+      streak <= 1
+        ? "Your first break today \u2014 a gentle place to begin."
+        : `That\u2019s ${streak} moments you\u2019ve chosen yourself today.`;
   });
-
-  motivationalEl.textContent =
-    MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 }
 
 // ---------------------------------------------------------------------------
@@ -577,6 +600,30 @@ nextBtn.addEventListener("click", () => {
 
 closeBtn.addEventListener("click", () => {
   window.close();
+});
+
+// "New stretch" — pull a fresh set and run the break again without leaving.
+newStretchBtn.addEventListener("click", () => {
+  newStretchBtn.disabled = true;
+
+  const restart = (fresh) => {
+    if (fresh && fresh.length) stretches = fresh;
+    doneScreen.style.display = "none";
+    activeScreen.classList.remove("fade-out");
+    activeScreen.style.display = "";
+    subtitleEl.textContent =
+      SUBTITLE_PHRASES[Math.floor(Math.random() * SUBTITLE_PHRASES.length)];
+    currentIndex = 0;
+    state = "READY";
+    showExercise(0);
+    window.scrollTo(0, 0);
+    newStretchBtn.disabled = false;
+  };
+
+  chrome.runtime
+    .sendMessage({ action: "newStretches" })
+    .then((res) => restart(res && res.stretches))
+    .catch(() => restart(null)); // fall back to replaying the current set
 });
 
 // ---------------------------------------------------------------------------

@@ -6,7 +6,15 @@
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="reminder.css">
 </head>
-<body>
+<body class="breath-on">
+
+  <!-- ============================================================
+       MOVING BACKGROUND — gently breathing wash + drifting leaves
+       ============================================================ -->
+  <div class="zen-bg" aria-hidden="true">
+    <div class="bg-base"></div>
+    <div class="breath-layer"></div>
+  </div>
 
   <!-- ============================================================
        ACTIVE STRETCH SCREEN
@@ -87,18 +95,57 @@
   </div>
 
   <!-- ============================================================
-       COMPLETED SCREEN
+       COMPLETED SCREEN — pride moment
        ============================================================ -->
-  <div class="container done-screen" id="doneScreen">
-    <div class="done-check">
-      <svg viewBox="0 0 40 40">
-        <path class="done-check-path" d="M 10 20 L 17 27 L 30 13" />
-      </svg>
+  <div class="done-screen" id="doneScreen">
+    <div class="completion-inner">
+      <div class="completion-message">
+        <div class="completion-eyebrow">Stretch break complete</div>
+
+        <div class="completion-emblem">
+          <span class="halo"></span>
+          <span class="completion-lotus">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
+              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
+              <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
+            </svg>
+          </span>
+        </div>
+
+        <h2 class="completion-title">Beautifully done.</h2>
+        <p class="completion-sub" id="doneMessage">You showed up for yourself and gave your body what it needed. However it felt, that&rsquo;s enough &mdash; and it&rsquo;s something to feel proud of.</p>
+
+        <div class="completion-actions">
+          <button class="completion-btn" id="closeBtn">Back to your day</button>
+          <button class="completion-btn-ghost" id="newStretchBtn">New stretch</button>
+        </div>
+      </div>
+
+      <div class="completion-summary">
+        <div class="completion-stats">
+          <div class="stat-chip">
+            <span class="stat-value" id="statExercises">0</span>
+            <span class="stat-label" id="statExercisesLabel">Exercises</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-value" id="statMinutes">0</span>
+            <span class="stat-label" id="statMinutesLabel">Minutes moved</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-value" id="statBreaks">0</span>
+            <span class="stat-label" id="statBreaksLabel">Breaks today</span>
+          </div>
+        </div>
+        <p class="completion-count" id="motivational"></p>
+      </div>
     </div>
-    <h2>Nice work!</h2>
-    <p id="doneMessage">Your body thanks you.</p>
-    <button class="btn btn-done" id="closeBtn">Back to Work</button>
-    <p class="motivational" id="motivational"></p>
   </div>
 
   <script src="stretch-illustrations.js"></script>
