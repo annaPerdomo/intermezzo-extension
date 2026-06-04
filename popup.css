@@ -169,7 +169,8 @@
     .switch input:checked + .slider::before { transform: translateX(18px); }
 
     /* === Interval Selector === */
-    .interval-control { margin-top: 10px; }
+    /* Extra top room so the "Recommended" / "Easiest" badge can sit above the track */
+    .interval-control { margin-top: 26px; }
 
     .interval-track {
       position: relative;
@@ -194,7 +195,7 @@
     .interval-btn {
       position: relative; z-index: 1;
       border: none; background: transparent;
-      padding: 8px 2px; font-size: 12.5px; font-weight: 500;
+      padding: 8px 0; font-size: 12.5px; font-weight: 500;
       color: var(--sage); cursor: pointer;
       transition: color 0.2s var(--ease-out);
       font-family: 'DM Sans', sans-serif;
@@ -302,14 +303,24 @@
       display: block;
     }
 
-    /* === Recommended Tag === */
+    /* === Recommended / Easiest badge ===
+       Sits as a small pill ABOVE its button so a long word like "Recommended"
+       isn't cramped inside the narrow column. */
     .rec-tag {
-      display: block;
-      font-size: 9px;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
       color: var(--forest);
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      margin-top: 1px;
+      background: rgba(107, 138, 90, 0.13);
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      line-height: 1.35;
+      pointer-events: none;
     }
 
     #nextReminder { margin-left: 3px; }
