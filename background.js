@@ -415,7 +415,8 @@ async function pickStretches() {
   // How many exercises to show this break.
   // exerciseCount: 1/2/3 = fixed count, 0 = "Mix" (random 2–3). Default 1 —
   // a single exercise is the lowest barrier to actually doing it.
-  const { exerciseCount = 1 } = await chrome.storage.local.get("exerciseCount");
+  const { exerciseCount = 1, lastStretchNames = [] } =
+    await chrome.storage.local.get(["exerciseCount", "lastStretchNames"]);
   const count = exerciseCount === 0 ? (Math.random() < 0.4 ? 2 : 3) : exerciseCount;
 
   // Every 3rd break, always include Walk & Hydrate if not done recently —
@@ -435,7 +436,14 @@ async function pickStretches() {
   }
 
   // Score and sort remaining stretches
-  const remaining = STRETCHES.filter(s => !picked.some(p => p.name === s.name));
+  let remaining = STRETCHES.filter(s => !picked.some(p => p.name === s.name));
+
+  // Don't immediately repeat what we just showed — drop the previous set as long
+  // as that still leaves enough variety to fill this break.
+  const fresh = remaining.filter(s => !lastStretchNames.includes(s.name));
+  if (fresh.length >= count - picked.length) {
+    remaining = fresh;
+  }
 
   while (picked.length < count && remaining.length > 0) {
     // Re-score each time to account for area diversity updates
@@ -469,6 +477,9 @@ async function pickStretches() {
     history[s.name] = (history[s.name] || 0) + 1;
   }
   await saveDailyHistory(history);
+
+  // Remember this set so the next break can avoid repeating it
+  await chrome.storage.local.set({ lastStretchNames: picked.map(s => s.name) });
 
   return picked;
 }
@@ -755,8 +766,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.target === "offscreen") return;
 
   if (message.action === "triggerNow") {
-    // "Stretch Now" from the popup always opens the break directly.
-    openBreakTab().then(() => sendResponse({ ok: true }));
+    // "Stretch Now" from the popup always opens the break directly. Pick a fresh
+    // set first so it honors the current "exercises per break" setting instead
+    // of replaying whatever was last stored.
+    (async () => {
+      const stretches = await pickStretches();
+      await chrome.storage.local.set({ currentStretches: stretches });
+      await openBreakTab();
+      sendResponse({ ok: true });
+    })();
     return true; // keep message channel open for async response
   }
 
