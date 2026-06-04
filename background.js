@@ -9,6 +9,7 @@ const AREA = {
   HIPS_GLUTES: "hips_glutes",
   LOWER_BODY: "lower_body",
   WRISTS_ARMS: "wrists_arms",
+  EYES: "eyes",
   FULL_BODY: "full_body",
 };
 
@@ -293,6 +294,39 @@ const STRETCHES = [
     focus: "Nerve mobility (arm tingling relief)",
     area: AREA.WRISTS_ARMS,
     priority: 1
+  },
+  // === Eye rest — screens fatigue your focusing muscles too ===
+  {
+    name: "20-20-20 Eye Break",
+    duration: "20 seconds",
+    description: "Look at something at least 20 feet away — out a window, across the room, anywhere far. Hold your gaze there and let your eyes relax for a full 20 seconds. This resets the focusing muscles that lock up from staring at a screen up close.",
+    focus: "Eye focus & screen-strain relief",
+    area: AREA.EYES,
+    priority: 2
+  },
+  {
+    name: "Eye Palming",
+    duration: "40 seconds",
+    description: "Rub your palms together for a few seconds until they feel warm. Gently cup them over your closed eyes without pressing on the eyeballs. Rest in the warm darkness and breathe slowly for 30 seconds. A lovely little reset for tired, dry eyes.",
+    focus: "Eye relaxation & dryness relief",
+    area: AREA.EYES,
+    priority: 2
+  },
+  {
+    name: "Near-Far Focus Shifts",
+    duration: "30 seconds",
+    description: "Hold your thumb up about a foot from your face and focus on it. Then shift your focus to something far across the room. Hold each for 3 seconds, then switch back. Repeat 8 times. This exercises the eye muscles that get stuck at one distance after hours of screen time.",
+    focus: "Eye flexibility & accommodation",
+    area: AREA.EYES,
+    priority: 1
+  },
+  {
+    name: "Slow Eye Circles",
+    duration: "30 seconds",
+    description: "Keep your head still and softly close your eyes. Slowly roll your eyes in a big circle — up, around to the right, down, around to the left. Do 4 slow circles each direction. Gentle and easy, no straining.",
+    focus: "Eye mobility & tension release",
+    area: AREA.EYES,
+    priority: 1
   }
 ];
 
@@ -483,14 +517,86 @@ async function resumeAlarm() {
   await chrome.storage.local.remove("alarmRemainingMs");
 }
 
-// Show the reminder
+const NOTIFICATION_ID = "movemore-reminder-notification";
+const SNOOZE_ALARM = "movemore-snooze";
+
+// ---------------------------------------------------------------------------
+// Chime — played through an offscreen document so it sounds even when Chrome
+// is in the background and you're focused on another app (Figma, a fullscreen
+// game/video, etc.). Service workers can't use the Web Audio API directly.
+// ---------------------------------------------------------------------------
+
+async function ensureOffscreen() {
+  // hasDocument isn't available on every Chrome build — guard it.
+  if (chrome.offscreen.hasDocument && (await chrome.offscreen.hasDocument())) {
+    return;
+  }
+  try {
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: ["AUDIO_PLAYBACK"],
+      justification: "Play a gentle chime when a stretch reminder fires."
+    });
+  } catch (e) {
+    // Already exists (race between concurrent reminders) — safe to ignore.
+  }
+}
+
+async function playReminderChime(volume = 0.4) {
+  const { soundEnabled = true } = await chrome.storage.local.get("soundEnabled");
+  if (!soundEnabled) return;
+  await ensureOffscreen();
+  chrome.runtime.sendMessage({ target: "offscreen", action: "playChime", volume });
+}
+
+// ---------------------------------------------------------------------------
+// Reminder delivery
+// ---------------------------------------------------------------------------
+
+// A reminder is now a two-step flow so it works for people who spend most of
+// their day outside Chrome:
+//   1. showReminder() — pick stretches, chime, and surface a system
+//      notification (which appears over other apps). With "auto" style it also
+//      opens the break tab right away (the original behaviour).
+//   2. openBreakTab() — fires when the user accepts (clicks the notification),
+//      counts the streak, and opens the guided break.
 async function showReminder() {
   const stretches = await pickStretches();
-
-  // Store chosen stretches so the reminder page can read them
   await chrome.storage.local.set({ currentStretches: stretches });
 
-  // Update the streak and reset inactivity timer
+  // Clear any paused/snooze state — the repeating alarm handles the next fire.
+  await chrome.storage.local.remove("alarmRemainingMs");
+  await chrome.alarms.clear(SNOOZE_ALARM);
+
+  playReminderChime();
+
+  const { reminderStyle = "notify" } = await chrome.storage.local.get("reminderStyle");
+
+  if (reminderStyle === "auto") {
+    // Open the break immediately (original behaviour) — best when you live in
+    // the browser. Still chimes above for anyone glancing away.
+    openBreakTab();
+    return;
+  }
+
+  // Notify-first: a system notification can surface over a fullscreen app, so
+  // you actually notice the nudge instead of a tab opening silently behind it.
+  const lead = stretches[0] ? stretches[0].name : "Time to move";
+  chrome.notifications.create(NOTIFICATION_ID, {
+    type: "basic",
+    iconUrl: "icons/icon128.png",
+    title: "Time for a stretch break 🌿",
+    message: `${lead} — take a gentle moment for your body.`,
+    priority: 2,
+    requireInteraction: true,
+    buttons: [{ title: "Stretch now" }, { title: "Snooze 5 min" }]
+  });
+}
+
+// Open the guided break tab and count it toward today's streak.
+async function openBreakTab() {
+  await chrome.notifications.clear(NOTIFICATION_ID);
+
   const { streak = 0 } = await chrome.storage.local.get("streak");
   await chrome.storage.local.set({
     streak: streak + 1,
@@ -498,21 +604,40 @@ async function showReminder() {
     accumulatedInactiveMs: 0
   });
 
-  // Clear any paused alarm state and let the repeating alarm handle the next fire
-  await chrome.storage.local.remove("alarmRemainingMs");
-
-  // Open the reminder as a new tab
-  chrome.tabs.create({
+  const tab = await chrome.tabs.create({
     url: chrome.runtime.getURL("reminder.html"),
     active: true
   });
+  // Bring Chrome to the front so the break is actually visible even if another
+  // app currently has focus.
+  if (tab && tab.windowId != null) {
+    chrome.windows.update(tab.windowId, { focused: true }).catch(() => {});
+  }
+}
+
+// Snooze: show the same kind of reminder again after a short delay.
+async function snoozeReminder() {
+  await chrome.notifications.clear(NOTIFICATION_ID);
+  const { snoozeMinutes = 5 } = await chrome.storage.local.get("snoozeMinutes");
+  chrome.alarms.create(SNOOZE_ALARM, { delayInMinutes: Math.max(snoozeMinutes, 0.1) });
 }
 
 // Listen for alarms
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === ALARM_NAME) {
+  if (alarm.name === ALARM_NAME || alarm.name === SNOOZE_ALARM) {
     showReminder();
   }
+});
+
+// Notification interactions
+chrome.notifications.onClicked.addListener((id) => {
+  if (id === NOTIFICATION_ID) openBreakTab();
+});
+
+chrome.notifications.onButtonClicked.addListener((id, buttonIndex) => {
+  if (id !== NOTIFICATION_ID) return;
+  if (buttonIndex === 0) openBreakTab();   // Stretch now
+  else snoozeReminder();                   // Snooze 5 min
 });
 
 // ---------------------------------------------------------------------------
@@ -562,10 +687,43 @@ chrome.idle.onStateChanged.addListener(async (newState) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// Accountability webhook — optionally ping a Discord/Slack channel when a
+// break is completed, so a friend group or team can keep each other moving.
+// ---------------------------------------------------------------------------
+
+async function postWebhook() {
+  const { webhookUrl, webhookName, streak = 0 } =
+    await chrome.storage.local.get(["webhookUrl", "webhookName", "streak"]);
+
+  if (!webhookUrl) return { ok: false, reason: "no-url" };
+
+  const who = (webhookName && webhookName.trim()) || "Someone";
+  const text =
+    `🌿 ${who} just finished a stretch break — ${streak} ` +
+    `${streak === 1 ? "break" : "breaks"} today. Your turn to move?`;
+
+  // Slack incoming webhooks expect { text }, Discord expects { content }.
+  const isSlack = /hooks\.slack\.com/i.test(webhookUrl);
+  const body = isSlack ? { text } : { content: text };
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    return { ok: res.ok, status: res.status };
+  } catch (e) {
+    return { ok: false, reason: String(e) };
+  }
+}
+
 // Set up alarm on install or update
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     enabled: true, intervalMinutes: 30, exerciseCount: 1, streak: 0,
+    reminderStyle: "notify", soundEnabled: true, snoozeMinutes: 5,
     activeStartTime: Date.now(), accumulatedInactiveMs: 0, inactiveTimerDate: todayKey()
   });
   setupAlarm();
@@ -591,10 +749,24 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
-// Listen for messages from popup
+// Listen for messages from the popup and reminder page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // Messages aimed at the offscreen audio doc aren't ours to handle.
+  if (message.target === "offscreen") return;
+
   if (message.action === "triggerNow") {
-    showReminder().then(() => sendResponse({ ok: true }));
+    // "Stretch Now" from the popup always opens the break directly.
+    openBreakTab().then(() => sendResponse({ ok: true }));
     return true; // keep message channel open for async response
+  }
+
+  if (message.action === "breakCompleted") {
+    postWebhook().then((result) => sendResponse(result));
+    return true;
+  }
+
+  if (message.action === "testWebhook") {
+    postWebhook().then((result) => sendResponse(result));
+    return true;
   }
 });

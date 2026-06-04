@@ -76,12 +76,14 @@
     <div class="card">
       <span class="card-label">Remind me every</span>
       <div class="interval-control">
-        <div class="interval-track">
+        <div class="interval-track" style="--cols: 6">
           <div class="interval-indicator" id="intervalIndicator"></div>
           <button class="interval-btn" data-minutes="15">15m</button>
           <button class="interval-btn" data-minutes="30">30m<span class="rec-tag">Recommended</span></button>
           <button class="interval-btn" data-minutes="45">45m</button>
           <button class="interval-btn" data-minutes="60">1hr</button>
+          <button class="interval-btn" data-minutes="90">90m</button>
+          <button class="interval-btn" data-minutes="120">2hr</button>
         </div>
       </div>
     </div>
@@ -100,9 +102,42 @@
       </div>
     </div>
 
+    <div class="card toggle-card">
+      <div class="toggle-info">
+        <span class="card-label">Notify before opening</span>
+        <span class="card-sublabel">A pop-up + chime first, so it reaches you in any app</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="notifyToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="card toggle-card">
+      <div class="toggle-info">
+        <span class="card-label">Chime</span>
+        <span class="card-sublabel">A soft singing bowl when it's time to move</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="soundToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
     <button class="cta-btn" id="stretchNow">
       <span>Stretch Now</span>
     </button>
+
+    <div class="card" id="webhookSection">
+      <span class="card-label">Stretch together</span>
+      <span class="card-sublabel">Post to a Discord or Slack channel when you finish a break — keep your people moving too.</span>
+      <input type="text" id="webhookName" class="text-input" placeholder="Your name (e.g. Anna)" autocomplete="off">
+      <input type="url" id="webhookUrl" class="text-input" placeholder="Discord or Slack webhook URL" autocomplete="off" spellcheck="false">
+      <div class="webhook-actions">
+        <button class="ghost-btn" id="testWebhook">Send test message</button>
+        <span class="webhook-status" id="webhookStatus"></span>
+      </div>
+    </div>
 
     <div class="card" id="historySection">
       <span class="card-label">Today's Stretches</span>

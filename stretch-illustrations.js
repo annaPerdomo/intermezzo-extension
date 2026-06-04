@@ -3,6 +3,55 @@
 
 const STRETCH_SVGS = {
 
+"20-20-20 Eye Break": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- eye outline -->
+  <path d="M 40 100 Q 100 55 160 100 Q 100 145 40 100 Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="100" cy="100" r="20" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="100" cy="100" r="8" fill="white"/>
+  <!-- gaze lines pointing far into the distance -->
+  <line x1="150" y1="70" x2="180" y2="52" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="156" y1="100" x2="188" y2="100" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="150" y1="130" x2="180" y2="148" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+</svg>`,
+
+"Eye Palming": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- head -->
+  <circle cx="100" cy="95" r="55" fill="none" stroke="white" stroke-width="3"/>
+  <!-- two cupped palms over the eyes -->
+  <path d="M 55 90 Q 80 70 95 92 Q 80 108 60 105 Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M 145 90 Q 120 70 105 92 Q 120 108 140 105 Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  <!-- gentle closed smile -->
+  <path d="M 85 125 Q 100 134 115 125" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+"Near-Far Focus Shifts": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- eye -->
+  <path d="M 30 80 Q 70 48 110 80 Q 70 112 30 80 Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="70" cy="80" r="13" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="70" cy="80" r="5" fill="white"/>
+  <!-- near thumb -->
+  <line x1="120" y1="70" x2="120" y2="110" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <text x="120" y="135" fill="#ffd700" font-size="12" text-anchor="middle" font-family="sans-serif">near</text>
+  <!-- far point -->
+  <circle cx="172" cy="80" r="6" fill="none" stroke="white" stroke-width="2.5"/>
+  <text x="172" y="135" fill="#ffd700" font-size="12" text-anchor="middle" font-family="sans-serif">far</text>
+  <!-- shifting arrow -->
+  <path d="M 132 80 L 158 80" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="156,75 166,80 156,85" fill="#ffd700"/>
+</svg>`,
+
+"Slow Eye Circles": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- eye outline -->
+  <path d="M 40 100 Q 100 60 160 100 Q 100 140 40 100 Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  <!-- circular path the pupil travels -->
+  <circle cx="100" cy="100" r="26" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="4 5"/>
+  <!-- pupil at top of the circle -->
+  <circle cx="100" cy="76" r="9" fill="white"/>
+  <!-- direction arrow -->
+  <path d="M 122 88 Q 128 100 122 112" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="118,108 124,116 126,106" fill="#ffd700"/>
+</svg>`,
+
 "Neck Rolls": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- torso -->
   <line x1="100" y1="95" x2="100" y2="155" stroke="white" stroke-width="3" stroke-linecap="round"/>

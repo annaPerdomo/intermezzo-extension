@@ -9,7 +9,14 @@ const nextReminderEl = document.getElementById("nextReminder");
 const sessionTimeEl = document.getElementById("sessionTime");
 const sessionPhraseEl = document.getElementById("sessionPhrase");
 
-const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3 };
+const notifyToggle = document.getElementById("notifyToggle");
+const soundToggle = document.getElementById("soundToggle");
+const webhookNameEl = document.getElementById("webhookName");
+const webhookUrlEl = document.getElementById("webhookUrl");
+const testWebhookBtn = document.getElementById("testWebhook");
+const webhookStatusEl = document.getElementById("webhookStatus");
+
+const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3, 90: 4, 120: 5 };
 // 0 = "Mix" (random 2–3), sits in the last slot of the track
 const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
 
@@ -32,18 +39,79 @@ const ENCOURAGING_PHRASES = [
 ];
 
 // Load saved settings
-chrome.storage.local.get(["enabled", "intervalMinutes", "exerciseCount", "streak"], (data) => {
-  const enabled = data.enabled !== false;
-  const interval = data.intervalMinutes || 30;
-  // Default to 1 — a single exercise is the easiest to actually do.
-  const count = data.exerciseCount ?? 1;
-  const streak = data.streak || 0;
+chrome.storage.local.get(
+  ["enabled", "intervalMinutes", "exerciseCount", "streak",
+   "reminderStyle", "soundEnabled", "webhookUrl", "webhookName"],
+  (data) => {
+    const enabled = data.enabled !== false;
+    const interval = data.intervalMinutes || 30;
+    // Default to 1 — a single exercise is the easiest to actually do.
+    const count = data.exerciseCount ?? 1;
+    const streak = data.streak || 0;
 
-  enabledToggle.checked = enabled;
-  highlightInterval(interval);
-  highlightCount(count);
-  updateStreakDisplay(streak);
+    enabledToggle.checked = enabled;
+    // "notify" is the default delivery style (works in any app); "auto" opens
+    // the break tab straight away.
+    notifyToggle.checked = (data.reminderStyle ?? "notify") !== "auto";
+    soundToggle.checked = data.soundEnabled !== false;
+    webhookNameEl.value = data.webhookName || "";
+    webhookUrlEl.value = data.webhookUrl || "";
+
+    highlightInterval(interval);
+    highlightCount(count);
+    updateStreakDisplay(streak);
+  }
+);
+
+// Delivery: notify-first vs open-automatically
+notifyToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ reminderStyle: notifyToggle.checked ? "notify" : "auto" });
 });
+
+// Chime on/off
+soundToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ soundEnabled: soundToggle.checked });
+});
+
+// Accountability webhook — persist as the user types (debounced lightly)
+let webhookSaveTimer = null;
+function saveWebhookFields() {
+  clearTimeout(webhookSaveTimer);
+  webhookSaveTimer = setTimeout(() => {
+    chrome.storage.local.set({
+      webhookUrl: webhookUrlEl.value.trim(),
+      webhookName: webhookNameEl.value.trim()
+    });
+  }, 300);
+}
+webhookNameEl.addEventListener("input", saveWebhookFields);
+webhookUrlEl.addEventListener("input", saveWebhookFields);
+
+testWebhookBtn.addEventListener("click", async () => {
+  const url = webhookUrlEl.value.trim();
+  if (!url) {
+    setWebhookStatus("Paste a webhook URL first.", "err");
+    return;
+  }
+  // Make sure the latest values are saved before the background posts.
+  await chrome.storage.local.set({ webhookUrl: url, webhookName: webhookNameEl.value.trim() });
+
+  testWebhookBtn.disabled = true;
+  setWebhookStatus("Sending…", "");
+  try {
+    const result = await chrome.runtime.sendMessage({ action: "testWebhook" });
+    if (result && result.ok) setWebhookStatus("Sent! Check your channel.", "ok");
+    else setWebhookStatus("Couldn't send — check the URL.", "err");
+  } catch {
+    setWebhookStatus("Couldn't send — check the URL.", "err");
+  }
+  testWebhookBtn.disabled = false;
+});
+
+function setWebhookStatus(text, kind) {
+  webhookStatusEl.textContent = text;
+  webhookStatusEl.className = "webhook-status" + (kind ? " " + kind : "");
+}
 
 // Toggle reminders
 enabledToggle.addEventListener("change", () => {
