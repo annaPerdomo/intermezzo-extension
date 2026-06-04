@@ -17,7 +17,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      min-height: 100vh;
+      height: 100vh;
       font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       color: var(--olive);
       background: linear-gradient(135deg, #F7F3E8 0%, #E6EDDF 35%, #D0DFC4 65%, #E8D8CB 100%);
@@ -25,9 +25,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 56px 20px;
+      padding: clamp(20px, 4vh, 56px) 20px;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     /* Ambient glow blobs — moss & warm stone */
@@ -114,7 +114,7 @@
     /* === Header === */
     .page-title {
       font-family: 'Cormorant', Georgia, serif;
-      font-size: 60px;
+      font-size: clamp(38px, 5.4vh, 60px);
       font-weight: 300;
       color: var(--olive);
       line-height: 1.1;
@@ -128,7 +128,7 @@
       color: var(--sage);
       font-weight: 400;
       letter-spacing: 0.3px;
-      margin-top: 14px;
+      margin-top: clamp(8px, 1.4vh, 14px);
       text-align: center;
       animation: fadeIn 0.6s ease-out 0.08s both;
     }
@@ -138,7 +138,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      margin: 38px auto;
+      margin: clamp(16px, 3.4vh, 38px) auto;
       animation: fadeIn 0.6s ease-out 0.12s both;
     }
 
@@ -155,7 +155,7 @@
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--moss);
-      margin-bottom: 34px;
+      margin-bottom: clamp(14px, 3.2vh, 34px);
       animation: fadeIn 0.5s ease-out 0.14s both;
     }
 
@@ -214,7 +214,7 @@
       flex: 1;
       min-width: 0;
       max-width: 950px;
-      min-height: 380px;
+      min-height: clamp(290px, 42vh, 380px);
       display: grid;
       grid-template-columns: 6fr 4fr;
       border-radius: 16px;
@@ -276,7 +276,7 @@
     .illustration-wrap svg {
       width: 100%;
       height: auto;
-      max-height: 260px;
+      max-height: clamp(150px, 26vh, 260px);
     }
 
     /* Restyle SVG line-art — olive-brown strokes, moss accents */
@@ -348,7 +348,7 @@
 
     /* === Right column — text + timer === */
     .card-content {
-      padding: 40px 38px;
+      padding: clamp(24px, 4vh, 40px) 38px;
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -477,7 +477,7 @@
       display: flex;
       gap: 10px;
       justify-content: center;
-      margin-top: 34px;
+      margin-top: clamp(16px, 3.2vh, 34px);
       animation: fadeIn 0.5s ease-out 0.25s both;
     }
 
@@ -487,6 +487,7 @@
       border-radius: 50%;
       background: var(--stone);
       transition: all 0.35s ease;
+      flex-shrink: 0;
     }
 
     .progress-dot.active {
@@ -502,7 +503,7 @@
       display: flex;
       gap: 16px;
       justify-content: center;
-      margin-top: 20px;
+      margin-top: clamp(14px, 2.4vh, 20px);
       animation: fadeIn 0.5s ease-out 0.3s both;
     }
 
@@ -780,7 +781,7 @@
 
     /* === Responsive === */
     @media (max-width: 760px) {
-      body { padding: 24px 20px; }
+      body { padding: 24px 20px; height: auto; min-height: 100vh; overflow-y: auto; }
       .container { width: 100%; }
       .exercise-panel { grid-template-columns: 1fr; min-height: auto; }
       .card-media { min-height: 220px; }
@@ -788,6 +789,11 @@
       .card-timer { align-self: stretch; justify-content: flex-end; }
       .nav-arrow { display: none; }
       .progress-label { margin-bottom: 28px; }
+    }
+
+    /* Too short to fit everything — let it scroll rather than clip */
+    @media (max-height: 620px) {
+      body { height: auto; min-height: 100vh; overflow-y: auto; }
     }
 
     /* Respect reduced-motion — hold the background still */
