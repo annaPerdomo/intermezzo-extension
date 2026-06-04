@@ -68,13 +68,17 @@
       overflow: hidden;
     }
 
+    /* Two stacked gradients that crossfade and drift in opposite directions —
+       the palette gently deepens on the inhale and eases back on the exhale. */
     .bg-base {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       background: linear-gradient(135deg, #F7F3E8 0%, #E6EDDF 35%, #D0DFC4 65%, #E8D8CB 100%);
-      will-change: filter;
+      background-size: 165% 165%;
+      background-position: 30% 50%;
+      will-change: background-position;
     }
 
     .breath-layer {
@@ -82,21 +86,24 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(circle at 50% 46%, rgba(255,251,242,0.55) 0%, rgba(232,237,223,0) 55%);
-      opacity: 0.55;
-      will-change: transform, opacity;
+      /* Deeper, warmer variant of the base palette, faded in at the breath peak. */
+      background: linear-gradient(125deg, #EFEAD6 0%, #C9DEB6 38%, #AFCB98 68%, #ECCFB6 100%);
+      background-size: 165% 165%;
+      background-position: 70% 50%;
+      opacity: 0;
+      will-change: background-position, opacity;
     }
 
     .breath-on .bg-base { animation: breatheBase var(--breath) ease-in-out infinite; }
     .breath-on .breath-layer { animation: breatheLayer var(--breath) ease-in-out infinite; }
 
     @keyframes breatheBase {
-      0%, 100% { filter: brightness(0.975) saturate(1); }
-      50%      { filter: brightness(1.045) saturate(1.04); }
+      0%, 100% { background-position: 28% 50%; }
+      50%      { background-position: 72% 50%; }
     }
     @keyframes breatheLayer {
-      0%, 100% { transform: scale(1);    opacity: 0.4; }
-      50%      { transform: scale(1.14); opacity: 0.9; }
+      0%, 100% { background-position: 72% 50%; opacity: 0; }
+      50%      { background-position: 28% 50%; opacity: 0.75; }
     }
 
     /* === LAYOUT === */
