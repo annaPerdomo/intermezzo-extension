@@ -378,10 +378,16 @@ async function pickStretches() {
   const history = await getDailyHistory();
   const totalDone = Object.keys(history).filter(k => k !== "_date").length;
 
-  // Every 3rd break, always include Walk & Hydrate if not done recently
-  const includeWalk = totalDone > 0 && totalDone % 3 === 0 && (history["Walk & Hydrate"] || 0) < 3;
+  // How many exercises to show this break.
+  // exerciseCount: 1/2/3 = fixed count, 0 = "Mix" (random 2–3). Default 1 —
+  // a single exercise is the lowest barrier to actually doing it.
+  const { exerciseCount = 1 } = await chrome.storage.local.get("exerciseCount");
+  const count = exerciseCount === 0 ? (Math.random() < 0.4 ? 2 : 3) : exerciseCount;
 
-  const count = Math.random() < 0.4 ? 2 : 3;
+  // Every 3rd break, always include Walk & Hydrate if not done recently —
+  // but only when there's room for more than one exercise this break.
+  const includeWalk = count > 1 && totalDone > 0 && totalDone % 3 === 0 && (history["Walk & Hydrate"] || 0) < 3;
+
   const picked = [];
   const areasInSession = new Set();
 
@@ -559,7 +565,7 @@ chrome.idle.onStateChanged.addListener(async (newState) => {
 // Set up alarm on install or update
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
-    enabled: true, intervalMinutes: 30, streak: 0,
+    enabled: true, intervalMinutes: 30, exerciseCount: 1, streak: 0,
     activeStartTime: Date.now(), accumulatedInactiveMs: 0, inactiveTimerDate: todayKey()
   });
   setupAlarm();

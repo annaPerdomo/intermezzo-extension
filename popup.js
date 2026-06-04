@@ -1,13 +1,17 @@
 const enabledToggle = document.getElementById("enabledToggle");
-const intervalBtns = document.querySelectorAll(".interval-btn");
+const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn)");
+const countBtns = document.querySelectorAll(".count-btn");
 const stretchNowBtn = document.getElementById("stretchNow");
 const streakEl = document.getElementById("streak");
 const indicator = document.getElementById("intervalIndicator");
+const countIndicator = document.getElementById("countIndicator");
 const nextReminderEl = document.getElementById("nextReminder");
 const sessionTimeEl = document.getElementById("sessionTime");
 const sessionPhraseEl = document.getElementById("sessionPhrase");
 
 const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3 };
+// 0 = "Mix" (random 2–3), sits in the last slot of the track
+const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
 
 const ENCOURAGING_PHRASES = [
   "A quick stretch does wonders for focus.",
@@ -28,13 +32,16 @@ const ENCOURAGING_PHRASES = [
 ];
 
 // Load saved settings
-chrome.storage.local.get(["enabled", "intervalMinutes", "streak"], (data) => {
+chrome.storage.local.get(["enabled", "intervalMinutes", "exerciseCount", "streak"], (data) => {
   const enabled = data.enabled !== false;
   const interval = data.intervalMinutes || 30;
+  // Default to 1 — a single exercise is the easiest to actually do.
+  const count = data.exerciseCount ?? 1;
   const streak = data.streak || 0;
 
   enabledToggle.checked = enabled;
   highlightInterval(interval);
+  highlightCount(count);
   updateStreakDisplay(streak);
 });
 
@@ -49,6 +56,15 @@ intervalBtns.forEach((btn) => {
     const minutes = parseInt(btn.dataset.minutes, 10);
     chrome.storage.local.set({ intervalMinutes: minutes });
     highlightInterval(minutes);
+  });
+});
+
+// Exercises-per-break buttons
+countBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const count = parseInt(btn.dataset.count, 10);
+    chrome.storage.local.set({ exerciseCount: count });
+    highlightCount(count);
   });
 });
 
@@ -70,6 +86,14 @@ function highlightInterval(minutes) {
   });
   const index = INTERVAL_INDEX[minutes] ?? 1;
   indicator.style.transform = `translateX(${index * 100}%)`;
+}
+
+function highlightCount(count) {
+  countBtns.forEach((btn) => {
+    btn.classList.toggle("active", parseInt(btn.dataset.count, 10) === count);
+  });
+  const index = COUNT_INDEX[count] ?? 0;
+  countIndicator.style.transform = `translateX(${index * 100}%)`;
 }
 
 function updateStreakDisplay(streak) {

@@ -251,6 +251,13 @@ function buildInfoHTML(stretch) {
 }
 
 function updateProgressDots() {
+  // A single exercise needs no counter or dots — keep it calm and uncluttered.
+  if (stretches.length <= 1) {
+    progressLabel.textContent = "Just one gentle stretch";
+    exerciseProgress.innerHTML = "";
+    return;
+  }
+
   progressLabel.textContent = `Exercise ${currentIndex + 1} of ${stretches.length}`;
 
   let html = "";
@@ -263,6 +270,11 @@ function updateProgressDots() {
 }
 
 function updateArrows() {
+  // With a single exercise there's nowhere to navigate — hide the arrows entirely.
+  const single = stretches.length <= 1;
+  prevBtn.style.display = single ? "none" : "";
+  nextBtn.style.display = single ? "none" : "";
+
   prevBtn.disabled = currentIndex === 0 || state === "RUNNING";
   nextBtn.disabled = currentIndex >= stretches.length - 1 || state === "RUNNING";
 }
