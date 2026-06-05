@@ -40,17 +40,29 @@
         <div class="card-media" id="cardMedia"></div>
         <div class="card-content">
           <div class="card-info" id="stretchInfo"></div>
-          <div class="card-timer">
-            <div class="phase-label" id="phaseLabel"></div>
-            <div class="timer-ring-container">
-              <svg class="timer-ring" viewBox="0 0 180 180">
-                <circle class="timer-ring-bg" cx="90" cy="90" r="84" />
-                <circle class="timer-ring-glow" cx="90" cy="90" r="84" id="timerGlow" />
-                <circle class="timer-ring-progress" cx="90" cy="90" r="84" id="timerRing" />
-              </svg>
-              <div class="timer-center">
-                <div class="timer-display" id="timer">0:30</div>
+
+          <!-- Timer lives inside the card: ring on the left, Reroll + Start on
+               the right. Each exercise is started right here in the overlay. -->
+          <div class="timer-area">
+            <div class="timer-meta">
+              <div class="phase-label" id="phaseLabel"></div>
+              <div class="timer-ring-container">
+                <svg class="timer-ring" viewBox="0 0 180 180">
+                  <circle class="timer-ring-bg" cx="90" cy="90" r="84" />
+                  <circle class="timer-ring-glow" cx="90" cy="90" r="84" id="timerGlow" />
+                  <circle class="timer-ring-progress" cx="90" cy="90" r="84" id="timerRing" />
+                </svg>
+                <div class="timer-center">
+                  <div class="timer-display" id="timer">0:30</div>
+                </div>
               </div>
+            </div>
+            <div class="timer-buttons">
+              <button class="btn-reroll" id="rerollBtn" title="Swap this stretch for a different one" aria-label="Reroll this stretch">
+                <span class="reroll-glyph">&#x21BB;</span>
+                Reroll
+              </button>
+              <button class="timer-start-btn" id="startBtn">Start</button>
             </div>
           </div>
         </div>

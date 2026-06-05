@@ -179,7 +179,7 @@
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--moss);
-      margin-bottom: clamp(14px, 3.2vh, 34px);
+      margin-bottom: clamp(10px, 2.2vh, 26px);
       animation: fadeIn 0.5s ease-out 0.14s both;
     }
 
@@ -238,14 +238,17 @@
       flex: 1;
       min-width: 0;
       max-width: 950px;
-      min-height: clamp(290px, 42vh, 380px);
+      /* A lower minimum lets the card hug its content: the timer divider sits a
+         consistent distance below the text instead of floating far below short
+         instructions. Long instructions simply grow the card naturally. */
+      min-height: clamp(200px, 30vh, 280px);
       display: grid;
       grid-template-columns: 6fr 4fr;
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.65);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 4px 24px rgba(58, 74, 53, 0.06);
+      box-shadow: 0 4px 24px rgba(46, 54, 80, 0.06);
       overflow: hidden;
       transition: box-shadow 0.3s ease;
     }
@@ -387,12 +390,14 @@
       display: block;
     }
 
-    .video-container iframe {
+    .video-container iframe,
+    .card-media > iframe {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       border: none;
+      z-index: 2;
     }
 
     .video-play-overlay {
@@ -435,7 +440,7 @@
 
     /* === Right column — text + timer === */
     .card-content {
-      padding: clamp(24px, 4vh, 40px) 38px;
+      padding: clamp(20px, 3vh, 36px) 38px;
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -464,20 +469,107 @@
 
     .stretch-description {
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
+      /* Scales down a touch on shorter viewports so even the longest
+         instructions always fit without a scrollbar. */
+      font-size: clamp(13.5px, 1.55vh, 15px);
       font-weight: 400;
-      line-height: 1.7;
+      line-height: 1.6;
       color: var(--sage);
     }
 
-    /* Timer — bottom right */
-    .card-timer {
-      margin-top: auto;
-      align-self: flex-end;
+    /* Timer footer — ring (with its phase label) on the left, the Reroll and
+       Start controls on the right. The break is started right here in the card. */
+    .timer-area {
+      /* A consistent gap above the divider — never crammed against a long
+         description, never floating far below a short one. */
+      margin-top: clamp(18px, 3.5vh, 34px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: clamp(16px, 2.6vh, 24px);
+      border-top: 1px solid rgba(138, 147, 178, 0.25);
+    }
+
+    .timer-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .timer-buttons {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding-top: 14px;
+      gap: 12px;
+    }
+
+    /* Start / Pause / Resume — the per-exercise control inside the card */
+    .timer-start-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--forest);
+      color: var(--cream);
+      border: none;
+      border-radius: 50px;
+      height: 36px;
+      padding: 0 26px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 14px rgba(46, 54, 80, 0.20);
+    }
+
+    .timer-start-btn:hover {
+      background: var(--forest-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(46, 54, 80, 0.26);
+    }
+
+    .timer-start-btn:active { transform: translateY(0) scale(0.97); }
+
+    /* Reroll — swap this stretch for a different one, sits beside Start */
+    .btn-reroll {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 36px;
+      padding: 0 18px 0 14px;
+      border-radius: 50px;
+      border: 1px solid var(--soft-line);
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--sage);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .btn-reroll:hover {
+      background: #fff;
+      color: var(--forest);
+      border-color: var(--moss);
+    }
+
+    .btn-reroll:disabled { opacity: 0.4; cursor: default; }
+
+    .btn-reroll .reroll-glyph {
+      font-size: 16px;
+      line-height: 1;
+      display: inline-block;
+      color: var(--moss);
+      transition: transform 0.25s ease;
+    }
+
+    .btn-reroll:hover .reroll-glyph { transform: rotate(-90deg); }
+    .btn-reroll.spin .reroll-glyph { animation: rerollSpin 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    @keyframes rerollSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
 
     .phase-label {
@@ -487,6 +579,8 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: var(--moss);
+      margin-bottom: 10px;
+      white-space: nowrap;
       display: none;
     }
 
@@ -564,7 +658,7 @@
       display: flex;
       gap: 10px;
       justify-content: center;
-      margin-top: clamp(16px, 3.2vh, 34px);
+      margin-top: clamp(12px, 2.2vh, 28px);
       animation: fadeIn 0.5s ease-out 0.25s both;
     }
 
@@ -575,6 +669,7 @@
       background: var(--stone);
       transition: all 0.35s ease;
       flex-shrink: 0;
+      cursor: pointer;
     }
 
     .progress-dot.active {
@@ -590,7 +685,7 @@
       display: flex;
       gap: 16px;
       justify-content: center;
-      margin-top: clamp(14px, 2.4vh, 20px);
+      margin-top: clamp(10px, 1.8vh, 18px);
       animation: fadeIn 0.5s ease-out 0.3s both;
     }
 
@@ -1079,7 +1174,7 @@
       .exercise-panel { grid-template-columns: 1fr; min-height: auto; }
       .card-media { min-height: 220px; }
       .card-content { padding: 24px; }
-      .card-timer { align-self: stretch; justify-content: flex-end; }
+      .timer-area { gap: 16px; }
       .nav-arrow { display: none; }
       .progress-label { margin-bottom: 28px; }
     }

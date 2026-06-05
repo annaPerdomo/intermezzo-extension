@@ -934,6 +934,44 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "rerollStretch") {
+    // "Reroll" from the overlay — swap the current stretch for a different one
+    // that isn't already in the break. Scored like a normal pick (so it favors
+    // fresh body areas and stretches not done much today), but it doesn't touch
+    // the daily count — it's the same break, just a different exercise.
+    (async () => {
+      const exclude = Array.isArray(message.exclude) ? message.exclude : [];
+      const candidates = STRETCHES.filter((s) => !exclude.includes(s.name));
+      if (candidates.length === 0) {
+        sendResponse({ ok: false });
+        return;
+      }
+
+      const history = await getDailyHistory();
+      const areasInSession = new Set(
+        STRETCHES.filter((s) => exclude.includes(s.name)).map((s) => s.area)
+      );
+
+      const scored = candidates.map((s) => ({
+        stretch: s,
+        score: scoreStretch(s, history, areasInSession),
+      }));
+      const totalScore = scored.reduce((sum, s) => sum + s.score, 0);
+      let rand = Math.random() * totalScore;
+      let chosen = scored[0];
+      for (const entry of scored) {
+        rand -= entry.score;
+        if (rand <= 0) {
+          chosen = entry;
+          break;
+        }
+      }
+
+      sendResponse({ ok: true, stretch: chosen.stretch });
+    })();
+    return true;
+  }
+
   if (message.action === "testWebhook") {
     postWebhook().then((result) => sendResponse(result));
     return true;

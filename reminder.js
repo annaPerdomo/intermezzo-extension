@@ -122,9 +122,11 @@ const phaseLabel = document.getElementById("phaseLabel");
 const exerciseProgress = document.getElementById("exerciseProgress");
 const progressLabel = document.getElementById("progressLabel");
 const startBtn = document.getElementById("startBtn");
+const doneBtn = document.getElementById("doneBtn");
 const skipBtn = document.getElementById("skipBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
+const rerollBtn = document.getElementById("rerollBtn");
 const activeScreen = document.getElementById("activeScreen");
 const doneScreen = document.getElementById("doneScreen");
 const doneMessage = document.getElementById("doneMessage");
@@ -274,7 +276,10 @@ let currentPhase = 0;
 let totalPhaseSeconds = 0;
 let remainingSeconds = 0;
 let timerInterval = null;
-let state = "READY"; // READY, RUNNING, EXERCISE_DONE
+let state = "READY"; // READY, RUNNING, PAUSED, COMPLETE
+// Which exercises have been carried all the way through — drives the dots so a
+// finished exercise still reads as "done" even though we no longer auto-advance.
+const completed = new Set();
 
 // ---------------------------------------------------------------------------
 // Duration & phase parsing
@@ -425,7 +430,7 @@ function updateProgressDots() {
   let html = "";
   for (let i = 0; i < stretches.length; i++) {
     const cls =
-      i === currentIndex ? "active" : i < currentIndex ? "done" : "";
+      i === currentIndex ? "active" : completed.has(i) ? "done" : "";
     html += `<div class="progress-dot ${cls}"></div>`;
   }
   exerciseProgress.innerHTML = html;
@@ -437,8 +442,8 @@ function updateArrows() {
   prevBtn.style.display = single ? "none" : "";
   nextBtn.style.display = single ? "none" : "";
 
-  prevBtn.disabled = currentIndex === 0 || state === "RUNNING";
-  nextBtn.disabled = currentIndex >= stretches.length - 1 || state === "RUNNING";
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.disabled = currentIndex >= stretches.length - 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -446,11 +451,21 @@ function updateArrows() {
 // ---------------------------------------------------------------------------
 
 function showExercise(index) {
+  // Leaving an exercise always stops its timer — navigation resets the clock.
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
   currentIndex = index;
   const stretch = stretches[index];
+  const isMind = stretch.type === "mind";
   phases = parsePhases(stretch);
   currentPhase = 0;
   state = "READY";
+
+  // Mind moments get a softer treatment (calmer panel, gentler copy).
+  exercisePanel.classList.toggle("mind-card", isMind);
 
   updateProgressDots();
   updateArrows();
@@ -463,12 +478,28 @@ function showExercise(index) {
   // Render left column (media)
   cardMedia.innerHTML = buildMediaHTML(stretch);
 
-  // Open video in new tab
+  // Play the demo video inline, right here in the card — no new tab. Clicking
+  // the thumbnail swaps in a privacy-friendly YouTube embed that autoplays.
   const videoEl = cardMedia.querySelector(".video-container");
   if (videoEl) {
     videoEl.addEventListener("click", () => {
       const vid = videoEl.dataset.videoId;
-      window.open(`https://www.youtube.com/watch?v=${vid}`, "_blank");
+      const iframe = document.createElement("iframe");
+      // Embedding YouTube directly fails here: this page runs from a
+      // chrome-extension:// origin, and Chrome strips the Referer header for
+      // requests from extension pages. YouTube's player needs that referer to
+      // identify the embedding site and aborts with "Error 153" without it.
+      // So we iframe our own page on https://intermezzo.care instead, which
+      // sends a valid referer and iframes YouTube in turn — the demo plays
+      // inline in the card rather than erroring out or opening a new tab.
+      iframe.src = `https://intermezzo.care/embed?v=${encodeURIComponent(vid)}&autoplay=1`;
+      iframe.title = `${stretch.name} demonstration`;
+      iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.allowFullscreen = true;
+      cardMedia.innerHTML = "";
+      cardMedia.appendChild(iframe);
     });
   }
 
@@ -478,11 +509,14 @@ function showExercise(index) {
   // Set up timer for first phase
   setupPhase(0);
 
-  // Reset button
-  startBtn.textContent = "Begin";
+  // Reset the in-card Start control to a fresh, ready state.
+  startBtn.textContent = "Start";
+  startBtn.hidden = false;
   startBtn.disabled = false;
-  startBtn.style.opacity = "1";
-  startBtn.style.cursor = "pointer";
+
+  // Reroll is offered for body stretches only — mind moments aren't swapped.
+  rerollBtn.style.display = isMind ? "none" : "inline-flex";
+  rerollBtn.disabled = false;
 }
 
 function setupPhase(phaseIndex) {
@@ -527,12 +561,15 @@ function updateTimerDisplay() {
 
 function startRunning() {
   state = "RUNNING";
-  startBtn.textContent = "Stretching\u2026";
-  startBtn.disabled = true;
-  startBtn.style.opacity = "0.5";
-  startBtn.style.cursor = "default";
+  startBtn.textContent = "Pause";
+  startBtn.hidden = false;
+  startBtn.disabled = false;
+  rerollBtn.disabled = true; // no swapping mid-stretch
   updateArrows();
+  tick();
+}
 
+function tick() {
   timerInterval = setInterval(() => {
     remainingSeconds--;
     updateTimerDisplay();
@@ -543,6 +580,17 @@ function startRunning() {
       onPhaseComplete();
     }
   }, 1000);
+}
+
+// Pause the in-card timer, leaving it ready to resume from where it stopped.
+function pauseRunning() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  state = "PAUSED";
+  startBtn.textContent = "Resume";
+  rerollBtn.disabled = false;
 }
 
 function onPhaseComplete() {
@@ -582,23 +630,19 @@ function onPhaseComplete() {
 }
 
 function onExerciseComplete() {
-  if (currentIndex < stretches.length - 1) {
-    // Brief pause then advance to next exercise
-    phaseLabel.textContent = "\u2713 Complete";
-    phaseLabel.style.display = "block";
-    state = "EXERCISE_DONE";
-    updateArrows();
+  // The exercise is finished. We no longer auto-advance \u2014 the person moves on
+  // with the arrows/dots when they're ready, or taps "Done" to wrap the break.
+  state = "COMPLETE";
+  completed.add(currentIndex);
 
-    setTimeout(() => {
-      exercisePanel.classList.add("card-exit");
-      setTimeout(() => {
-        exercisePanel.classList.remove("card-exit");
-        showExercise(currentIndex + 1);
-      }, 250);
-    }, 800);
-  } else {
-    showDone();
-  }
+  phaseLabel.textContent = "\u2713 Complete";
+  phaseLabel.style.display = "block";
+
+  startBtn.hidden = true; // nothing left to start for this one
+  rerollBtn.disabled = false;
+
+  updateProgressDots();
+  updateArrows();
 }
 
 // ---------------------------------------------------------------------------
@@ -728,10 +772,23 @@ function launchConfetti() {
 // Event handlers
 // ---------------------------------------------------------------------------
 
+// The in-card Start control: Start → Pause → Resume, all within the overlay.
 startBtn.addEventListener("click", () => {
-  if (state === "READY") {
+  if (state === "READY" || state === "PAUSED") {
     startRunning();
+  } else if (state === "RUNNING") {
+    pauseRunning();
   }
+});
+
+// "Done" closes out the whole break and shows the pride moment, whenever the
+// person feels finished — they don't have to run every timer to the end.
+doneBtn.addEventListener("click", () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  showDone();
 });
 
 skipBtn.addEventListener("click", () => {
@@ -743,24 +800,55 @@ skipBtn.addEventListener("click", () => {
   window.close();
 });
 
-prevBtn.addEventListener("click", () => {
-  if (currentIndex > 0 && state !== "RUNNING") {
-    exercisePanel.classList.add("card-exit");
-    setTimeout(() => {
-      exercisePanel.classList.remove("card-exit");
-      showExercise(currentIndex - 1);
-    }, 250);
-  }
+// Navigate freely — moving away just resets that exercise's timer.
+function goToExercise(index) {
+  if (index < 0 || index >= stretches.length || index === currentIndex) return;
+  exercisePanel.classList.add("card-exit");
+  setTimeout(() => {
+    exercisePanel.classList.remove("card-exit");
+    showExercise(index);
+  }, 250);
+}
+
+prevBtn.addEventListener("click", () => goToExercise(currentIndex - 1));
+nextBtn.addEventListener("click", () => goToExercise(currentIndex + 1));
+
+// Dots are a shortcut straight to any exercise in the set.
+exerciseProgress.addEventListener("click", (e) => {
+  const dot = e.target.closest(".progress-dot");
+  if (!dot) return;
+  const dots = Array.from(exerciseProgress.children);
+  goToExercise(dots.indexOf(dot));
 });
 
-nextBtn.addEventListener("click", () => {
-  if (currentIndex < stretches.length - 1 && state !== "RUNNING") {
-    exercisePanel.classList.add("card-exit");
-    setTimeout(() => {
-      exercisePanel.classList.remove("card-exit");
-      showExercise(currentIndex + 1);
-    }, 250);
-  }
+// Reroll — swap the current stretch for a different one not already in the
+// break. Background scores a replacement; the card re-renders fresh and ready.
+rerollBtn.addEventListener("click", () => {
+  if (state === "RUNNING") return;
+  const stretch = stretches[currentIndex];
+  if (!stretch || stretch.type === "mind") return;
+
+  rerollBtn.disabled = true;
+  rerollBtn.classList.add("spin");
+  setTimeout(() => rerollBtn.classList.remove("spin"), 600);
+
+  const exclude = stretches.map((s) => s.name);
+  chrome.runtime
+    .sendMessage({ action: "rerollStretch", exclude })
+    .then((res) => {
+      if (res && res.ok && res.stretch) {
+        stretches[currentIndex] = res.stretch;
+        completed.delete(currentIndex); // a fresh stretch starts uncompleted
+        chrome.storage.local.set({ currentStretches: stretches });
+        showExercise(currentIndex);
+      } else {
+        // No alternative available — just settle the button back.
+        rerollBtn.disabled = false;
+      }
+    })
+    .catch(() => {
+      rerollBtn.disabled = false;
+    });
 });
 
 closeBtn.addEventListener("click", () => {
@@ -773,6 +861,7 @@ newStretchBtn.addEventListener("click", () => {
 
   const restart = (fresh) => {
     if (fresh && fresh.length) stretches = fresh;
+    completed.clear();
     doneScreen.style.display = "none";
     activeScreen.classList.remove("fade-out");
     activeScreen.style.display = "";
