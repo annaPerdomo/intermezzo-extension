@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intermezzo — Breathe, stretch, be kind to your body and mind</title>
+<meta name="description" content="A Chrome extension with gentle reminders to stretch, fix your posture, and check in with your mind — reaching you in any app, throughout your workday." />
+<link rel="canonical" href="https://intermezzo.care/" />
+<meta name="theme-color" content="#E7E4EC" />
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Intermezzo" />
+<meta property="og:url" content="https://intermezzo.care/" />
+<meta property="og:title" content="Intermezzo — A gentle interlude for body & mind" />
+<meta property="og:description" content="A Chrome extension with gentle reminders to stretch, fix your posture, and check in with your mind — reaching you in any app, throughout your workday." />
+<meta property="og:image" content="https://intermezzo.care/icon128.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Intermezzo — A gentle interlude for body & mind" />
+<meta name="twitter:description" content="Gentle reminders to stretch, fix your posture, and check in with your mind — throughout your workday." />
+<meta name="twitter:image" content="https://intermezzo.care/icon128.png" />
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="bg-base"></div>
+<div class="bg-breath"></div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <img class="mark" src="icon128.png" alt="Intermezzo" width="34" height="34" />
+      <span class="name">Intermezzo</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#features">Features</a>
+      <a href="#body">Body</a>
+      <a href="#mind">Mind</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#install">
+      <svg class="chrome-dot" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.6H21M8.7 13.9L4.2 6.2M15.3 13.9L10.8 21.6" stroke="currentColor" stroke-width="1.4" opacity="0.5"/></svg>
+      Coming soon
+    </a>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="soon-badge"><span class="soon-dot"></span>Coming soon to the Chrome Web Store</span>
+      <h1>A gentle interlude<br />for body <em>&amp; mind.</em></h1>
+      <p class="lead">Intermezzo nudges you to take short, guided wellness breaks through your workday — stretch, fix your posture, rest your eyes, and check in with your mind. A brief movement between the heavier movements of your day, because you weren't built to sit hunched at a screen for eight hours straight.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#install">
+          <svg class="chrome-dot" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.6H21M8.7 13.9L4.2 6.2M15.3 13.9L10.8 21.6" stroke="currentColor" stroke-width="1.4" opacity="0.5"/></svg>
+          Coming soon to Chrome
+        </a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>Free</b> &amp; open source</span>
+        <span class="dot"></span>
+        <span><b>35+</b> guided breaks</span>
+        <span class="dot"></span>
+        <span>Reaches you in <b>any app</b></span>
+      </div>
+    </div>
+
+    <!-- Popup mock -->
+    <div class="popup-stage">
+      <div class="popup-glow"></div>
+      <div class="popup-card">
+        <div class="pp-head">
+          <div class="pp-brand">
+            <svg class="pmark" viewBox="51 -878 256 755" fill="none" aria-hidden="true"><path d="M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" fill="#2E3650"/></svg>
+            <span class="pp-title">Intermezzo</span>
+          </div>
+          <div class="pp-tag">Breathe. Stretch. Be kind to your body.</div>
+          <div class="pp-stats">
+            <span class="pp-pill">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l11-2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="16" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+              4 interludes
+            </span>
+            <span class="pp-pill">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Next in 12:00
+            </span>
+          </div>
+        </div>
+
+        <div class="pp-divider">
+          <span class="l"></span>
+          <svg width="22" viewBox="50 -1000 658 352" fill="none" aria-hidden="true"><path d="M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" fill="#8A93B2"/></svg>
+          <span class="l"></span>
+        </div>
+
+        <div class="pp-body">
+          <div class="pp-card">
+            <div class="pp-row">
+              <div>
+                <div class="pp-label">Reminders</div>
+                <div class="pp-sub">Gentle stretch &amp; wellness breaks</div>
+              </div>
+              <div class="pp-switch"></div>
+            </div>
+            <div class="pp-interval" style="grid-template-columns:repeat(6,1fr);">
+              <span>15m</span>
+              <span class="on">30m</span>
+              <span>45m</span>
+              <span>1hr</span>
+              <span>90m</span>
+              <span>2hr</span>
+            </div>
+          </div>
+          <div class="pp-card">
+            <div class="pp-label">Mind moments</div>
+            <div class="pp-sub">A little something for the mind, too</div>
+            <div class="pp-interval three" style="margin-top:10px;">
+              <span>Off</span>
+              <span class="on">Gentle</span>
+              <span>More</span>
+            </div>
+          </div>
+          <div class="pp-cta">Stretch Now</div>
+        </div>
+        <div class="pp-foot">Take care of yourself. You deserve it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · fermata -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="24" height="13" viewBox="50 -1000 658 352" fill="none" aria-hidden="true"><path d="M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== WHY / DEFINITION ===== -->
+<section class="band" id="why">
+  <div class="wrap">
+    <div class="why-grid">
+      <div class="why-card glass reveal">
+        <div class="def-word">intermezzo <span class="def-pos">noun · music</span></div>
+        <div class="def-pron">/ˌɪn·tərˈmet·soʊ/</div>
+        <div class="def-rule"></div>
+        <p class="def-text">A short, light <span class="accent">interlude</span> played between the main movements of a larger work — a graceful pause that lets everyone breathe before the next movement begins.</p>
+        <div class="why-glyphs">
+          <svg width="150" viewBox="51 -566 484 587" fill="none" aria-hidden="true"><path d="M499-113L499-451L230-486L230-157Q230-100 196.50-62Q163-24 107-24L107-24Q51-24 51-72L51-72Q51-96 64-117.50Q77-139 99-152.50Q121-166 147-166L147-166Q172-166 194-157L194-157L194-566L535-521L535-113Q535-72 517-41.50Q499-11 471.50 5Q444 21 413 21L413 21Q357 21 357-28L357-28Q357-68 387-95Q417-122 455-122L455-122Q478-122 499-113L499-113Z" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="why-body reveal">
+        <div class="eyebrow" style="margin-bottom:16px;">Why Intermezzo</div>
+        <h2 class="section-title" style="margin-bottom:22px;">Your body keeps the rhythm you forget to.</h2>
+        <p>We've all been there — hours deep in a working session, shoulders creeping up to your ears, back slowly curling into a question mark. By the time you notice, your neck is stiff and your hips are screaming.</p>
+        <p>An intermezzo is that pause for your workday: a brief, deliberate rest that lets you set down the tension and come back a little lighter. Each break is tailored to the time of day and what your body actually needs — not just another reminder to "take a break."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · quarter note -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="9" height="28" viewBox="51 -563 180 549" fill="none" aria-hidden="true"><path d="M194-148L194-563L231-563L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== FEATURES ===== -->
+<section class="band" id="features">
+  <div class="wrap">
+    <div class="band-head reveal">
+      <span class="eyebrow">What it does</span>
+      <h2 class="section-title">Small, considered, and quietly intelligent.</h2>
+      <p class="section-lead">Every part of Intermezzo is built to feel like a moment apart — not another notification demanding your attention.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat glass reveal">
+        <div class="feat-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>Smart break selection</h3>
+        <p>Picks 1–3 exercises per break, mixing different body areas and adapting to the time of day. Mornings ease you in; afternoons target the tension that's built up.</p>
+      </div>
+      <div class="feat glass reveal">
+        <div class="feat-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>35+ stretches &amp; eye-rest</h3>
+        <p>Neck, shoulders, spine, chest, hips, wrists — plus eye-rest breaks for screen strain. Each one written like a friend is coaching you through it.</p>
+      </div>
+      <div class="feat glass reveal">
+        <div class="feat-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M12 9v4l2.6 1.6M9.5 3h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Built-in timer</h3>
+        <p>Per-side countdowns for stretches that need them. Just hit Start and follow along — no counting, no guessing how long to hold.</p>
+      </div>
+      <div class="feat glass reveal">
+        <div class="feat-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.5l4.5 2.5L10 14.5V9.5Z" fill="currentColor"/></svg>
+        </div>
+        <h3>Videos &amp; illustrations</h3>
+        <p>Every stretch has an illustrated stick-figure guide, and many link to short video tutorials so you can see exactly what to do.</p>
+      </div>
+      <div class="feat glass reveal">
+        <div class="feat-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 8c1.3-1.6 3-2.7 4.8-3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.55"/></svg>
+        </div>
+        <h3>Snooze &amp; flexible intervals</h3>
+        <p>Mid-task? Snooze and pick it back up when you're ready. Set reminders anywhere from every 15 minutes to every 2 hours — you're in control.</p>
+      </div>
+      <div class="feat glass warm reveal">
+        <div class="feat-ico">
+          <svg width="18" height="22" viewBox="51 -566 484 587" fill="none" aria-hidden="true"><path d="M499-113L499-451L230-486L230-157Q230-100 196.50-62Q163-24 107-24L107-24Q51-24 51-72L51-72Q51-96 64-117.50Q77-139 99-152.50Q121-166 147-166L147-166Q172-166 194-157L194-157L194-566L535-521L535-113Q535-72 517-41.50Q499-11 471.50 5Q444 21 413 21L413 21Q357 21 357-28L357-28Q357-68 387-95Q417-122 455-122L455-122Q478-122 499-113L499-113Z" fill="currentColor"/></svg>
+        </div>
+        <h3>A warm cello chime</h3>
+        <p>A soft, bowed cello swell marks the start and finish — not a notification beep. The whole break is designed to feel like a moment apart.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · eighth note -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="16" height="28" viewBox="51 -563 308 549" fill="none" aria-hidden="true"><path d="M194-148L194-563L231-563L231-514L305-420Q333-386 346-346Q359-306 359-265L359-265Q359-191 313-133L313-133L290-133Q318-193 318-254L318-254Q318-293 305-323.50Q292-354 272-373Q252-392 231-395L231-395L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== FOR YOUR BODY ===== -->
+<section class="band" id="body">
+  <div class="wrap">
+    <div class="band-head reveal">
+      <span class="eyebrow">For your body</span>
+      <h2 class="section-title">Wherever the day settles, there's a release for it.</h2>
+      <p class="section-lead">Over thirty-five exercises spanning every place tension likes to hide — including eye-rest breaks for screen strain — each paired with a simple illustration and a friendly, step-by-step coach.</p>
+    </div>
+
+    <div class="areas reveal">
+      <div class="area-chip">
+        <span class="ac-name">Neck</span>
+        <span class="ac-n">Releases &amp; rolls</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Shoulders</span>
+        <span class="ac-n">Openers &amp; rolls</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Spine</span>
+        <span class="ac-n">Twists &amp; curls</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Chest</span>
+        <span class="ac-n">Expanders</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Hips</span>
+        <span class="ac-n">Openers</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Wrists</span>
+        <span class="ac-n">&amp; forearms</span>
+      </div>
+      <div class="area-chip">
+        <span class="ac-name">Eyes</span>
+        <span class="ac-n">Screen-strain rest</span>
+      </div>
+    </div>
+
+    <div class="stretch-aside">
+      <div class="saside glass reveal">
+        <span class="big">35+</span>
+        <span class="lbl">Distinct exercises, each with its own illustration and coaching cues.</span>
+      </div>
+      <div class="saside glass terra reveal">
+        <span class="big">1–3</span>
+        <span class="lbl">Hand-picked per break, balanced across body areas and time of day.</span>
+      </div>
+      <div class="saside glass reveal">
+        <span class="big">~90s</span>
+        <span class="lbl">A typical interlude — long enough to reset, short enough to never disrupt.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · quarter note -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="9" height="28" viewBox="51 -563 180 549" fill="none" aria-hidden="true"><path d="M194-148L194-563L231-563L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== FOR YOUR MIND ===== -->
+<section class="band" id="mind">
+  <div class="wrap">
+    <div class="split">
+      <div class="split-body reveal">
+        <span class="eyebrow" style="color:var(--terra-deep);">For your mind</span>
+        <h2 class="section-title">Care for your mind, not just your body.</h2>
+        <p>Some breaks end with an optional, on-device check-in for your mind — short exercises grounded in <b>cognitive behavioral therapy (CBT)</b>, one of the most evidence-backed approaches for easing a busy, anxious mind.</p>
+        <ul class="split-list">
+          <li><span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>A grounding prompt</b> to settle a racing mind</span></li>
+          <li><span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>A moment to savor</b> something good from your day</span></li>
+          <li><span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>A one-tap mood note</b> — kept entirely on your device</span></li>
+        </ul>
+      </div>
+      <div class="split-visual reveal">
+        <div class="mind-examples">
+          <div class="mind-card">
+            <div class="mind-eyebrow"><span class="dotm"></span> Savor · three good things</div>
+            <p class="mind-prompt">"One thing — however tiny — that went okay since your last break?"</p>
+            <div class="savoring-row">
+              <input class="savoring-input" type="text" placeholder="Even something small counts…" readonly />
+              <button class="mind-keep" type="button">Keep it</button>
+            </div>
+          </div>
+          <div class="mind-card ground">
+            <div class="mind-eyebrow moss"><span class="dotm"></span> Ground · settle a racing mind</div>
+            <p class="mind-prompt">"Notice three things you can see, two you can hear, and one you can feel right now."</p>
+            <div class="ground-senses">
+              <span class="sense">See · 3</span>
+              <span class="sense">Hear · 2</span>
+              <span class="sense">Feel · 1</span>
+            </div>
+          </div>
+        </div>
+        <p class="mind-foot">Both drawn from CBT · private &amp; on-device — never leaves your browser</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · beamed eighths -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="21" height="26" viewBox="51 -566 484 587" fill="none" aria-hidden="true"><path d="M499-113L499-451L230-486L230-157Q230-100 196.50-62Q163-24 107-24L107-24Q51-24 51-72L51-72Q51-96 64-117.50Q77-139 99-152.50Q121-166 147-166L147-166Q172-166 194-157L194-157L194-566L535-521L535-113Q535-72 517-41.50Q499-11 471.50 5Q444 21 413 21L413 21Q357 21 357-28L357-28Q357-68 387-95Q417-122 455-122L455-122Q478-122 499-113L499-113Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== REACHES YOU ANYWHERE ===== -->
+<section class="band">
+  <div class="wrap">
+    <div class="split reverse">
+      <div class="split-visual reveal">
+        <div class="notif">
+          <div class="notif-ico">
+            <img src="icon128.png" alt="Intermezzo" width="38" height="38" style="border-radius:8px;display:block;" />
+          </div>
+          <div class="notif-body">
+            <div class="notif-title">Time for an interlude</div>
+            <div class="notif-sub">A 90-second break — your shoulders will thank you.</div>
+            <div class="notif-actions">
+              <span class="notif-btn">Stretch now</span>
+              <span class="notif-btn ghost">Snooze 5 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="split-body reveal">
+        <span class="eyebrow">Reaches you in any app</span>
+        <h2 class="section-title">You don't spend all day in the browser.</h2>
+        <p>A system notification and a soft chime fire even when Chrome is in the background — so the nudge lands whether you're in Figma, a fullscreen video, or a game, not just when you're looking at a tab.</p>
+        <p>Click it to open your guided break, or hit <b>Snooze</b> and Intermezzo will find you again in a few minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · quarter rest -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="10" height="30" viewBox="51 -878 256 755" fill="none" aria-hidden="true"><path d="M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== STRETCH TOGETHER ===== -->
+<section class="band">
+  <div class="wrap">
+    <div class="split">
+      <div class="split-body reveal">
+        <span class="eyebrow">Stretch together</span>
+        <h2 class="section-title">Keep your people moving too.</h2>
+        <p>Paste a Discord or Slack webhook and your name, and Intermezzo posts a friendly note to that channel each time you finish a break — a gentle nudge for your friend group or team to move too.</p>
+        <p>Leave it blank and nothing is ever sent. Calm, private, and account-free — your data stays on your device.</p>
+      </div>
+      <div class="split-visual reveal">
+        <div class="chat-card">
+          <div class="chat-head"><span>#stretch-club</span><span class="ch-line"></span></div>
+          <div class="chat-msg">
+            <div class="chat-av a">A</div>
+            <div class="chat-body">
+              <div class="chat-name">Anna <span>just now</span></div>
+              <div class="chat-text">finished an interlude — neck &amp; shoulders. Your turn <span class="glyph-inline">♩</span></div>
+            </div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-av b">D</div>
+            <div class="chat-body">
+              <div class="chat-name">Daniel <span>2 min ago</span></div>
+              <div class="chat-text">on it — hips today, I've been sitting since 9 😮‍💨</div>
+            </div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-av c">M</div>
+            <div class="chat-body">
+              <div class="chat-name">Mira <span>5 min ago</span></div>
+              <div class="chat-text">3 in a row today, streak's alive ✨</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · beamed sixteenths -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="21" height="26" viewBox="51 -566 484 587" fill="none" aria-hidden="true"><path d="M535-566L535-158Q535-116 517-86Q499-56 471.50-40Q444-24 413-24L413-24Q357-24 357-73L357-73Q357-113 387-140Q417-167 455-167L455-167Q478-167 499-158L499-158L499-377L230-304L230-112Q230-55 196.50-17Q163 21 107 21L107 21Q79 21 65 8Q51-5 51-27L51-27Q51-51 64-72.50Q77-94 99-107.50Q121-121 147-121L147-121Q172-121 194-112L194-112L194-479L535-566ZM230-422L230-366L499-439L499-496L230-422Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="band-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2 class="section-title">Four small steps to a lighter day.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-line"></div>
+        <h3>Set your rhythm</h3>
+        <p>Toggle reminders on, choose your interval (15 min to 2 hours), how many exercises per break, and whether to include mind moments.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-line"></div>
+        <h3>A nudge that finds you</h3>
+        <p>A gentle notification and soft chime reach you in any app. Click to begin — or snooze and pick it up in a few minutes.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-line"></div>
+        <h3>Follow along</h3>
+        <p>Each exercise has a description, a visual guide, and a countdown. Navigate, skip, or flow through the whole routine.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-line"></div>
+        <h3>Come back lighter</h3>
+        <p>A little confetti, a kind word, and your streak ticks up — and, if you like, a note to your channel so friends move too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · fermata -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="24" height="13" viewBox="50 -1000 658 352" fill="none" aria-hidden="true"><path d="M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== INTERLUDE PREVIEW (faithful to the in-app break screen) ===== -->
+<section class="band" id="interlude">
+  <div class="wrap">
+    <div class="interlude reveal">
+      <div class="interlude-head">
+        <div class="title">Time for an Interlude</div>
+        <div class="sub">A short, guided break — your body earned it.</div>
+        <div class="fermata-rule" style="margin-top:22px;">
+          <span class="line" style="width:90px;"></span>
+          <span class="glyph" style="display:inline-flex;">
+            <svg width="22" height="12" viewBox="50 -1000 658 352" fill="none" aria-hidden="true"><path d="M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" fill="#8A93B2"/></svg>
+          </span>
+          <span class="line" style="width:90px;"></span>
+        </div>
+        <div class="ex-label">Exercise 1 of 3</div>
+      </div>
+
+      <div class="ex-panel">
+        <div class="ex-media">
+          <div class="ex-play">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M4 2L14 8L4 14V2Z" fill="currentColor"/></svg>
+          </div>
+          <span class="ex-vlabel">Exercise video</span>
+        </div>
+        <div class="ex-content">
+          <div class="ex-name">Neck &amp; Shoulder Release</div>
+          <div class="ex-underline"></div>
+          <p class="ex-desc">Drop your right ear toward your right shoulder. Let the weight of your head do the work — no pulling. You'll feel a gentle stretch along the left side of your neck. Breathe slowly and let the tension melt with each exhale.</p>
+          <div class="ex-timer">
+            <div class="ex-ring">
+              <svg viewBox="0 0 180 180" aria-hidden="true">
+                <circle class="rbg" cx="90" cy="90" r="84"></circle>
+                <circle class="rprog" cx="90" cy="90" r="84"></circle>
+              </svg>
+              <div class="ex-time">0:18</div>
+            </div>
+            <div class="ex-btns">
+              <button class="ex-reroll" type="button"><span class="rg">↻</span> Reroll</button>
+              <button class="ex-start" type="button">Start</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-dots">
+        <span class="d active"></span>
+        <span class="d"></span>
+        <span class="d"></span>
+      </div>
+
+      <div class="fermata-rule" style="margin-top:26px;">
+        <span class="line" style="width:90px;"></span>
+        <span class="glyph" style="display:inline-flex;">
+          <svg width="15" height="26" viewBox="51 -563 308 549" fill="none" aria-hidden="true"><path d="M194-148L194-563L231-563L231-514L305-420Q333-386 346-346Q359-306 359-265L359-265Q359-191 313-133L313-133L290-133Q318-193 318-254L318-254Q318-293 305-323.50Q292-354 272-373Q252-392 231-395L231-395L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" fill="#8A93B2"/></svg>
+        </span>
+        <span class="line" style="width:90px;"></span>
+      </div>
+
+      <div class="ex-actions">
+        <button class="ex-skip" type="button">Skip for now</button>
+        <button class="ex-done" type="button">Done ✓</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- divider · beamed eighths -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="21" height="26" viewBox="51 -566 484 587" fill="none" aria-hidden="true"><path d="M499-113L499-451L230-486L230-157Q230-100 196.50-62Q163-24 107-24L107-24Q51-24 51-72L51-72Q51-96 64-117.50Q77-139 99-152.50Q121-166 147-166L147-166Q172-166 194-157L194-157L194-566L535-521L535-113Q535-72 517-41.50Q499-11 471.50 5Q444 21 413 21L413 21Q357 21 357-28L357-28Q357-68 387-95Q417-122 455-122L455-122Q478-122 499-113L499-113Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== FAQ ===== -->
+<section class="band" id="faq">
+  <div class="wrap">
+    <div class="band-head reveal">
+      <span class="eyebrow">Questions</span>
+      <h2 class="section-title">In case you were wondering.</h2>
+    </div>
+    <div class="faq-grid">
+      <details class="faq reveal">
+        <summary>How do I install it? <span class="q-mark">+</span></summary>
+        <div class="faq-body">Intermezzo is a Chrome extension that's launching on the Chrome Web Store soon. Once it's live, you'll add it to Chrome and a quarter-rest icon appears in your toolbar — click it to set your interval, choose your break, or start one right away. No account, no setup.</div>
+      </details>
+      <details class="faq reveal">
+        <summary>Will it interrupt me when I'm focused? <span class="q-mark">+</span></summary>
+        <div class="faq-body">Only as often as you ask it to. You choose the interval — anywhere from 15 minutes to 2 hours — and you can toggle reminders off entirely. When a nudge does arrive, it's a soft notification you can act on or snooze for a few minutes; never a jarring pop-up.</div>
+      </details>
+      <details class="faq reveal">
+        <summary>What are mind moments? <span class="q-mark">+</span></summary>
+        <div class="faq-body">An optional check-in for your mind that some breaks end with — a gentle grounding prompt, a moment to savor something good, or a one-tap mood note. You can set them to Off, Gentle, or More. Everything stays on your device.</div>
+      </details>
+      <details class="faq reveal">
+        <summary>Does it work when I'm not in Chrome? <span class="q-mark">+</span></summary>
+        <div class="faq-body">Yes. Intermezzo sends a system notification and a chime that reach you even when Chrome is in the background — so a break finds you whether you're in another app, a fullscreen video, or a game.</div>
+      </details>
+      <details class="faq reveal">
+        <summary>Can my team or friends do this together? <span class="q-mark">+</span></summary>
+        <div class="faq-body">If you'd like. Paste a Discord or Slack webhook URL and your name in the popup, and Intermezzo posts a friendly note to that channel when you finish a break. Leave it blank and nothing is ever sent — it's entirely opt-in.</div>
+      </details>
+      <details class="faq reveal">
+        <summary>Is it private? And is it free? <span class="q-mark">+</span></summary>
+        <div class="faq-body">Yes to both. Intermezzo is free and open source, with no account and no tracking. Your settings, streak, and mood notes stay on your device — the only thing ever sent anywhere is the optional stretch-together message, to the webhook you enter yourself.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- divider · fermata (hold before the close) -->
+<div class="wrap"><div class="fermata-rule">
+  <span class="line"></span>
+  <span class="glyph" style="display:inline-flex;"><svg width="24" height="13" viewBox="50 -1000 658 352" fill="none" aria-hidden="true"><path d="M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" fill="#8A93B2"/></svg></span>
+  <span class="line"></span>
+</div></div>
+
+<!-- ===== CLOSING CTA ===== -->
+<section class="closing" id="install">
+  <div class="wrap">
+    <div class="emblem reveal" style="display:flex;justify-content:center;">
+      <span class="glyph" style="display:inline-flex;">
+        <svg width="44" viewBox="51 -878 256 755" fill="none" aria-hidden="true"><path d="M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" fill="#4E5A86"/></svg>
+      </span>
+    </div>
+    <h2 class="reveal">Give your body — and mind —<br /><em>the rest they've been asking for.</em></h2>
+    <p class="reveal">Intermezzo is landing on the Chrome Web Store soon — a gentle interlude on its way into your day. It'll be free &amp; open source when it arrives.</p>
+    <div class="reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <span class="btn btn-primary is-soon" aria-disabled="true">
+        <svg class="chrome-dot" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.6H21M8.7 13.9L4.2 6.2M15.3 13.9L10.8 21.6" stroke="currentColor" stroke-width="1.4" opacity="0.5"/></svg>
+        Coming soon — free when it lands
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="#top">
+      <img class="mark" src="icon128.png" alt="Intermezzo" width="34" height="34" />
+      <span class="name">Intermezzo</span>
+    </a>
+    <span class="footer-note">Breathe. Stretch. Be kind to your body and mind.</span>
+    <nav class="footer-links">
+      <a href="#why">Why</a>
+      <a href="#body">Body</a>
+      <a href="#mind">Mind</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  // Nav background on scroll
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (Math.min(i % 4, 3) * 0.07) + 's';
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>
