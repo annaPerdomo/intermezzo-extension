@@ -260,7 +260,7 @@ function buildInfoHTML(stretch) {
 function updateProgressDots() {
   // A single exercise needs no counter or dots — keep it calm and uncluttered.
   if (stretches.length <= 1) {
-    progressLabel.textContent = "Just one gentle stretch";
+    progressLabel.textContent = "A gentle moment to move";
     exerciseProgress.innerHTML = "";
     return;
   }
