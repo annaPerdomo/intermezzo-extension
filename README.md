@@ -12,6 +12,15 @@
   A Chrome extension that gives you gentle reminders to take stretch breaks throughout your workday. Because your body wasn't built to sit in a chair for 8 hours straight.
 </p>
 
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Chrome_Extension-4285F4?style=flat&logo=googlechrome&logoColor=white" alt="Chrome Extension" />
+  <img src="https://img.shields.io/badge/Manifest_V3-FFC107?style=flat&logo=googlechrome&logoColor=black" alt="Manifest V3" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" alt="HTML5" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" alt="CSS3" />
+</p>
+
 ---
 
 ## Why MoveMore?
@@ -37,12 +46,12 @@ This extension isn't on the Chrome Web Store yet. To install it manually:
 
 1. Clone this repo
    ```
-   git clone https://github.com/annaPerdomo/movemore-extension.git
+   git clone https://github.com/annaPerdomo/intermezzo-extension.git
    ```
 2. Open `chrome://extensions` in Chrome
 3. Enable **Developer mode** (top right toggle)
 4. Click **Load unpacked**
-5. Select the `movemore-extension` folder
+5. Select the `intermezzo-extension` folder
 
 That's it. MoveMore will appear in your toolbar.
 
