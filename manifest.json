@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "MoveMore",
+  "name": "Intermezzo",
   "version": "1.0.0",
   "description": "Gentle reminders to take breaks, stretch, and fix your posture throughout the work day.",
   "permissions": ["alarms", "storage", "notifications", "idle"],

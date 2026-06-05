@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="icons/icon128.png" alt="MoveMore" width="80" />
+  <img src="icons/icon128.png" alt="Intermezzo" width="80" />
 </p>
 
-<h1 align="center">MoveMore</h1>
+<h1 align="center">Intermezzo</h1>
 
 <p align="center">
   <em>Breathe. Stretch. Be kind to your body.</em>
@@ -23,11 +23,11 @@
 
 ---
 
-## Why MoveMore?
+## Why Intermezzo?
 
 We've all been there — hours deep in a coding session, shoulders creeping up to your ears, back slowly curling into a question mark. By the time you notice, your neck is stiff and your hips are screaming.
 
-MoveMore nudges you at regular intervals with a short, guided stretch break. Each break is tailored to the time of day and what your body actually needs, not just a random reminder to "take a break."
+Intermezzo nudges you at regular intervals with a short, guided stretch break. Each break is tailored to the time of day and what your body actually needs, not just a random reminder to "take a break."
 
 ## What it does
 
@@ -53,7 +53,7 @@ This extension isn't on the Chrome Web Store yet. To install it manually:
 4. Click **Load unpacked**
 5. Select the `intermezzo-extension` folder
 
-That's it. MoveMore will appear in your toolbar.
+That's it. Intermezzo will appear in your toolbar.
 
 ## How it works
 
@@ -68,7 +68,7 @@ When a reminder fires, a new tab opens with your stretch break. Each exercise ha
 
 ## Design
 
-MoveMore uses a calm, earthy palette — sage greens, warm terracotta, soft creams — with frosted glass cards and gentle animations. It's designed to feel like a moment of peace, not another notification demanding your attention.
+Intermezzo uses a calm, earthy palette — sage greens, warm terracotta, soft creams — with frosted glass cards and gentle animations. It's designed to feel like a moment of peace, not another notification demanding your attention.
 
 ---
 
