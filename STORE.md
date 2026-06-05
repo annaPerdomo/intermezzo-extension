@@ -26,16 +26,23 @@ Upload `intermezzo.zip` in the Web Store Developer Dashboard → **Add new item*
 
 ## Store listing copy
 
-**Name:** Intermezzo — Stretch & Posture Breaks
+**Name:** Intermezzo — Stretch & Wellness Breaks
 
 **Summary (132 char max):**
-Gentle reminders to stretch, rest your eyes, and fix your posture — no matter
-which app you're in. Move more, ache less.
+Gentle reminders to stretch, fix your posture, and care for your mind — no
+matter which app you're in. Move more, ache less.
 
 **Description:**
-> Intermezzo nudges you to take short, guided movement breaks throughout your day.
+> In music, an *intermezzo* is a short interlude between the movements of a larger
+> work — a moment to breathe before the next one begins. This is that pause for your
+> workday.
+>
+> Intermezzo nudges you to take short, guided wellness breaks throughout your day.
 > Each break mixes 1–3 stretches chosen for the time of day and what your body
 > needs — neck, shoulders, hips, wrists, and eye-rest breaks for screen strain.
+> Some breaks end with an optional mind moment: a gentle grounding prompt, a moment
+> to savor something good, or a quick, private mood check-in — care for your mind,
+> not just your body.
 >
 > Because you don't spend your whole day in the browser, Intermezzo reaches you
 > with a system notification and a soft chime that work even when you're heads-
@@ -43,6 +50,7 @@ which app you're in. Move more, ache less.
 > up when you're ready.
 >
 > • Smart, time-of-day stretch selection from 35+ exercises
+> • Optional mind moments — grounding, savoring, and on-device mood check-ins
 > • System notifications + a calming chime that reach you in any app
 > • Snooze, adjustable intervals (15 min – 2 hr), and 1–3 exercises per break
 > • Guided timers with per-side countdowns, illustrations, and video demos
