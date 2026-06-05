@@ -371,6 +371,71 @@ const STRETCHES = [
 ];
 
 // ---------------------------------------------------------------------------
+// Mind moments — small, gentle practices for the mind, woven into a break.
+//
+// These are CBT-adjacent micro-practices, NOT therapy. They lean toward the
+// two things our bodies-and-minds most need mid-day: grounding (eases anxiety),
+// behavioral activation (eases the low, withdrawn pull of depression), and a
+// breath to settle. Each mirrors the STRETCHES shape so the break can render a
+// mind card with the exact same machinery (timer ring, panel, navigation).
+//
+// `description` doubles as the on-screen prompt and is plain enough that the
+// phase parser treats it as a single, untimed-feeling "linger here" phase.
+// ---------------------------------------------------------------------------
+const MIND_EXERCISES = [
+  {
+    name: "5-4-3-2-1 Grounding",
+    type: "mind",
+    mindType: "ground",
+    duration: "60 seconds",
+    description: "Look around and name, slowly: 5 things you can see, 4 you can hear, 3 you can feel, 2 you can smell, and 1 you can taste. No rush — let each one land before the next.",
+    focus: "Easing anxiety, back into the room",
+    cue: "Notice where you are",
+    priority: 1
+  },
+  {
+    name: "One Small Reach",
+    type: "mind",
+    mindType: "activate",
+    duration: "30 seconds",
+    description: "Pick one tiny, kind thing to do next — text someone you like a single sentence, refill your water, open a window, step outside for a breath. Just one. Small counts.",
+    focus: "One gentle action, against the pull to withdraw",
+    cue: "A small step forward",
+    priority: 1
+  },
+  {
+    name: "Three Slow Breaths",
+    type: "mind",
+    mindType: "breathe",
+    duration: "40 seconds",
+    description: "Breathe in slowly through your nose for a count of four, let it out gently for a count of six. Three rounds. Let your shoulders drop a little more each time.",
+    focus: "Settling the nervous system",
+    cue: "Soften, and breathe",
+    priority: 1
+  },
+  {
+    name: "Name the Feeling",
+    type: "mind",
+    mindType: "ground",
+    duration: "45 seconds",
+    description: "Quietly name what you're feeling right now — “this is anxiety,” “this is tiredness,” “this is fine.” You don't have to fix it. Just naming it loosens its grip a little.",
+    focus: "Meeting a feeling instead of fighting it",
+    cue: "However you feel is okay",
+    priority: 0
+  },
+  {
+    name: "A Kind Word to Yourself",
+    type: "mind",
+    mindType: "compassion",
+    duration: "40 seconds",
+    description: "Think of how you'd talk to a good friend having your exact day. Now offer yourself one sentence in that same gentle voice. You're allowed to be on your own side.",
+    focus: "Self-compassion in a hard moment",
+    cue: "Be gentle with yourself",
+    priority: 0
+  }
+];
+
+// ---------------------------------------------------------------------------
 // Smart stretch selection
 // ---------------------------------------------------------------------------
 
@@ -521,7 +586,43 @@ async function pickStretches() {
   // Remember this set so the next break can avoid repeating it
   await chrome.storage.local.set({ lastStretchNames: picked.map(s => s.name) });
 
+  // Optionally close the break with a small mind moment. Body stays the focus —
+  // the mind card lands last, as a soft place to settle before heading back.
+  const mind = await pickMindMoment();
+  if (mind) picked.push(mind);
+
   return picked;
+}
+
+// Pick at most one mind moment to tail the break, honoring the user's setting.
+// mindLevel: "off" | "gentle" (default) | "more". Mind cards are deliberately
+// kept out of stretchHistory and lastStretchNames — they're not stretches, and
+// they shouldn't influence body-stretch variety or the daily count.
+async function pickMindMoment() {
+  const { mindLevel = "gentle", lastMindName = null } =
+    await chrome.storage.local.get(["mindLevel", "lastMindName"]);
+
+  if (mindLevel === "off") return null;
+
+  const chance = mindLevel === "more" ? 0.85 : 0.45;
+  if (Math.random() > chance) return null;
+
+  // Avoid repeating the previous mind moment when there's another to offer.
+  let pool = MIND_EXERCISES.filter(m => m.name !== lastMindName);
+  if (pool.length === 0) pool = MIND_EXERCISES;
+
+  // Gentle weighting by priority so the core practices show a little more often.
+  const scored = pool.map(m => ({ m, score: 1 + m.priority * 1.2 }));
+  const total = scored.reduce((sum, s) => sum + s.score, 0);
+  let rand = Math.random() * total;
+  let chosen = scored[0].m;
+  for (const entry of scored) {
+    rand -= entry.score;
+    if (rand <= 0) { chosen = entry.m; break; }
+  }
+
+  await chrome.storage.local.set({ lastMindName: chosen.name });
+  return chosen;
 }
 
 // Set up the alarm (always resets — use for install, settings changes, and after reminders)

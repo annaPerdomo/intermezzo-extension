@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Intermezzo",
   "version": "1.1.0",
-  "description": "Gentle reminders to take breaks, stretch, and fix your posture throughout the work day.",
+  "description": "Gentle reminders to take breaks, stretch, fix your posture, and care for your mind throughout the work day.",
   "permissions": ["alarms", "storage", "notifications", "idle", "offscreen"],
   "host_permissions": [
     "https://discord.com/*",

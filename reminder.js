@@ -233,6 +233,12 @@ const MOTIVATIONAL_QUOTES = [
   "That was time well spent. Not productive. Just\u2026 well spent.",
   "A little gentleness in the middle of the day. You deserve that.",
   "You just did something really simple and really important at the same time.",
+  // Self-compassion — for the days that are heavier than they look.
+  "If a friend felt how you feel right now, you'd be gentle with them. Try giving yourself that too.",
+  "You're doing better than the hard days tell you. Showing up here is proof.",
+  "Whatever kind of day this is, you're allowed to be kind to yourself in it.",
+  "You don't have to earn rest. You just took some, and that's allowed.",
+  "Some days, getting through is the whole achievement. This counts.",
 ];
 
 const SUBTITLE_PHRASES = [
@@ -358,6 +364,17 @@ function parsePhases(stretch) {
 // ---------------------------------------------------------------------------
 
 function buildMediaHTML(stretch) {
+  // Mind moments don't get a stretch illustration — they get a soft, breathing
+  // fermata (the "hold this moment" mark) to rest your eyes on while you settle.
+  if (stretch.type === "mind") {
+    return `
+      <div class="mind-visual">
+        <span class="mind-orb"></span>
+        ${glyphSVG("fermata", 56, { cls: "mind-mark", color: "var(--moss)" })}
+      </div>
+    `;
+  }
+
   const videoId = getVideoId(stretch.name);
 
   if (videoId) {
@@ -377,6 +394,17 @@ function buildMediaHTML(stretch) {
 }
 
 function buildInfoHTML(stretch) {
+  // Mind moments lead with a soft cue and read as an invitation, not a drill.
+  if (stretch.type === "mind") {
+    const cue = stretch.cue ? `<span class="mind-eyebrow">${stretch.cue}</span>` : "";
+    return `
+      ${cue}
+      <h2 class="stretch-name">${stretch.name}</h2>
+      <hr class="stretch-divider">
+      <p class="stretch-description mind-prompt">${stretch.description}</p>
+    `;
+  }
+
   return `
     <h2 class="stretch-name">${stretch.name}</h2>
     <hr class="stretch-divider">
@@ -592,12 +620,14 @@ function showDone() {
     launchConfetti();
   }, 350);
 
-  // Stat chips \u2014 what you just did
-  const exCount = stretches.length;
+  // Stat chips \u2014 what you just did. Mind moments are part of the break but
+  // aren't "movement", so they don't count toward the exercise/minutes tallies.
+  const bodyStretches = stretches.filter((s) => s.type !== "mind");
+  const exCount = bodyStretches.length;
   statExercises.textContent = exCount;
   statExercisesLabel.textContent = exCount === 1 ? "Exercise" : "Exercises";
 
-  const totalSeconds = stretches.reduce((sum, s) => sum + parseDuration(s.duration), 0);
+  const totalSeconds = bodyStretches.reduce((sum, s) => sum + parseDuration(s.duration), 0);
   const mins = Math.max(1, Math.round(totalSeconds / 60));
   statMinutes.textContent = mins;
   statMinutesLabel.textContent = mins === 1 ? "Minute moved" : "Minutes moved";
@@ -606,10 +636,18 @@ function showDone() {
   doneMessage.textContent =
     MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 
+  // Respect "Mind moments: Off" — hide the whole check-in if the user opted out.
+  chrome.storage.local.get("mindLevel", (data) => {
+    const mindEl = document.getElementById("completionMind");
+    if (mindEl && (data.mindLevel || "gentle") === "off") {
+      mindEl.style.display = "none";
+    }
+  });
+
   chrome.storage.local.get("streak", (data) => {
     const streak = data.streak || 0;
     statBreaks.textContent = streak;
-    statBreaksLabel.textContent = streak === 1 ? "Break today" : "Breaks today";
+    statBreaksLabel.textContent = streak === 1 ? "Interlude today" : "Interludes today";
     motivationalEl.textContent =
       streak <= 1
         ? "Your first break today \u2014 a gentle place to begin."
@@ -752,6 +790,93 @@ newStretchBtn.addEventListener("click", () => {
     .then((res) => restart(res && res.stretches))
     .catch(() => restart(null)); // fall back to replaying the current set
 });
+
+// ---------------------------------------------------------------------------
+// Mind check-in — savoring + mood, on the done screen. Optional, on-device only.
+// ---------------------------------------------------------------------------
+
+const savoringInput = document.getElementById("savoringInput");
+const savoringSave = document.getElementById("savoringSave");
+const savoringConfirm = document.getElementById("savoringConfirm");
+const moodScale = document.getElementById("moodScale");
+const moodConfirm = document.getElementById("moodConfirm");
+const supportNote = document.getElementById("supportNote");
+const supportDismiss = document.getElementById("supportDismiss");
+
+function todayStamp() {
+  return new Date().toISOString().slice(0, 10); // "2026-06-04"
+}
+
+// Savoring — keep one good thing, only if the person actually wrote something.
+function saveSavoring() {
+  const text = savoringInput.value.trim();
+  if (!text) return;
+  chrome.storage.local.get("journal", (data) => {
+    const journal = Array.isArray(data.journal) ? data.journal : [];
+    journal.push({ date: todayStamp(), text });
+    // Keep it small — the last 100 notes is plenty for a private keepsake.
+    if (journal.length > 100) journal.splice(0, journal.length - 100);
+    chrome.storage.local.set({ journal }, () => {
+      savoringInput.disabled = true;
+      savoringSave.disabled = true;
+      savoringConfirm.hidden = false;
+    });
+  });
+}
+
+if (savoringSave) {
+  savoringSave.addEventListener("click", saveSavoring);
+  savoringInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") saveSavoring();
+  });
+}
+
+// Mood check-in — one tap. Stored locally; never sent anywhere.
+if (moodScale) {
+  moodScale.addEventListener("click", (e) => {
+    const btn = e.target.closest(".mood-dot");
+    if (!btn) return;
+    const mood = parseInt(btn.dataset.mood, 10);
+
+    // Visual selection
+    moodScale.querySelectorAll(".mood-dot").forEach((d) => {
+      d.classList.toggle("selected", d === btn);
+      d.disabled = true;
+    });
+    moodConfirm.hidden = false;
+
+    chrome.storage.local.get(["moodLog", "supportDismissedAt"], (data) => {
+      const log = Array.isArray(data.moodLog) ? data.moodLog : [];
+      log.push({ date: todayStamp(), mood });
+      if (log.length > 200) log.splice(0, log.length - 200);
+      chrome.storage.local.set({ moodLog: log });
+      maybeShowSupport(log, data.supportDismissedAt);
+    });
+  });
+}
+
+// The quiet safety net: if the three most recent check-ins are all the lowest
+// option, gently surface a path to real support — unless it was dismissed in
+// the last few days. Never blocks anything; always one tap to set aside.
+function maybeShowSupport(log, dismissedAt) {
+  if (log.length < 3) return;
+  const lastThree = log.slice(-3);
+  const allLowest = lastThree.every((e) => e.mood === 1);
+  if (!allLowest) return;
+
+  if (dismissedAt) {
+    const days = (Date.now() - new Date(dismissedAt).getTime()) / 86400000;
+    if (days < 3) return; // respect a recent "I'm okay for now"
+  }
+  supportNote.hidden = false;
+}
+
+if (supportDismiss) {
+  supportDismiss.addEventListener("click", () => {
+    chrome.storage.local.set({ supportDismissedAt: new Date().toISOString() });
+    supportNote.hidden = true;
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Init

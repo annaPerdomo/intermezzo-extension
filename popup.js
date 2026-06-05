@@ -1,6 +1,8 @@
 const enabledToggle = document.getElementById("enabledToggle");
-const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn)");
+const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn):not(.mind-btn)");
 const countBtns = document.querySelectorAll(".count-btn");
+const mindBtns = document.querySelectorAll(".mind-btn");
+const mindIndicator = document.getElementById("mindIndicator");
 const stretchNowBtn = document.getElementById("stretchNow");
 const streakEl = document.getElementById("streak");
 const indicator = document.getElementById("intervalIndicator");
@@ -19,6 +21,7 @@ const webhookStatusEl = document.getElementById("webhookStatus");
 const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3, 90: 4, 120: 5 };
 // 0 = "Mix" (random 2–3), sits in the last slot of the track
 const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
+const MIND_INDEX = { off: 0, gentle: 1, more: 2 };
 
 const ENCOURAGING_PHRASES = [
   "A quick stretch does wonders for focus.",
@@ -41,13 +44,14 @@ const ENCOURAGING_PHRASES = [
 // Load saved settings
 chrome.storage.local.get(
   ["enabled", "intervalMinutes", "exerciseCount", "streak",
-   "reminderStyle", "soundEnabled", "webhookUrl", "webhookName"],
+   "reminderStyle", "soundEnabled", "webhookUrl", "webhookName", "mindLevel"],
   (data) => {
     const enabled = data.enabled !== false;
     const interval = data.intervalMinutes || 30;
     // Default to 1 — a single exercise is the easiest to actually do.
     const count = data.exerciseCount ?? 1;
     const streak = data.streak || 0;
+    const mindLevel = data.mindLevel || "gentle";
 
     enabledToggle.checked = enabled;
     // "notify" is the default delivery style (works in any app); "auto" opens
@@ -59,6 +63,7 @@ chrome.storage.local.get(
 
     highlightInterval(interval);
     highlightCount(count);
+    highlightMind(mindLevel);
     updateStreakDisplay(streak);
   }
 );
@@ -136,6 +141,15 @@ countBtns.forEach((btn) => {
   });
 });
 
+// Mind-moments level
+mindBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const level = btn.dataset.mind;
+    chrome.storage.local.set({ mindLevel: level });
+    highlightMind(level);
+  });
+});
+
 // Stretch now
 stretchNowBtn.addEventListener("click", async () => {
   stretchNowBtn.disabled = true;
@@ -164,11 +178,19 @@ function highlightCount(count) {
   countIndicator.style.transform = `translateX(${index * 100}%)`;
 }
 
+function highlightMind(level) {
+  mindBtns.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.mind === level);
+  });
+  const index = MIND_INDEX[level] ?? 1;
+  mindIndicator.style.transform = `translateX(${index * 100}%)`;
+}
+
 function updateStreakDisplay(streak) {
   if (streak === 0) {
-    streakEl.textContent = "No stretches yet";
+    streakEl.textContent = "No interludes yet";
   } else {
-    streakEl.textContent = `${streak} stretch${streak === 1 ? "" : "es"} today`;
+    streakEl.textContent = `${streak} interlude${streak === 1 ? "" : "s"} today`;
   }
 }
 

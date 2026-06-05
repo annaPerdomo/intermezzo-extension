@@ -307,8 +307,71 @@
     .illustration-wrap svg [stroke="white"] { stroke: var(--olive); }
     .illustration-wrap svg [stroke="#ffd700"] { stroke: var(--moss); }
     .illustration-wrap svg [fill="#ffd700"] { fill: var(--moss); }
-    .illustration-wrap svg [fill="rgba(255,255,255,0.5)"] { fill: rgba(58,74,53,0.35); }
-    .illustration-wrap svg [stroke^="rgba(255,255,255"] { stroke: rgba(58,74,53,0.2); }
+    .illustration-wrap svg [fill="rgba(255,255,255,0.5)"] { fill: rgba(46,54,80,0.35); }
+    .illustration-wrap svg [stroke^="rgba(255,255,255"] { stroke: rgba(46,54,80,0.2); }
+
+    /* ---- Mind moments — a calmer, breathing variant of the card ---- */
+    .mind-visual {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    /* Soft halo that breathes in and out behind the fermata mark.
+       inset:0 + margin:auto centers it so the breathe transform stays free. */
+    .mind-orb {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: clamp(120px, 22vh, 200px);
+      height: clamp(120px, 22vh, 200px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138,147,178,0.28) 0%, rgba(192,138,134,0.12) 50%, transparent 72%);
+      animation: mindBreathe 9s ease-in-out infinite;
+    }
+
+    .mind-mark {
+      position: relative;
+      z-index: 1;
+      width: clamp(56px, 11vh, 88px);
+      height: auto;
+      animation: mindBreathe 9s ease-in-out infinite;
+    }
+
+    @keyframes mindBreathe {
+      0%, 100% { transform: scale(0.86); opacity: 0.75; }
+      50%      { transform: scale(1.08); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mind-orb, .mind-mark { animation: none; }
+    }
+
+    /* A gentle tint so a mind card feels distinct from a stretch */
+    .exercise-panel.mind-card .card-media::before {
+      background: radial-gradient(ellipse at 50% 45%, rgba(138,147,178,0.14) 0%, rgba(192,138,134,0.08) 50%, transparent 78%);
+    }
+
+    .mind-eyebrow {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--moss);
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .mind-prompt {
+      font-size: clamp(0.95rem, 1.7vh, 1.08rem);
+      line-height: 1.6;
+      color: var(--olive);
+    }
 
     /* Video — fills entire left column */
     .video-container {
@@ -706,6 +769,178 @@
       background: rgba(255,255,255,0.4);
       border-color: var(--moss);
       transform: translateY(-2px);
+    }
+
+    /* ---- Completion mind check-in (savoring + mood + support) ---- */
+    .completion-mind {
+      grid-column: 1 / -1;
+      margin-top: clamp(18px, 3.5vh, 36px);
+      padding-top: clamp(16px, 3vh, 26px);
+      border-top: 1px solid rgba(138,147,178,0.25);
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(22px, 4vw, 52px);
+      max-width: 780px;
+      animation: riseIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.72s both;
+    }
+
+    .mind-block {
+      flex: 1 1 280px;
+      min-width: 240px;
+    }
+
+    .mind-q {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(14px, 1.4vw, 16px);
+      color: var(--olive);
+      line-height: 1.5;
+      margin: 6px 0 14px;
+    }
+
+    /* Savoring */
+    .savoring-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .savoring-input {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--olive);
+      background: rgba(255,255,255,0.55);
+      border: 1.5px solid rgba(138,147,178,0.35);
+      border-radius: 12px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .savoring-input:focus {
+      border-color: var(--moss);
+      background: rgba(255,255,255,0.8);
+    }
+
+    .savoring-input:disabled {
+      opacity: 0.7;
+    }
+
+    .mind-mini-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      background: var(--forest);
+      color: var(--cream);
+      border: none;
+      border-radius: 12px;
+      padding: 11px 18px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .mind-mini-btn:hover { background: var(--forest-dark); transform: translateY(-1px); }
+    .mind-mini-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+    .savoring-confirm,
+    .mood-confirm {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--moss);
+      font-style: italic;
+    }
+
+    /* Mood scale */
+    .mood-scale {
+      display: flex;
+      gap: clamp(12px, 2vw, 20px);
+      align-items: center;
+    }
+
+    .mood-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid var(--moss);
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mood-dot:hover {
+      transform: scale(1.15);
+      background: rgba(138,147,178,0.3);
+    }
+
+    .mood-dot.selected {
+      background: var(--forest);
+      border-color: var(--forest);
+      box-shadow: 0 0 0 4px rgba(78,90,134,0.18);
+    }
+
+    .mood-dot:disabled { cursor: default; }
+    .mood-dot:disabled:not(.selected):hover { transform: none; background: rgba(255,255,255,0.5); }
+
+    .mood-ends {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      max-width: 200px;
+      font-size: 11.5px;
+      color: var(--sage);
+    }
+
+    /* Quiet safety net */
+    .support-note {
+      flex: 1 1 100%;
+      margin-top: 4px;
+      padding: 16px 20px;
+      background: rgba(192,138,134,0.1);
+      border: 1px solid rgba(192,138,134,0.3);
+      border-radius: 14px;
+    }
+
+    .support-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--olive);
+      margin: 0 0 12px;
+    }
+
+    .support-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .support-link {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--cream);
+      background: var(--terra);
+      border-radius: 50px;
+      padding: 10px 22px;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .support-link:hover { background: var(--terra-light); transform: translateY(-1px); }
+
+    .support-dismiss {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--sage);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     .completion-summary {
