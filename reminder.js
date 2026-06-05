@@ -122,6 +122,7 @@ const phaseLabel = document.getElementById("phaseLabel");
 const exerciseProgress = document.getElementById("exerciseProgress");
 const progressLabel = document.getElementById("progressLabel");
 const startBtn = document.getElementById("startBtn");
+const timerArea = document.querySelector(".timer-area");
 const doneBtn = document.getElementById("doneBtn");
 const skipBtn = document.getElementById("skipBtn");
 const prevBtn = document.getElementById("prevBtn");
@@ -380,25 +381,57 @@ function buildMediaHTML(stretch) {
     `;
   }
 
-  const videoId = getVideoId(stretch.name);
+  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>`;
+}
 
-  if (videoId) {
+function buildInfoHTML(stretch) {
+  // The check-in is an interactive mind card: a savoring note + mood scale,
+  // wired up after render by wireCheckInCard().
+  if (stretch.isCheckIn) {
+    const cue = stretch.cue ? `<span class="mind-eyebrow">${stretch.cue}</span>` : "";
     return `
-      <div class="video-container" data-video-id="${videoId}">
-        <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${stretch.name} demonstration">
-        <div class="video-play-overlay">
-          <div class="video-play-btn">
-            <svg viewBox="0 0 24 24" fill="#2E3650"><path d="M8 5v14l11-7z"/></svg>
-          </div>
+      ${cue}
+      <h2 class="stretch-name">${stretch.name}</h2>
+      <hr class="stretch-divider">
+      <div class="mind-block savoring" id="savoringBlock">
+        <p class="mind-q">One thing — however tiny — that went okay since your last break?</p>
+        <div class="savoring-row">
+          <input type="text" id="savoringInput" class="savoring-input"
+                 placeholder="Even something small counts…" autocomplete="off" maxlength="200">
+          <button class="mind-mini-btn" id="savoringSave">Keep it</button>
+        </div>
+        <span class="savoring-confirm" id="savoringConfirm" hidden>Kept — just for you.</span>
+      </div>
+      <div class="mind-block mood-checkin" id="moodBlock">
+        <p class="mind-q">And how are you feeling right now?</p>
+        <div class="mood-scale" id="moodScale" role="group" aria-label="How are you feeling?">
+          <button class="mood-dot" data-mood="1" aria-label="Having a really hard time"></button>
+          <button class="mood-dot" data-mood="2" aria-label="Low"></button>
+          <button class="mood-dot" data-mood="3" aria-label="Okay"></button>
+          <button class="mood-dot" data-mood="4" aria-label="Pretty good"></button>
+          <button class="mood-dot" data-mood="5" aria-label="Good"></button>
+        </div>
+        <div class="mood-ends">
+          <span>Having a hard time</span>
+          <span>Doing okay</span>
+        </div>
+        <span class="mood-confirm" id="moodConfirm" hidden>Thank you for checking in.</span>
+      </div>
+      <div class="support-note" id="supportNote" hidden>
+        <p class="support-text">
+          It looks like things have felt heavy for a little while. If it would help to
+          talk to a real person, support is there — and reaching out is a strong, kind
+          thing to do for yourself.
+        </p>
+        <div class="support-actions">
+          <a class="support-link" id="supportLink"
+             href="https://findahelpline.com" target="_blank" rel="noopener">Find someone to talk to</a>
+          <button class="support-dismiss" id="supportDismiss">I'm okay for now</button>
         </div>
       </div>
     `;
   }
 
-  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>`;
-}
-
-function buildInfoHTML(stretch) {
   // Mind moments lead with a soft cue and read as an invitation, not a drill.
   if (stretch.type === "mind") {
     const cue = stretch.cue ? `<span class="mind-eyebrow">${stretch.cue}</span>` : "";
@@ -446,6 +479,14 @@ function updateArrows() {
   nextBtn.disabled = currentIndex >= stretches.length - 1;
 }
 
+// The bottom primary button steps through the break: "Next" while there are more
+// exercises, "Finish" on the last one — so it never silently ends a multi-
+// exercise break from the middle.
+function updatePrimaryAction() {
+  const isLast = currentIndex >= stretches.length - 1;
+  doneBtn.innerHTML = isLast ? "Finish &#x2713;" : "Next &#x203a;";
+}
+
 // ---------------------------------------------------------------------------
 // Exercise flow
 // ---------------------------------------------------------------------------
@@ -469,6 +510,7 @@ function showExercise(index) {
 
   updateProgressDots();
   updateArrows();
+  updatePrimaryAction();
 
   // Animate panel
   exercisePanel.classList.remove("card-enter");
@@ -478,33 +520,21 @@ function showExercise(index) {
   // Render left column (media)
   cardMedia.innerHTML = buildMediaHTML(stretch);
 
-  // Play the demo video inline, right here in the card — no new tab. Clicking
-  // the thumbnail swaps in a privacy-friendly YouTube embed that autoplays.
-  const videoEl = cardMedia.querySelector(".video-container");
-  if (videoEl) {
-    videoEl.addEventListener("click", () => {
-      const vid = videoEl.dataset.videoId;
-      const iframe = document.createElement("iframe");
-      // Embedding YouTube directly fails here: this page runs from a
-      // chrome-extension:// origin, and Chrome strips the Referer header for
-      // requests from extension pages. YouTube's player needs that referer to
-      // identify the embedding site and aborts with "Error 153" without it.
-      // So we iframe our own page on https://intermezzo.care instead, which
-      // sends a valid referer and iframes YouTube in turn — the demo plays
-      // inline in the card rather than erroring out or opening a new tab.
-      iframe.src = `https://intermezzo.care/embed?v=${encodeURIComponent(vid)}&autoplay=1`;
-      iframe.title = `${stretch.name} demonstration`;
-      iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      iframe.allowFullscreen = true;
-      cardMedia.innerHTML = "";
-      cardMedia.appendChild(iframe);
-    });
-  }
-
   // Render right column (info)
   stretchInfo.innerHTML = buildInfoHTML(stretch);
+
+  if (isMind) {
+    // Mindfulness moments aren't timed — there's nothing to count down. Hide the
+    // timer ring and the Start/Reroll controls; sitting with the prompt at your
+    // own pace is the whole exercise. When finished with everything, the "Done"
+    // button below wraps up the break.
+    if (stretch.isCheckIn) wireCheckInCard();
+    timerArea.style.display = "none";
+    return;
+  }
+
+  // Body stretches keep the timer.
+  timerArea.style.display = "";
 
   // Set up timer for first phase
   setupPhase(0);
@@ -515,7 +545,7 @@ function showExercise(index) {
   startBtn.disabled = false;
 
   // Reroll is offered for body stretches only — mind moments aren't swapped.
-  rerollBtn.style.display = isMind ? "none" : "inline-flex";
+  rerollBtn.style.display = "inline-flex";
   rerollBtn.disabled = false;
 }
 
@@ -680,14 +710,6 @@ function showDone() {
   doneMessage.textContent =
     MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 
-  // Respect "Mind moments: Off" — hide the whole check-in if the user opted out.
-  chrome.storage.local.get("mindLevel", (data) => {
-    const mindEl = document.getElementById("completionMind");
-    if (mindEl && (data.mindLevel || "gentle") === "off") {
-      mindEl.style.display = "none";
-    }
-  });
-
   chrome.storage.local.get("streak", (data) => {
     const streak = data.streak || 0;
     statBreaks.textContent = streak;
@@ -781,14 +803,22 @@ startBtn.addEventListener("click", () => {
   }
 });
 
-// "Done" closes out the whole break and shows the pride moment, whenever the
-// person feels finished — they don't have to run every timer to the end.
+// The bottom primary button advances through the break, then finishes on the
+// last exercise — showing the pride moment. It never ends a multi-exercise break
+// from the middle; "Skip for now" is the early exit. People don't have to run
+// every timer to the end.
 doneBtn.addEventListener("click", () => {
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
-  showDone();
+  completed.add(currentIndex); // moving on counts this exercise as done
+
+  if (currentIndex >= stretches.length - 1) {
+    showDone();
+  } else {
+    goToExercise(currentIndex + 1);
+  }
 });
 
 skipBtn.addEventListener("click", () => {
@@ -862,6 +892,8 @@ newStretchBtn.addEventListener("click", () => {
   const restart = (fresh) => {
     if (fresh && fresh.length) stretches = fresh;
     completed.clear();
+    resetCheckInState(); // fresh break — a new check-in
+
     doneScreen.style.display = "none";
     activeScreen.classList.remove("fade-out");
     activeScreen.style.display = "";
@@ -881,74 +913,28 @@ newStretchBtn.addEventListener("click", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Mind check-in — savoring + mood, on the done screen. Optional, on-device only.
+// Mind check-in card — savoring + mood, rendered as a mind exercise in the break
+// flow. Optional, on-device only. The card is rebuilt via innerHTML on every
+// navigation, so we (re)wire it on render and remember what was entered this
+// break so returning to the card doesn't reset or double-log it.
 // ---------------------------------------------------------------------------
 
-const savoringInput = document.getElementById("savoringInput");
-const savoringSave = document.getElementById("savoringSave");
-const savoringConfirm = document.getElementById("savoringConfirm");
-const moodScale = document.getElementById("moodScale");
-const moodConfirm = document.getElementById("moodConfirm");
-const supportNote = document.getElementById("supportNote");
-const supportDismiss = document.getElementById("supportDismiss");
+let checkInState = { savoringText: null, mood: null };
+
+function resetCheckInState() {
+  checkInState = { savoringText: null, mood: null };
+}
 
 function todayStamp() {
   return new Date().toISOString().slice(0, 10); // "2026-06-04"
-}
-
-// Savoring — keep one good thing, only if the person actually wrote something.
-function saveSavoring() {
-  const text = savoringInput.value.trim();
-  if (!text) return;
-  chrome.storage.local.get("journal", (data) => {
-    const journal = Array.isArray(data.journal) ? data.journal : [];
-    journal.push({ date: todayStamp(), text });
-    // Keep it small — the last 100 notes is plenty for a private keepsake.
-    if (journal.length > 100) journal.splice(0, journal.length - 100);
-    chrome.storage.local.set({ journal }, () => {
-      savoringInput.disabled = true;
-      savoringSave.disabled = true;
-      savoringConfirm.hidden = false;
-    });
-  });
-}
-
-if (savoringSave) {
-  savoringSave.addEventListener("click", saveSavoring);
-  savoringInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") saveSavoring();
-  });
-}
-
-// Mood check-in — one tap. Stored locally; never sent anywhere.
-if (moodScale) {
-  moodScale.addEventListener("click", (e) => {
-    const btn = e.target.closest(".mood-dot");
-    if (!btn) return;
-    const mood = parseInt(btn.dataset.mood, 10);
-
-    // Visual selection
-    moodScale.querySelectorAll(".mood-dot").forEach((d) => {
-      d.classList.toggle("selected", d === btn);
-      d.disabled = true;
-    });
-    moodConfirm.hidden = false;
-
-    chrome.storage.local.get(["moodLog", "supportDismissedAt"], (data) => {
-      const log = Array.isArray(data.moodLog) ? data.moodLog : [];
-      log.push({ date: todayStamp(), mood });
-      if (log.length > 200) log.splice(0, log.length - 200);
-      chrome.storage.local.set({ moodLog: log });
-      maybeShowSupport(log, data.supportDismissedAt);
-    });
-  });
 }
 
 // The quiet safety net: if the three most recent check-ins are all the lowest
 // option, gently surface a path to real support — unless it was dismissed in
 // the last few days. Never blocks anything; always one tap to set aside.
 function maybeShowSupport(log, dismissedAt) {
-  if (log.length < 3) return;
+  const supportNote = document.getElementById("supportNote");
+  if (!supportNote || log.length < 3) return;
   const lastThree = log.slice(-3);
   const allLowest = lastThree.every((e) => e.mood === 1);
   if (!allLowest) return;
@@ -960,11 +946,92 @@ function maybeShowSupport(log, dismissedAt) {
   supportNote.hidden = false;
 }
 
-if (supportDismiss) {
-  supportDismiss.addEventListener("click", () => {
-    chrome.storage.local.set({ supportDismissedAt: new Date().toISOString() });
-    supportNote.hidden = true;
-  });
+// Attach behaviour to the freshly-rendered check-in card and reflect anything
+// already entered this break.
+function wireCheckInCard() {
+  const savoringInput = document.getElementById("savoringInput");
+  const savoringSave = document.getElementById("savoringSave");
+  const savoringConfirm = document.getElementById("savoringConfirm");
+  const moodScale = document.getElementById("moodScale");
+  const moodConfirm = document.getElementById("moodConfirm");
+  const supportDismiss = document.getElementById("supportDismiss");
+
+  // --- Savoring — keep one good thing, only if something was written. ---
+  function saveSavoring() {
+    const text = savoringInput.value.trim();
+    if (!text) return;
+    checkInState.savoringText = text;
+    savoringInput.disabled = true;
+    savoringSave.disabled = true;
+    savoringConfirm.hidden = false;
+    chrome.storage.local.get("journal", (data) => {
+      const journal = Array.isArray(data.journal) ? data.journal : [];
+      journal.push({ date: todayStamp(), text });
+      // Keep it small — the last 100 notes is plenty for a private keepsake.
+      if (journal.length > 100) journal.splice(0, journal.length - 100);
+      chrome.storage.local.set({ journal });
+    });
+  }
+
+  if (savoringSave) {
+    savoringSave.addEventListener("click", saveSavoring);
+    savoringInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") saveSavoring();
+    });
+  }
+
+  // Restore a note already kept this break.
+  if (checkInState.savoringText && savoringInput) {
+    savoringInput.value = checkInState.savoringText;
+    savoringInput.disabled = true;
+    if (savoringSave) savoringSave.disabled = true;
+    if (savoringConfirm) savoringConfirm.hidden = false;
+  }
+
+  // --- Mood check-in — one tap. Stored locally; never sent anywhere. ---
+  if (moodScale) {
+    moodScale.addEventListener("click", (e) => {
+      const btn = e.target.closest(".mood-dot");
+      if (!btn || checkInState.mood != null) return; // one log per break
+      const mood = parseInt(btn.dataset.mood, 10);
+      checkInState.mood = mood;
+
+      moodScale.querySelectorAll(".mood-dot").forEach((d) => {
+        d.classList.toggle("selected", d === btn);
+        d.disabled = true;
+      });
+      if (moodConfirm) moodConfirm.hidden = false;
+
+      chrome.storage.local.get(["moodLog", "supportDismissedAt"], (data) => {
+        const log = Array.isArray(data.moodLog) ? data.moodLog : [];
+        log.push({ date: todayStamp(), mood });
+        if (log.length > 200) log.splice(0, log.length - 200);
+        chrome.storage.local.set({ moodLog: log });
+        maybeShowSupport(log, data.supportDismissedAt);
+      });
+    });
+  }
+
+  // Restore a mood already picked this break (and re-check the safety net).
+  if (checkInState.mood != null && moodScale) {
+    moodScale.querySelectorAll(".mood-dot").forEach((d) => {
+      d.classList.toggle("selected", parseInt(d.dataset.mood, 10) === checkInState.mood);
+      d.disabled = true;
+    });
+    if (moodConfirm) moodConfirm.hidden = false;
+    chrome.storage.local.get(["moodLog", "supportDismissedAt"], (data) => {
+      maybeShowSupport(Array.isArray(data.moodLog) ? data.moodLog : [], data.supportDismissedAt);
+    });
+  }
+
+  // --- Quiet safety net dismissal ---
+  if (supportDismiss) {
+    supportDismiss.addEventListener("click", () => {
+      chrome.storage.local.set({ supportDismissedAt: new Date().toISOString() });
+      const note = document.getElementById("supportNote");
+      if (note) note.hidden = true;
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------

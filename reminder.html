@@ -126,62 +126,10 @@
         </div>
         <p class="completion-count" id="motivational"></p>
       </div>
-
-      <!-- ============================================================
-           A small check-in for the mind, before heading back.
-           Entirely optional — everything here can be skipped.
-           ============================================================ -->
-      <div class="completion-mind" id="completionMind">
-
-        <!-- Savoring — "Three Good Things", trimmed to one gentle ask -->
-        <div class="mind-block savoring" id="savoringBlock">
-          <span class="mind-eyebrow">A small thing to notice</span>
-          <p class="mind-q">One thing — however tiny — that went okay since your last break?</p>
-          <div class="savoring-row">
-            <input type="text" id="savoringInput" class="savoring-input"
-                   placeholder="Even something small counts…" autocomplete="off" maxlength="200">
-            <button class="mind-mini-btn" id="savoringSave">Keep it</button>
-          </div>
-          <span class="savoring-confirm" id="savoringConfirm" hidden>Kept — just for you.</span>
-        </div>
-
-        <!-- Mood check-in — one tap, on-device only -->
-        <div class="mind-block mood-checkin" id="moodBlock">
-          <p class="mind-q">And how are you feeling right now?</p>
-          <div class="mood-scale" id="moodScale" role="group" aria-label="How are you feeling?">
-            <button class="mood-dot" data-mood="1" aria-label="Having a really hard time"></button>
-            <button class="mood-dot" data-mood="2" aria-label="Low"></button>
-            <button class="mood-dot" data-mood="3" aria-label="Okay"></button>
-            <button class="mood-dot" data-mood="4" aria-label="Pretty good"></button>
-            <button class="mood-dot" data-mood="5" aria-label="Good"></button>
-          </div>
-          <div class="mood-ends">
-            <span>Having a hard time</span>
-            <span>Doing okay</span>
-          </div>
-          <span class="mood-confirm" id="moodConfirm" hidden>Thank you for checking in.</span>
-        </div>
-
-        <!-- Quiet safety net — only appears after repeated very-low check-ins -->
-        <div class="support-note" id="supportNote" hidden>
-          <p class="support-text">
-            It looks like things have felt heavy for a little while. If it would help to
-            talk to a real person, support is there — and reaching out is a strong, kind
-            thing to do for yourself.
-          </p>
-          <div class="support-actions">
-            <a class="support-link" id="supportLink"
-               href="https://findahelpline.com" target="_blank" rel="noopener">Find someone to talk to</a>
-            <button class="support-dismiss" id="supportDismiss">I'm okay for now</button>
-          </div>
-        </div>
-
-      </div>
     </div>
   </div>
 
   <script src="stretch-illustrations.js"></script>
-  <script src="stretch-videos.js"></script>
   <script src="reminder.js"></script>
 </body>
 </html>

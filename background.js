@@ -432,6 +432,20 @@ const MIND_EXERCISES = [
     focus: "Self-compassion in a hard moment",
     cue: "Be gentle with yourself",
     priority: 0
+  },
+  {
+    // Interactive check-in. Its card is rendered specially in reminder.js (a
+    // savoring note + mood scale), so `description` stays empty — the flag below
+    // is what the renderer keys off of.
+    name: "A Gentle Check-In",
+    type: "mind",
+    mindType: "checkin",
+    isCheckIn: true,
+    duration: "45 seconds",
+    description: "",
+    focus: "Noticing one good thing, and how you feel",
+    cue: "A moment with yourself",
+    priority: 1
   }
 ];
 
@@ -594,18 +608,28 @@ async function pickStretches() {
   return picked;
 }
 
+// Map the mind setting to a canonical value, tolerating the older
+// "gentle"/"more" labels so existing users keep working after the rename.
+function normalizeMindLevel(level) {
+  if (level === "gentle") return "occasional";
+  if (level === "more") return "always";
+  return level || "occasional";
+}
+
 // Pick at most one mind moment to tail the break, honoring the user's setting.
-// mindLevel: "off" | "gentle" (default) | "more". Mind cards are deliberately
-// kept out of stretchHistory and lastStretchNames — they're not stretches, and
-// they shouldn't influence body-stretch variety or the daily count.
+// mindLevel: "off" | "occasional" (default) | "always". "always" guarantees one
+// mind exercise every break; "occasional" includes one some of the time. Mind
+// cards are deliberately kept out of stretchHistory and lastStretchNames —
+// they're not stretches, and shouldn't sway body-stretch variety or the count.
 async function pickMindMoment() {
-  const { mindLevel = "gentle", lastMindName = null } =
+  const { mindLevel = "occasional", lastMindName = null } =
     await chrome.storage.local.get(["mindLevel", "lastMindName"]);
 
-  if (mindLevel === "off") return null;
+  const level = normalizeMindLevel(mindLevel);
+  if (level === "off") return null;
 
-  const chance = mindLevel === "more" ? 0.85 : 0.45;
-  if (Math.random() > chance) return null;
+  // "occasional" rolls the dice; "always" guarantees one.
+  if (level !== "always" && Math.random() > 0.5) return null;
 
   // Avoid repeating the previous mind moment when there's another to offer.
   let pool = MIND_EXERCISES.filter(m => m.name !== lastMindName);

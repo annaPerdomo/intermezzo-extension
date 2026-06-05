@@ -21,7 +21,15 @@ const webhookStatusEl = document.getElementById("webhookStatus");
 const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3, 90: 4, 120: 5 };
 // 0 = "Mix" (random 2–3), sits in the last slot of the track
 const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
-const MIND_INDEX = { off: 0, gentle: 1, more: 2 };
+const MIND_INDEX = { off: 0, occasional: 1, always: 2 };
+
+// Tolerate the older "gentle"/"more" labels so a saved value still highlights
+// the right button after the rename.
+function normalizeMind(level) {
+  if (level === "gentle") return "occasional";
+  if (level === "more") return "always";
+  return level || "occasional";
+}
 
 const ENCOURAGING_PHRASES = [
   "A quick stretch does wonders for focus.",
@@ -51,7 +59,7 @@ chrome.storage.local.get(
     // Default to 1 — a single exercise is the easiest to actually do.
     const count = data.exerciseCount ?? 1;
     const streak = data.streak || 0;
-    const mindLevel = data.mindLevel || "gentle";
+    const mindLevel = normalizeMind(data.mindLevel);
 
     enabledToggle.checked = enabled;
     // "notify" is the default delivery style (works in any app); "auto" opens
@@ -179,6 +187,7 @@ function highlightCount(count) {
 }
 
 function highlightMind(level) {
+  level = normalizeMind(level);
   mindBtns.forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.mind === level);
   });
