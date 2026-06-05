@@ -174,7 +174,7 @@ function updateStreakDisplay(streak) {
 
 // Live countdown to next reminder
 function updateCountdown() {
-  chrome.alarms.get("movemore-reminder", (alarm) => {
+  chrome.alarms.get("intermezzo-reminder", (alarm) => {
     if (alarm) {
       const remaining = Math.max(0, alarm.scheduledTime - Date.now());
       const mins = Math.floor(remaining / 60000);

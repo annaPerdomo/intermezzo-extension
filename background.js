@@ -1,4 +1,4 @@
-const ALARM_NAME = "movemore-reminder";
+const ALARM_NAME = "intermezzo-reminder";
 
 // Body area categories for smart mixing
 const AREA = {
@@ -528,8 +528,8 @@ async function resumeAlarm() {
   await chrome.storage.local.remove("alarmRemainingMs");
 }
 
-const NOTIFICATION_ID = "movemore-reminder-notification";
-const SNOOZE_ALARM = "movemore-snooze";
+const NOTIFICATION_ID = "intermezzo-reminder-notification";
+const SNOOZE_ALARM = "intermezzo-snooze";
 
 // ---------------------------------------------------------------------------
 // Chime — played through an offscreen document so it sounds even when Chrome

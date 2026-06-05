@@ -1,6 +1,6 @@
 # Chrome Web Store — Publishing Guide
 
-Everything you need to get MoveMore from "Load unpacked" to a one-click install
+Everything you need to get Intermezzo from "Load unpacked" to a one-click install
 your friends can use. The big win: once it's on the store, nobody has to clone a
 repo or toggle Developer mode — they just click **Add to Chrome**.
 
@@ -18,26 +18,26 @@ repo or toggle Developer mode — they just click **Add to Chrome**.
 From the project root, create the upload zip (excludes git, docs, and OS junk):
 
 ```bash
-zip -r movemore.zip . \
+zip -r intermezzo.zip . \
   -x ".git/*" -x "*.DS_Store" -x "STORE.md" -x "PRIVACY.md" -x "README.md"
 ```
 
-Upload `movemore.zip` in the Web Store Developer Dashboard → **Add new item**.
+Upload `intermezzo.zip` in the Web Store Developer Dashboard → **Add new item**.
 
 ## Store listing copy
 
-**Name:** MoveMore — Stretch & Posture Breaks
+**Name:** Intermezzo — Stretch & Posture Breaks
 
 **Summary (132 char max):**
 Gentle reminders to stretch, rest your eyes, and fix your posture — no matter
 which app you're in. Move more, ache less.
 
 **Description:**
-> MoveMore nudges you to take short, guided movement breaks throughout your day.
+> Intermezzo nudges you to take short, guided movement breaks throughout your day.
 > Each break mixes 1–3 stretches chosen for the time of day and what your body
 > needs — neck, shoulders, hips, wrists, and eye-rest breaks for screen strain.
 >
-> Because you don't spend your whole day in the browser, MoveMore reaches you
+> Because you don't spend your whole day in the browser, Intermezzo reaches you
 > with a system notification and a soft chime that work even when you're heads-
 > down in another app. Snooze a reminder when you're mid-task, and pick it back
 > up when you're ready.

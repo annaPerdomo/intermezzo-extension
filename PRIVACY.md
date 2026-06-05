@@ -1,11 +1,11 @@
-# MoveMore — Privacy Policy
+# Intermezzo — Privacy Policy
 
 _Last updated: 2026-06-04_
 
-MoveMore is built to be private by default. It exists to gently remind you to
+Intermezzo is built to be private by default. It exists to gently remind you to
 move, and it collects as little as possible to do that.
 
-## What MoveMore stores
+## What Intermezzo stores
 
 All of your settings and activity stay **on your own device**, using Chrome's
 local extension storage (`chrome.storage.local`). This includes:
@@ -15,21 +15,21 @@ local extension storage (`chrome.storage.local`). This includes:
 - An inactivity timer used to pause reminders while you're away
 - Your optional accountability webhook URL and display name
 
-MoveMore has **no account, no server, and no analytics**. None of this data is
+Intermezzo has **no account, no server, and no analytics**. None of this data is
 sent to the developer or to any third party — with one exception that you turn
 on yourself, described below.
 
 ## The optional accountability webhook
 
 If — and only if — you paste a Discord or Slack **webhook URL** into the
-"Stretch together" setting, MoveMore will send a short message to that channel
+"Stretch together" setting, Intermezzo will send a short message to that channel
 when you complete a stretch break, for example:
 
 > 🌿 Anna just finished a stretch break — 4 breaks today. Your turn to move?
 
 The message contains only the display name you chose and your stretch-break
 count for the day. It is sent directly from your browser to the URL you
-provided. Clearing the URL field turns this off completely. MoveMore never
+provided. Clearing the URL field turns this off completely. Intermezzo never
 sends anything to a webhook you did not configure.
 
 ## Permissions and why they're used
@@ -44,7 +44,7 @@ sends anything to a webhook you did not configure.
 
 ## Data deletion
 
-Uninstalling MoveMore removes all locally stored data. You can also clear your
+Uninstalling Intermezzo removes all locally stored data. You can also clear your
 webhook URL and name at any time from the popup.
 
 ## Contact

@@ -73,11 +73,11 @@ Each exercise has a description, a visual, and a countdown timer. Navigate betwe
 
 ### Stretch together (optional)
 
-Want to keep a friend group or team accountable? In the popup, paste a **Discord or Slack incoming webhook URL** and your name under "Stretch together." When you finish a break, MoveMore posts a short message to that channel — a friendly nudge for everyone else to move too. Leave it blank and nothing is ever sent. See [PRIVACY.md](PRIVACY.md) for details.
+Want to keep a friend group or team accountable? In the popup, paste a **Discord or Slack incoming webhook URL** and your name under "Stretch together." When you finish a break, Intermezzo posts a short message to that channel — a friendly nudge for everyone else to move too. Leave it blank and nothing is ever sent. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Publishing
 
-Want to share MoveMore with friends without the "Load unpacked" dance? See [STORE.md](STORE.md) for a step-by-step Chrome Web Store publishing guide, listing copy, and permission justifications.
+Want to share Intermezzo with friends without the "Load unpacked" dance? See [STORE.md](STORE.md) for a step-by-step Chrome Web Store publishing guide, listing copy, and permission justifications.
 
 ## Design
 
