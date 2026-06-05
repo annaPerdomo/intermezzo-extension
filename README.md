@@ -39,7 +39,6 @@ Intermezzo nudges you at regular intervals with a short, guided wellness break. 
 - **Reaches you in any app** — a system notification and a soft chime fire even when Chrome is in the background, so the nudge lands whether you're in Figma, a fullscreen video, or a game — not just when you're looking at the browser.
 - **Snooze** — mid-task? Snooze the reminder for a few minutes and pick it back up when you're ready.
 - **Built-in timer** — with per-side countdowns for stretches that need them. Just hit "Begin" and follow along.
-- **Video demos** — many stretches link to short YouTube tutorials so you can see exactly what to do.
 - **SVG illustrations** — every stretch has an illustrated stick-figure guide.
 - **Configurable intervals** — remind you anywhere from every 15 minutes to every 2 hours. You're in control.
 - **Stretch together** — optionally post to a Discord or Slack channel when you finish a break, so a friend group or team keeps each other moving.

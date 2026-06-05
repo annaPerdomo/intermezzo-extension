@@ -53,7 +53,7 @@ matter which app you're in. Move more, ache less.
 > • Optional mind moments — grounding, savoring, and on-device mood check-ins
 > • System notifications + a calming chime that reach you in any app
 > • Snooze, adjustable intervals (15 min – 2 hr), and 1–3 exercises per break
-> • Guided timers with per-side countdowns, illustrations, and video demos
+> • Guided timers with per-side countdowns and illustrations
 > • Streak tracking and a little confetti when you finish
 > • Optional: post to a Discord/Slack channel to stretch alongside friends
 >
