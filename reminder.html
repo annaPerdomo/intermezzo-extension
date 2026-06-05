@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Intermezzo — Stretch Break</title>
+  <title>Intermezzo — Wellness Break</title>
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="reminder.css">
 </head>
@@ -20,23 +20,13 @@
        ACTIVE STRETCH SCREEN
        ============================================================ -->
   <div class="container" id="activeScreen">
-    <h1 class="page-title">Time to Move</h1>
+    <h1 class="page-title">Time for an Interlude</h1>
     <p class="subtitle" id="subtitle"></p>
 
-    <!-- Lotus divider -->
-    <div class="lotus-divider">
+    <!-- Fermata divider -->
+    <div class="staff-divider">
       <div class="divider-line"></div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
-        <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
-      </svg>
+      <span class="fermata-breathe" data-glyph="fermata"></span>
       <div class="divider-line"></div>
     </div>
 
@@ -71,26 +61,16 @@
 
     <div class="progress-dots" id="exerciseProgress"></div>
 
-    <!-- Second lotus divider -->
-    <div class="lotus-divider">
+    <!-- Footer divider — an eighth note, distinct from the header fermata -->
+    <div class="staff-divider">
       <div class="divider-line"></div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
-        <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
-        <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
-      </svg>
+      <span class="fermata-breathe" data-glyph="eighthNote"></span>
       <div class="divider-line"></div>
     </div>
 
     <div class="actions">
       <button class="btn btn-skip" id="skipBtn">Skip for now</button>
-      <button class="btn btn-done" id="startBtn">Begin</button>
+      <button class="btn btn-done" id="doneBtn">Done &#x2713;</button>
     </div>
   </div>
 
@@ -98,25 +78,14 @@
        COMPLETED SCREEN — pride moment
        ============================================================ -->
   <div class="done-screen" id="doneScreen">
+    <div class="completion-deco" aria-hidden="true"></div>
     <div class="completion-inner">
       <div class="completion-message">
-        <div class="completion-eyebrow">Stretch break complete</div>
+        <div class="completion-eyebrow">Interlude complete</div>
 
         <div class="completion-emblem">
           <span class="halo"></span>
-          <span class="completion-lotus">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.2" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(45 12 12)" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(45 12 12)" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(-45 12 12)" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(-45 12 12)" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#8FA67E" stroke-width="0.8" transform="rotate(90 12 12)" />
-              <ellipse cx="12" cy="12" rx="4" ry="10" fill="#C4907A" opacity="0.15" transform="rotate(90 12 12)" />
-              <circle cx="12" cy="12" r="2.5" fill="#8FA67E" opacity="0.25" />
-            </svg>
-          </span>
+          <span class="completion-mark" data-glyph="quarter-rest"></span>
         </div>
 
         <h2 class="completion-title">Beautifully done.</h2>
@@ -124,7 +93,7 @@
 
         <div class="completion-actions">
           <button class="completion-btn" id="closeBtn">Back to your day</button>
-          <button class="completion-btn-ghost" id="newStretchBtn">New stretch</button>
+          <button class="completion-btn-ghost" id="newStretchBtn">Another interlude</button>
         </div>
       </div>
 

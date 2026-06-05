@@ -1,48 +1,114 @@
 // ---------------------------------------------------------------------------
-// Zen chime — singing bowl sound via Web Audio API
+// Cello chime — a warm, bowed-string voice via Web Audio API. The rebrand
+// retired the singing bowl for something that sounds like a comforting cello:
+// detuned sawtooths through a mellow low-pass for the body, a sub-octave sine
+// for warmth, gentle vibrato, and a slow bowed swell into a long release.
 // ---------------------------------------------------------------------------
 
-function playChime(volume = 0.35) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const now = ctx.currentTime;
+// One bowed-cello note. Returns the time (seconds, ctx clock) it finishes, so
+// callers can schedule overlapping notes and know when to close the context.
+function playCelloVoice(ctx, master, freq, startAt, opts = {}) {
+  const attack  = opts.attack  ?? 0.16;   // slow bow onset
+  const sustain = opts.sustain ?? 0.85;   // held body
+  const release = opts.release ?? 1.4;    // long, soft tail
+  const peak    = (opts.gain ?? 1) * (opts.peak ?? 0.85);
+  const cutoff  = opts.cutoff ?? Math.min(2600, freq * 6 + 480);
+  const end     = startAt + attack + sustain + release;
 
+  // Amplitude: gentle swell up, hold, long exponential release.
+  const vca = ctx.createGain();
+  vca.gain.setValueAtTime(0.0001, startAt);
+  vca.gain.exponentialRampToValueAtTime(peak, startAt + attack);
+  vca.gain.setValueAtTime(peak, startAt + attack + sustain);
+  vca.gain.exponentialRampToValueAtTime(0.0001, end);
+
+  // Mellow low-pass tames the sawtooth edge into a warm cello body; the cutoff
+  // opens a little as the bow settles.
+  const lp = ctx.createBiquadFilter();
+  lp.type = "lowpass";
+  lp.Q.value = 0.7;
+  lp.frequency.setValueAtTime(cutoff * 0.55, startAt);
+  lp.frequency.linearRampToValueAtTime(cutoff, startAt + attack + 0.12);
+  lp.connect(vca);
+  vca.connect(master);
+
+  // Gentle vibrato — the shimmer of a bowed string.
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.type = "sine";
+  lfo.frequency.value = 5.1;
+  lfoGain.gain.value = freq * 0.006;
+  lfo.connect(lfoGain);
+
+  // Two slightly detuned saws (chorus/body) + a quiet sub-octave sine (warmth).
+  const partials = [
+    { type: "sawtooth", detune: -5, octave: 1,   level: 0.40 },
+    { type: "sawtooth", detune: 6,  octave: 1,   level: 0.40 },
+    { type: "sine",     detune: 0,  octave: 0.5, level: 0.42 },
+  ];
+  partials.forEach((p) => {
+    const osc = ctx.createOscillator();
+    osc.type = p.type;
+    osc.frequency.value = freq * p.octave;
+    osc.detune.value = p.detune;
+    lfoGain.connect(osc.frequency);
+    const g = ctx.createGain();
+    g.gain.value = p.level;
+    osc.connect(g);
+    g.connect(lp);
+    osc.start(startAt);
+    osc.stop(end + 0.05);
+  });
+  lfo.start(startAt);
+  lfo.stop(end + 0.05);
+
+  return end;
+}
+
+function newCelloContext(volume) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const master = ctx.createGain();
   master.gain.value = volume;
-  master.connect(ctx.destination);
+  // A soft compressor glues the overlapping voices and guards against clipping.
+  const comp = ctx.createDynamicsCompressor();
+  master.connect(comp);
+  comp.connect(ctx.destination);
+  return { ctx, master };
+}
 
-  // Singing bowl harmonics — tuned to a warm, resonant tone
-  const tones = [
-    { freq: 432,  gain: 0.28, decay: 3.2, type: "sine" },     // fundamental
-    { freq: 864,  gain: 0.10, decay: 2.2, type: "sine" },     // 2nd harmonic
-    { freq: 1296, gain: 0.04, decay: 1.4, type: "sine" },     // 3rd harmonic
-    { freq: 324,  gain: 0.12, decay: 3.8, type: "sine" },     // warm sub-tone
-    { freq: 436,  gain: 0.08, decay: 3.0, type: "sine" },     // slight detune for shimmer
-  ];
+function playChime(volume = 0.32) {
+  const { ctx, master } = newCelloContext(volume);
+  const now = ctx.currentTime;
 
-  tones.forEach(({ freq, gain, decay, type }) => {
-    const osc = ctx.createOscillator();
-    const env = ctx.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
+  // A warm open fifth (D3 + A3) — a comforting cello double-stop, the second
+  // note entering a beat later like a bow settling onto the string.
+  let end = playCelloVoice(ctx, master, 146.83, now, { gain: 0.55 });
+  end = Math.max(end, playCelloVoice(ctx, master, 220.0, now + 0.13, { gain: 0.45 }));
 
-    // Soft attack, long exponential decay
-    env.gain.setValueAtTime(0.0001, now);
-    env.gain.linearRampToValueAtTime(gain, now + 0.015);
-    env.gain.exponentialRampToValueAtTime(0.0001, now + decay);
-
-    osc.connect(env);
-    env.connect(master);
-    osc.start(now);
-    osc.stop(now + decay + 0.1);
-  });
-
-  setTimeout(() => ctx.close(), 5000);
+  setTimeout(() => ctx.close(), Math.max(2500, (end - now + 0.4) * 1000));
 }
 
 function playCompletionChime() {
-  // Two gentle chimes in sequence for the final "done" moment
-  playChime(0.3);
-  setTimeout(() => playChime(0.25), 600);
+  const { ctx, master } = newCelloContext(0.3);
+  const now = ctx.currentTime;
+
+  // A soft, resolving D-major chord — cello voices swelling in one after another
+  // and settling together. A warm "beautifully done" cadence.
+  const notes = [
+    { f: 146.83, t: 0.0,  g: 0.5 },  // D3
+    { f: 220.0,  t: 0.18, g: 0.42 }, // A3
+    { f: 293.66, t: 0.36, g: 0.42 }, // D4
+    { f: 369.99, t: 0.54, g: 0.34 }, // F#4
+  ];
+  let end = now;
+  notes.forEach((n) => {
+    end = Math.max(
+      end,
+      playCelloVoice(ctx, master, n.f, now + n.t, { gain: n.g, sustain: 1.2, release: 1.9 })
+    );
+  });
+
+  setTimeout(() => ctx.close(), Math.max(3200, (end - now + 0.5) * 1000));
 }
 
 // DOM elements
@@ -74,6 +140,67 @@ const statBreaks = document.getElementById("statBreaks");
 const statBreaksLabel = document.getElementById("statBreaksLabel");
 
 const CIRCUMFERENCE = 2 * Math.PI * 84;
+
+// ---------------------------------------------------------------------------
+// Music glyphs — accurate Noto Music outlines (crisp, recolorable, offline).
+// Quarter rest is the brand mark; fermata is the recurring divider motif;
+// notes & beams decorate the completion moment.
+// ---------------------------------------------------------------------------
+
+const MUSIC_GLYPHS = {
+  quarterRest:      { vb: "51 -878 256 755",  d: "M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" },
+  quarterNote:      { vb: "51 -563 180 549",  d: "M194-148L194-563L231-563L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" },
+  eighthNote:       { vb: "51 -563 308 549",  d: "M194-148L194-563L231-563L231-514L305-420Q333-386 346-346Q359-306 359-265L359-265Q359-191 313-133L313-133L290-133Q318-193 318-254L318-254Q318-293 305-323.50Q292-354 272-373Q252-392 231-395L231-395L231-148Q231-88 195.50-51Q160-14 107-14L107-14Q79-14 65-27.50Q51-41 51-63L51-63Q51-89 65-110Q79-131 102-144Q125-157 150-157L150-157Q172-157 194-148L194-148Z" },
+  beamedEighths:    { vb: "51 -566 484 587",  d: "M499-113L499-451L230-486L230-157Q230-100 196.50-62Q163-24 107-24L107-24Q51-24 51-72L51-72Q51-96 64-117.50Q77-139 99-152.50Q121-166 147-166L147-166Q172-166 194-157L194-157L194-566L535-521L535-113Q535-72 517-41.50Q499-11 471.50 5Q444 21 413 21L413 21Q357 21 357-28L357-28Q357-68 387-95Q417-122 455-122L455-122Q478-122 499-113L499-113Z" },
+  beamedSixteenths: { vb: "51 -566 484 587",  d: "M535-566L535-158Q535-116 517-86Q499-56 471.50-40Q444-24 413-24L413-24Q357-24 357-73L357-73Q357-113 387-140Q417-167 455-167L455-167Q478-167 499-158L499-158L499-377L230-304L230-112Q230-55 196.50-17Q163 21 107 21L107 21Q79 21 65 8Q51-5 51-27L51-27Q51-51 64-72.50Q77-94 99-107.50Q121-121 147-121L147-121Q172-121 194-112L194-112L194-479L535-566ZM230-422L230-366L499-439L499-496L230-422Z" },
+  fermata:          { vb: "50 -1000 658 352", d: "M708-648L673-648Q671-698 646-743Q621-788 579.50-823Q538-858 486-878Q434-898 378-898L378-898Q324-898 272.50-879Q221-860 179-825.50Q137-791 111-746Q85-701 83-648L83-648L50-648Q57-720 83-783.50Q109-847 152-896Q195-945 252-972.50Q309-1000 378-1000L378-1000Q447-1000 505.50-971.50Q564-943 607.50-894Q651-845 677-781.50Q703-718 708-648L708-648ZM378-648L378-648Q353-648 337-662Q321-676 321-699L321-699Q321-719 337.50-732.50Q354-746 378-746L378-746Q401-746 417-731.50Q433-717 433-699L433-699Q433-676 417-662Q401-648 378-648Z" },
+};
+
+function glyphSVG(name, height, opts = {}) {
+  const g = MUSIC_GLYPHS[name];
+  if (!g) return "";
+  const p = g.vb.split(" ").map(Number);
+  const w = +(height * (p[2] / p[3])).toFixed(1);
+  const color = opts.color || "var(--moss)";
+  const cls = opts.cls ? ` class="${opts.cls}"` : "";
+  return `<svg${cls} width="${w}" height="${height}" viewBox="${g.vb}" fill="none" aria-hidden="true"><path d="${g.d}" fill="${color}"/></svg>`;
+}
+
+// Paint the static brand marks once the overlay loads: the fermata dividers,
+// the quarter-rest completion emblem, and the ambient glyph texture.
+function renderBrandGlyphs() {
+  // Each staff divider renders whichever glyph it names. The header carries the
+  // fermata ("hold this moment"); the footer carries an eighth note — matching
+  // the prototype. Per-glyph heights keep them visually balanced in the rule.
+  const dividerHeights = { fermata: 16, eighthNote: 26, quarterNote: 26 };
+  document.querySelectorAll(".staff-divider [data-glyph]").forEach((el) => {
+    const name = el.dataset.glyph;
+    el.innerHTML = glyphSVG(name, dividerHeights[name] || 16, { color: "var(--moss)" });
+  });
+  document.querySelectorAll('[data-glyph="quarter-rest"]').forEach((el) => {
+    el.innerHTML = glyphSVG("quarterRest", 52, { color: "var(--forest)" });
+  });
+
+  const deco = document.querySelector(".completion-deco");
+  if (deco) {
+    deco.innerHTML =
+      glyphSVG("eighthNote", 132, { cls: "cd cd-1" }) +
+      glyphSVG("beamedEighths", 150, { cls: "cd cd-2" }) +
+      glyphSVG("quarterNote", 104, { cls: "cd cd-3" }) +
+      glyphSVG("fermata", 120, { cls: "cd cd-4" }) +
+      glyphSVG("beamedSixteenths", 112, { cls: "cd cd-5" });
+  }
+
+  const chipGlyphs = ["beamedEighths", "quarterNote", "quarterRest"];
+  document.querySelectorAll(".stat-chip").forEach((chip, i) => {
+    chip.insertAdjacentHTML(
+      "beforeend",
+      glyphSVG(chipGlyphs[i % chipGlyphs.length], 64, { cls: "chip-deco" })
+    );
+  });
+}
+
+renderBrandGlyphs();
 
 const MOTIVATIONAL_QUOTES = [
   "That was a lovely little pause. Hope it felt nice.",
@@ -239,7 +366,7 @@ function buildMediaHTML(stretch) {
         <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${stretch.name} demonstration">
         <div class="video-play-overlay">
           <div class="video-play-btn">
-            <svg viewBox="0 0 24 24" fill="#3A4A35"><path d="M8 5v14l11-7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="#2E3650"><path d="M8 5v14l11-7z"/></svg>
           </div>
         </div>
       </div>
@@ -504,9 +631,9 @@ function launchConfetti() {
   canvas.height = window.innerHeight;
 
   const colors = [
-    "#8FA67E", "#A8BC9A", "#D0DFC4",
-    "#C4907A", "#D4A894", "#E8D8CB",
-    "#6B8A5A", "#F7F3E8",
+    "#8A93B2", "#AAB2CC", "#4E5A86",
+    "#C08A86", "#E8D8CB", "#D9C38C",
+    "#A98A6F", "#FBF8F3",
   ];
   const particles = [];
 

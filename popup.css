@@ -1,18 +1,19 @@
 /* === Design Tokens === */
     :root {
-      --olive: #3A4A35;
-      --sage: #6B7A62;
-      --moss: #8FA67E;
-      --forest: #6B8A5A;
-      --forest-dark: #5A7A4A;
-      --terra: #C4907A;
-      --stone: #D4CBBF;
-      --soft-line: #C4CEBB;
-      --cream: #FFF8F0;
+      /* Nocturne palette — the Intermezzo musical theme */
+      --olive: #2E3650;
+      --sage: #5C6584;
+      --moss: #8A93B2;
+      --forest: #4E5A86;
+      --forest-dark: #3E4A72;
+      --terra: #C08A86;
+      --stone: #CDCAD6;
+      --soft-line: #C6C9D8;
+      --cream: #FBF8F3;
       --card-bg: rgba(255, 255, 255, 0.55);
       --card-border: rgba(255, 255, 255, 0.5);
       --radius-lg: 14px;
-      --shadow-card: 0 2px 16px rgba(58, 74, 53, 0.06);
+      --shadow-card: 0 2px 16px rgba(46, 54, 80, 0.06);
       --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -22,7 +23,7 @@
     body {
       width: 360px;
       font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #F7F3E8 0%, #E6EDDF 35%, #D0DFC4 65%, #E8D8CB 100%);
+      background: linear-gradient(135deg, #F1EEF2 0%, #E3E5EF 38%, #D2D6E8 68%, #E9DEDB 100%);
       color: var(--olive);
       -webkit-font-smoothing: antialiased;
     }
@@ -42,7 +43,7 @@
       gap: 10px;
     }
 
-    .brand-lotus { width: 22px; height: 22px; }
+    .brand-mark { width: auto; height: 26px; }
 
     .header h1 {
       font-family: 'Cormorant', Georgia, serif;
@@ -60,8 +61,25 @@
       letter-spacing: 0.2px;
     }
 
-    /* Lotus divider */
-    .lotus-divider {
+    /* A quiet note on the name — gives the musical metaphor its meaning */
+    .header .name-note {
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: var(--sage);
+      opacity: 0.78;
+      margin-top: 8px;
+      max-width: 300px;
+    }
+
+    .header .name-note em {
+      font-family: 'Cormorant', Georgia, serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--olive);
+    }
+
+    /* Fermata divider */
+    .staff-divider {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -69,11 +87,13 @@
       margin: 4px 0 10px;
     }
 
-    .lotus-divider .divider-line {
+    .staff-divider .divider-line {
       width: 60px;
       height: 1px;
       background: var(--soft-line);
     }
+
+    .staff-divider .fermata-mark { display: inline-flex; }
 
     .stats-row {
       display: flex;
@@ -176,7 +196,7 @@
       position: relative;
       display: grid;
       grid-template-columns: repeat(var(--cols, 4), 1fr);
-      background: rgba(58, 74, 53, 0.06);
+      background: rgba(46, 54, 80, 0.06);
       border-radius: 10px;
       padding: 3px;
     }
@@ -187,7 +207,7 @@
       width: calc((100% - 6px) / var(--cols, 4));
       background: rgba(255, 255, 255, 0.85);
       border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(58, 74, 53, 0.08);
+      box-shadow: 0 1px 4px rgba(46, 54, 80, 0.08);
       transition: transform 0.4s var(--ease-spring);
       pointer-events: none;
     }
@@ -315,7 +335,7 @@
       font-weight: 600;
       letter-spacing: 0.2px;
       color: var(--forest);
-      background: rgba(107, 138, 90, 0.13);
+      background: rgba(78, 90, 134, 0.13);
       padding: 2px 8px;
       border-radius: 20px;
       white-space: nowrap;
