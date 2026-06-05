@@ -327,6 +327,46 @@ const STRETCHES = [
     focus: "Eye mobility & tension release",
     area: AREA.EYES,
     priority: 1
+  },
+  {
+    name: "Knee-to-Chest Stretch",
+    duration: "60 seconds",
+    description: "Lie on your back with knees bent, feet flat. Gently draw one knee up toward your chest and hug it with both hands, keeping the other foot down. Hold 20 seconds, breathing into your lower back, then switch. Finish by hugging both knees in together. A safe, gentle way to ease a tight, achy lower back.",
+    focus: "Lower back decompression",
+    area: AREA.SPINE,
+    priority: 3
+  },
+  {
+    name: "Pelvic Tilts",
+    duration: "40 seconds",
+    description: "Lie on your back, knees bent, feet flat on the floor. Slowly tilt your pelvis to press your lower back gently flat into the floor, tightening your belly. Hold 5 seconds, then relax. Repeat 8 times — small, slow, and easy. One of the kindest moves for a lower back that's seized up.",
+    focus: "Lower back & core mobility",
+    area: AREA.SPINE,
+    priority: 3
+  },
+  {
+    name: "Child's Pose",
+    duration: "45 seconds",
+    description: "From hands and knees, sit your hips back toward your heels and reach your arms forward along the floor, resting your forehead down. Let your lower back round and lengthen. Breathe slowly for 30 seconds. A soothing decompression for a tired, tight lower back.",
+    focus: "Lower back & hip lengthening",
+    area: AREA.SPINE,
+    priority: 2
+  },
+  {
+    name: "Supine Spinal Twist",
+    duration: "50 seconds",
+    description: "Lie on your back, arms out in a T. Bring your knees together and bend them up, then let both knees drop slowly to one side while you turn your head the other way. Keep both shoulders on the floor. Hold 20 seconds, then switch sides. Releases the lower back and the muscles alongside the spine.",
+    focus: "Lower back & spinal rotation",
+    area: AREA.SPINE,
+    priority: 2
+  },
+  {
+    name: "Gentle Press-Up",
+    duration: "40 seconds",
+    description: "Lie face down and prop yourself onto your forearms, like a sphinx, keeping your hips and pelvis relaxed on the floor. Let your lower back gently extend and ease into the position — never push into pain. Hold 10 seconds, lower down, repeat 5 times. A calming counter-stretch after hours of sitting hunched forward.",
+    focus: "Lower back extension",
+    area: AREA.SPINE,
+    priority: 2
   }
 ];
 

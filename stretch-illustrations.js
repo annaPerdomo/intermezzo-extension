@@ -865,6 +865,98 @@ const STRETCH_SVGS = {
   <!-- legs -->
   <line x1="100" y1="165" x2="82" y2="195" stroke="white" stroke-width="3" stroke-linecap="round"/>
   <line x1="100" y1="165" x2="118" y2="195" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+"Knee-to-Chest Stretch": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground -->
+  <line x1="10" y1="150" x2="190" y2="150" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- head lying down (left) -->
+  <circle cx="38" cy="138" r="14" fill="none" stroke="white" stroke-width="3"/>
+  <!-- torso along the floor -->
+  <line x1="52" y1="142" x2="115" y2="145" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- extended leg resting, knee bent, foot flat -->
+  <line x1="115" y1="145" x2="150" y2="138" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="150" y1="138" x2="155" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- drawn-up knee toward chest -->
+  <line x1="115" y1="145" x2="118" y2="108" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="118" y1="108" x2="95" y2="128" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- arms hugging the knee -->
+  <line x1="70" y1="143" x2="112" y2="112" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- pull arrow drawing knee in -->
+  <path d="M 130 100 Q 120 96 108 102" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="111,96 104,103 113,108" fill="#ffd700"/>
+</svg>`,
+
+"Pelvic Tilts": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground -->
+  <line x1="10" y1="160" x2="190" y2="160" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- head lying down (left) -->
+  <circle cx="40" cy="148" r="14" fill="none" stroke="white" stroke-width="3"/>
+  <!-- back flattening into floor -->
+  <line x1="54" y1="151" x2="120" y2="152" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- thigh up, knee bent, feet flat -->
+  <line x1="120" y1="152" x2="138" y2="120" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="138" y1="120" x2="150" y2="153" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- pelvis tilt rotation arrow -->
+  <path d="M 104 132 A 16 16 0 0 1 128 132" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="124,124 130,134 118,134" fill="#ffd700"/>
+  <!-- press-down indicator at lower back -->
+  <line x1="110" y1="142" x2="110" y2="152" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3"/>
+</svg>`,
+
+"Child's Pose": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground -->
+  <line x1="10" y1="155" x2="190" y2="155" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- folded legs / hips back over heels (right) -->
+  <line x1="148" y1="150" x2="120" y2="138" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- hips -->
+  <circle cx="128" cy="140" r="4" fill="white"/>
+  <!-- rounded back curving down to forehead -->
+  <path d="M 128 140 Q 100 120 70 148" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head resting forward -->
+  <circle cx="62" cy="148" r="12" fill="none" stroke="white" stroke-width="3"/>
+  <!-- arms reaching forward along floor -->
+  <line x1="92" y1="132" x2="48" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- lengthen arrow -->
+  <line x1="44" y1="142" x2="28" y2="142" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="32,137 24,142 32,147" fill="#ffd700"/>
+</svg>`,
+
+"Supine Spinal Twist": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground -->
+  <line x1="10" y1="158" x2="190" y2="158" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- head turned one way (left) -->
+  <circle cx="40" cy="118" r="13" fill="none" stroke="white" stroke-width="3"/>
+  <!-- torso along floor -->
+  <line x1="53" y1="122" x2="118" y2="126" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- arms out in a T (shoulders on floor) -->
+  <line x1="70" y1="124" x2="70" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="70" y1="124" x2="70" y2="100" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- knees dropped to the opposite side (down) -->
+  <line x1="118" y1="126" x2="132" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="132" y1="150" x2="158" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- twist rotation arrow -->
+  <path d="M 124 110 A 18 18 0 0 1 140 138" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="135,142 144,140 138,131" fill="#ffd700"/>
+</svg>`,
+
+"Gentle Press-Up": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground -->
+  <line x1="10" y1="155" x2="190" y2="155" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- legs and hips resting on floor (right) -->
+  <line x1="175" y1="150" x2="115" y2="148" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- lower body flat -->
+  <line x1="115" y1="148" x2="90" y2="146" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- chest lifted on forearms -->
+  <path d="M 90 146 Q 72 132 66 112" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head looking forward -->
+  <circle cx="58" cy="100" r="13" fill="none" stroke="white" stroke-width="3"/>
+  <!-- forearm propping up (elbow to floor) -->
+  <line x1="70" y1="124" x2="70" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="70" y1="150" x2="92" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- gentle extension arrow -->
+  <path d="M 78 96 Q 70 88 60 86" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="64,81 56,86 64,91" fill="#ffd700"/>
 </svg>`
 
 };
