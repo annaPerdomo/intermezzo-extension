@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intermezzo · Illustration QA</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root {
+    --olive:#2E3650; --sage:#5C6584; --moss:#8A93B2; --forest:#4E5A86;
+    --terra:#C08A86; --cream:#FBF8F3; --line:#C6C9D8;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; font-family:'DM Sans',-apple-system,system-ui,sans-serif; color:var(--olive);
+    background:linear-gradient(135deg,#F1EEF2 0%,#E3E5EF 38%,#D2D6E8 68%,#E9DEDB 100%);
+    background-attachment:fixed; min-height:100vh; padding:0 0 80px;
+  }
+  header {
+    position:sticky; top:0; z-index:5; backdrop-filter:blur(8px);
+    background:rgba(251,248,243,0.78); border-bottom:1px solid var(--line);
+    padding:18px 28px 14px;
+  }
+  h1 { font-family:'Cormorant',Georgia,serif; font-weight:500; font-size:30px; margin:0 0 4px; }
+  .sub { color:var(--sage); font-size:14px; margin:0; }
+  .filters { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .filters button {
+    font-family:inherit; font-size:13px; cursor:pointer; padding:6px 14px; border-radius:999px;
+    border:1px solid var(--moss); background:transparent; color:var(--forest); transition:.15s;
+  }
+  .filters button.active { background:var(--forest); color:var(--cream); border-color:var(--forest); }
+  main { max-width:1180px; margin:0 auto; padding:26px 22px 0; }
+  .group-title {
+    font-family:'Cormorant',Georgia,serif; font-weight:500; font-size:23px; color:var(--olive);
+    margin:30px 4px 4px; display:flex; align-items:baseline; gap:10px;
+  }
+  .group-title .cnt { font-family:'DM Sans'; font-size:13px; color:var(--moss); }
+  .divider { height:1px; background:var(--line); margin:6px 4px 18px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:18px; }
+  .card {
+    background:rgba(255,255,255,0.72); border:1px solid rgba(198,201,216,0.7); border-radius:16px;
+    padding:14px 14px 16px; display:flex; flex-direction:column; align-items:center;
+    box-shadow:0 4px 22px rgba(46,54,80,0.06);
+  }
+  .media {
+    width:100%; height:172px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:10px;
+  }
+  .media img.stretch-illo { max-width:100%; max-height:100%; object-fit:contain;
+    -webkit-user-select:none; user-select:none; }
+  .media svg { width:auto; height:100%; max-height:160px; }
+  /* match the app's SVG recolour so fallbacks look right */
+  .media svg [stroke="white"]{stroke:var(--olive);} .media svg [stroke="#ffd700"]{stroke:var(--moss);}
+  .media svg [fill="#ffd700"]{fill:var(--moss);}
+  .mind-ph { width:100%; height:172px; display:flex; align-items:center; justify-content:center; }
+  .mind-ph .orb { width:76px; height:76px; border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(138,147,178,0.38), rgba(192,138,134,0.14) 60%, transparent 76%);
+    box-shadow:0 0 0 1px rgba(138,147,178,0.25) inset; }
+  .name { font-size:15px; font-weight:500; text-align:center; line-height:1.25; }
+  .desc { margin-top:8px; font-size:12.5px; line-height:1.45; color:var(--sage); text-align:left; }
+  .meta { margin-top:7px; display:flex; flex-direction:column; gap:5px; align-items:center; }
+  .badge { font-size:11px; padding:3px 9px; border-radius:999px; letter-spacing:.02em; }
+  .badge.img { background:rgba(138,147,178,0.18); color:var(--forest); }
+  .badge.svg { background:rgba(192,138,134,0.2); color:#9A5F5A; }
+  .badge.mind { background:rgba(120,144,160,0.18); color:var(--forest); }
+  .srcline { font-size:11px; color:var(--moss); }
+  .qa { margin-top:9px; display:flex; gap:6px; }
+  .qa button {
+    font-family:inherit; font-size:12px; cursor:pointer; width:30px; height:26px; border-radius:8px;
+    border:1px solid var(--line); background:#fff; transition:.12s;
+  }
+  .qa button.ok.on { background:#cfe3d4; border-color:#86b094; }
+  .qa button.bad.on { background:#f0cfcd; border-color:#c79b97; }
+  .card.flag-bad { outline:2px solid var(--terra); }
+  .empty { color:var(--sage); padding:40px; text-align:center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Intermezzo · Illustration QA</h1>
+  <p class="sub" id="summary"></p>
+  <div class="filters">
+    <button data-f="all" class="active">All</button>
+    <button data-f="img">Illustrated</button>
+    <button data-f="svg">Needs image</button>
+    <button data-f="flagged">Flagged ✗</button>
+    <span class="sub" id="flagcount" style="margin-left:6px"></span>
+  </div>
+</header>
+<main id="root"></main>
+
+<script src="stretch-illustrations.js"></script>
+<script>
+const ITEMS = [{"name": "Neck Rolls", "area": "NECK", "desc": "Slowly roll your head in a full circle \u2014 chin to chest, ear to shoulder, head back, other ear to shoulder. Do 3 circles each direction.", "mind": false, "src": "Neck & Upper \u00b7 fig 0"}, {"name": "Shoulder Shrugs & Rolls", "area": "SHOULDERS_UPPER_BACK", "desc": "Raise both shoulders up toward your ears, hold for 2 seconds, then roll them back and down. Repeat 8 times.", "mind": false, "src": "Neck & Upper \u00b7 fig 1"}, {"name": "Seated Spinal Twist", "area": "SPINE", "desc": "Sit tall, place your right hand on your left knee. Gently twist your torso to the left, looking over your left shoulder. Hold 20 seconds, then switch sides.", "mind": false, "src": "Spine \u00b7 fig 0"}, {"name": "Chest Opener", "area": "CHEST_POSTURE", "desc": "Clasp your hands behind your back, straighten your arms, and gently lift them while squeezing your shoulder blades together. Hold for 15 seconds. Repeat twice.", "mind": false, "src": "Chest & Posture \u00b7 fig 0"}, {"name": "Wrist Flexor Stretch", "area": "WRISTS_ARMS", "desc": "Extend one arm forward, palm up. With the other hand, gently pull your fingers down and back toward you. Hold 15 seconds per hand.", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 5"}, {"name": "Standing Forward Fold", "area": "LOWER_BODY", "desc": "Stand up, feet hip-width apart. Slowly fold forward from the hips, letting your head and arms hang heavy. Bend your knees slightly if needed. Just breathe.", "mind": false, "src": "Full Body \u00b7 fig 0"}, {"name": "Cat-Cow (Seated)", "area": "SPINE", "desc": "Sit on the edge of your chair, hands on knees. Inhale \u2014 arch your back and look up (cow). Exhale \u2014 round your spine and tuck chin (cat). Repeat 8 times.", "mind": false, "src": "Spine \u00b7 fig 1"}, {"name": "Hip Flexor Stretch", "area": "HIPS_GLUTES", "desc": "Stand up and take a big step back with one foot. Bend your front knee and sink your hips forward until you feel a stretch in the front of your back hip. Hold 20 seconds per side.", "mind": false, "src": "Hips & Glutes \u00b7 fig 5"}, {"name": "Chin Tucks", "area": "NECK", "desc": "Sit tall. Without tilting your head, pull your chin straight back as if making a double chin. Hold 3 seconds. Repeat 8 times. Looks silly, feels amazing.", "mind": false, "src": "Neck & Upper \u00b7 fig 2"}, {"name": "Wall Angels", "area": "SHOULDERS_UPPER_BACK", "desc": "Stand with your back flat against a wall. Raise your arms to a 'goal post' position against the wall, then slowly slide them up overhead and back down. Repeat 8 times.", "mind": false, "src": null}, {"name": "Figure-4 Stretch", "area": "HIPS_GLUTES", "desc": "Sit tall, cross your right ankle over your left knee. Gently press down on your right knee while leaning slightly forward. Hold 20 seconds per side.", "mind": false, "src": "Hips & Glutes \u00b7 fig 1"}, {"name": "Doorway Chest Stretch", "area": "CHEST_POSTURE", "desc": "Stand in a doorway, place your forearms on either side of the frame at shoulder height. Step one foot forward and lean in until you feel a stretch across your chest. Hold 30 seconds.", "mind": false, "src": "Chest & Posture \u00b7 fig 1"}, {"name": "Walk & Hydrate", "area": "FULL_BODY", "desc": "Get up and walk to the kitchen or water cooler. Fill up your water bottle. Take a slightly longer route back. Your body was made to move, not sit in a chair.", "mind": false, "src": "Full Body \u00b7 fig 2"}, {"name": "Overhead Reach", "area": "SHOULDERS_UPPER_BACK", "desc": "Interlace your fingers, flip your palms up, and reach your arms straight overhead. Lean gently to the left for 5 seconds, then to the right. Repeat twice.", "mind": false, "src": "Full Body \u00b7 fig 1"}, {"name": "Calf Raises", "area": "LOWER_BODY", "desc": "Stand behind your chair and hold the back for balance. Rise up onto your toes, hold for 2 seconds, then slowly lower. Repeat 15 times. Get that blood flowing!", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 0"}, {"name": "Trapezius Release", "area": "NECK", "desc": "Drop your right ear toward your right shoulder. Reach your right hand over your head and gently rest it on the left side of your head \u2014 don't pull, just let the weight of your hand deepen the stretch. Hold 20 seconds per side. Breathe into the tight side.", "mind": false, "src": "Neck & Upper \u00b7 fig 4"}, {"name": "Tennis Ball Rhomboid Release", "area": "SHOULDERS_UPPER_BACK", "desc": "Place a tennis ball (or lacrosse ball, or even a rolled-up sock) between your shoulder blade and your spine. Lean against a wall and slowly roll around until you find a tender spot. Hold pressure on it for 15-20 seconds, then move to the next spot. Do both sides.", "mind": false, "src": null}, {"name": "Scapular Squeeze", "area": "SHOULDERS_UPPER_BACK", "desc": "Sit or stand tall, arms at your sides. Squeeze your shoulder blades together as hard as you can, like you're trying to hold a pencil between them. Hold 5 seconds, release. Repeat 8 times.", "mind": false, "src": null}, {"name": "Thread the Needle", "area": "SPINE", "desc": "Get on all fours. Slide your right arm under your left arm, lowering your right shoulder and temple to the floor. You should feel a deep stretch between your shoulder blades. Hold 20 seconds per side.", "mind": false, "src": null}, {"name": "Cross-Body Shoulder Stretch", "area": "SHOULDERS_UPPER_BACK", "desc": "Bring your right arm across your chest. Use your left hand to gently press your right arm closer to your body just above the elbow. Hold 15 seconds per arm. Focus on feeling it deep behind the shoulder.", "mind": false, "src": null}, {"name": "Eagle Arms", "area": "SHOULDERS_UPPER_BACK", "desc": "Extend arms forward, cross right arm under left at the elbows, then wrap forearms so palms face each other (or get as close as you can). Lift elbows to shoulder height and push hands away from your face. Hold 15 seconds, then switch which arm is on top. This one really gets between the shoulder blades.", "mind": false, "src": null}, {"name": "Levator Scapulae Stretch", "area": "NECK", "desc": "Sit tall. Turn your head 45 degrees to the right, then drop your chin toward your right armpit. Place your right hand on the back of your head and gently add a little pressure. You'll feel this along the side/back of your neck where it meets the shoulder blade. Hold 20 seconds per side.", "mind": false, "src": "Neck & Upper \u00b7 fig 5"}, {"name": "Prone Y Raise", "area": "SHOULDERS_UPPER_BACK", "desc": "Lie face down on the floor (or lean forward over your desk). Extend your arms out at a Y angle, thumbs pointing up. Slowly lift your arms a few inches, squeezing your lower traps. Hold 3 seconds at the top. Repeat 10 times. Strengthens the muscles that keep you from hunching.", "mind": false, "src": null}, {"name": "Bruegger's Relief Position", "area": "CHEST_POSTURE", "desc": "Sit on the edge of your chair, feet wide. Turn your palms outward so thumbs point behind you, open your chest, tuck your chin slightly, and squeeze your shoulder blades down and together. Hold this 'anti-hunch' position for 10 seconds. Repeat 3 times. This is the exact opposite of your hunched posture.", "mind": false, "src": null}, {"name": "Foam Roller Thoracic Extension", "area": "SPINE", "desc": "If you have a foam roller, lie on it lengthwise along your spine, knees bent, feet flat. Let your arms fall out to the sides and just breathe, letting gravity open your chest. Or lie across the roller at mid-back level and gently extend over it. Either way \u2014 60 seconds of undoing the hunch.", "mind": false, "src": "Chest & Posture \u00b7 fig 4"}, {"name": "Pec Minor Release", "area": "CHEST_POSTURE", "desc": "Stand facing a corner. Place a tennis ball on your chest just below your collarbone, near the front of your shoulder. Lean into the corner with the ball pressing into this spot. Small movements to find the tender point, then hold. 20 seconds per side. Tight pec minors pull your shoulders forward \u2014 this releases them.", "mind": false, "src": "Chest & Posture \u00b7 fig 3"}, {"name": "Chin Tuck with Resistance", "area": "NECK", "desc": "Place your fingers on your chin. Push your chin back into a double chin while resisting gently with your fingers. Hold 5 seconds. Repeat 6 times. This strengthens the deep neck flexors that get weak from forward head posture.", "mind": false, "src": "Neck & Upper \u00b7 fig 3"}, {"name": "Suboccipital Release", "area": "NECK", "desc": "Place two tennis balls in a sock, tie it off, and lie down with the balls at the base of your skull \u2014 one on each side of your spine. Just lie there and let gravity do the work. Gently nod 'yes' a few times, then turn 'no' a few times. These tiny muscles lock up from screen staring.", "mind": false, "src": "Neck & Upper \u00b7 fig 6"}, {"name": "Seated Pigeon Pose", "area": "HIPS_GLUTES", "desc": "Sitting in your chair, place your right ankle on your left thigh. Sit tall and gently lean forward from the hips until you feel a deep stretch in your right glute and outer hip. Hold 20 seconds per side. Crossed legs tighten these muscles \u2014 this undoes the damage.", "mind": false, "src": "Hips & Glutes \u00b7 fig 0"}, {"name": "IT Band & Outer Hip Stretch", "area": "HIPS_GLUTES", "desc": "Stand and cross your right foot behind your left. Lean your hips to the right while reaching your left arm overhead to the right. You should feel a stretch along the entire outer left side. Hold 20 seconds per side.", "mind": false, "src": "Hips & Glutes \u00b7 fig 3"}, {"name": "Adductor Stretch", "area": "HIPS_GLUTES", "desc": "Stand with feet wide apart, toes slightly out. Shift your weight to the right, bending your right knee while keeping your left leg straight. Sink into it until you feel a stretch along your inner left thigh. Hold 20 seconds per side. Crossing your legs constantly tightens your adductors.", "mind": false, "src": "Hips & Glutes \u00b7 fig 4"}, {"name": "90/90 Hip Stretch", "area": "HIPS_GLUTES", "desc": "Sit on the floor. Place your right leg in front with knee bent 90 degrees, shin parallel to your body. Place your left leg to the side, also bent 90 degrees. Sit tall and lean gently forward over the front shin. Hold 30 seconds, then switch sides. This hits both internal and external hip rotation \u2014 exactly what gets locked up from sitting cross-legged.", "mind": false, "src": "Hips & Glutes \u00b7 fig 2"}, {"name": "Wall Pec Stretch (Low Angle)", "area": "CHEST_POSTURE", "desc": "Stand next to a wall. Place your right forearm on the wall with elbow BELOW shoulder height (about 45 degrees). Step forward and turn your body away from the wall until you feel a stretch in the lower chest. Hold 15 seconds per side. This angle targets the sternal fibres that round your mid-back forward.", "mind": false, "src": "Chest & Posture \u00b7 fig 2"}, {"name": "Prone Cobra", "area": "SHOULDERS_UPPER_BACK", "desc": "Lie face down, arms at your sides with palms down. Squeeze your shoulder blades together, lift your chest slightly off the floor, and rotate your thumbs toward the ceiling. Hold for 10 seconds. Repeat 3 times. This fires every muscle that your hunched posture has switched off.", "mind": false, "src": "Chest & Posture \u00b7 fig 5"}, {"name": "Nerve Glide \u2014 Median", "area": "WRISTS_ARMS", "desc": "Extend your right arm out to the side, palm up. Slowly tilt your head away from your right arm while extending your wrist (fingers pointing to the floor). You should feel a gentle stretch or tingle from neck to fingertips \u2014 that's the nerve gliding. Repeat slowly 5 times per side. Hunching compresses these nerves.", "mind": false, "src": null}, {"name": "20-20-20 Eye Break", "area": "EYES", "desc": "Look at something at least 20 feet away \u2014 out a window, across the room, anywhere far. Hold your gaze there and let your eyes relax for a full 20 seconds. This resets the focusing muscles that lock up from staring at a screen up close.", "mind": false, "src": "Eyes \u00b7 fig 0"}, {"name": "Eye Palming", "area": "EYES", "desc": "Rub your palms together for a few seconds until they feel warm. Gently cup them over your closed eyes without pressing on the eyeballs. Rest in the warm darkness and breathe slowly for 30 seconds. A lovely little reset for tired, dry eyes.", "mind": false, "src": "Eyes \u00b7 fig 1"}, {"name": "Near-Far Focus Shifts", "area": "EYES", "desc": "Hold your thumb up about a foot from your face and focus on it. Then shift your focus to something far across the room. Hold each for 3 seconds, then switch back. Repeat 8 times. This exercises the eye muscles that get stuck at one distance after hours of screen time.", "mind": false, "src": "Eyes \u00b7 fig 2"}, {"name": "Slow Eye Circles", "area": "EYES", "desc": "Keep your head still and softly close your eyes. Slowly roll your eyes in a big circle \u2014 up, around to the right, down, around to the left. Do 4 slow circles each direction. Gentle and easy, no straining.", "mind": false, "src": "Eyes \u00b7 fig 3"}, {"name": "Knee-to-Chest Stretch", "area": "SPINE", "desc": "Lie on your back with knees bent, feet flat. Gently draw one knee up toward your chest and hug it with both hands, keeping the other foot down. Hold 20 seconds, breathing into your lower back, then switch. Finish by hugging both knees in together. A safe, gentle way to ease a tight, achy lower back.", "mind": false, "src": "Hips & Glutes \u00b7 fig 6"}, {"name": "Pelvic Tilts", "area": "SPINE", "desc": "Lie on your back, knees bent, feet flat on the floor. Slowly tilt your pelvis to press your lower back gently flat into the floor, tightening your belly. Hold 5 seconds, then relax. Repeat 8 times \u2014 small, slow, and easy. One of the kindest moves for a lower back that's seized up.", "mind": false, "src": "Spine \u00b7 fig 3"}, {"name": "Child's Pose", "area": "SPINE", "desc": "From hands and knees, sit your hips back toward your heels and reach your arms forward along the floor, resting your forehead down. Let your lower back round and lengthen. Breathe slowly for 30 seconds. A soothing decompression for a tired, tight lower back.", "mind": false, "src": "Spine \u00b7 fig 5"}, {"name": "Supine Spinal Twist", "area": "SPINE", "desc": "Lie on your back, arms out in a T. Bring your knees together and bend them up, then let both knees drop slowly to one side while you turn your head the other way. Keep both shoulders on the floor. Hold 20 seconds, then switch sides. Releases the lower back and the muscles alongside the spine.", "mind": false, "src": "Spine \u00b7 fig 2"}, {"name": "Gentle Press-Up", "area": "SPINE", "desc": "Lie face down and prop yourself onto your forearms, like a sphinx, keeping your hips and pelvis relaxed on the floor. Let your lower back gently extend and ease into the position \u2014 never push into pain. Hold 10 seconds, lower down, repeat 5 times. A calming counter-stretch after hours of sitting hunched forward.", "mind": false, "src": "Spine \u00b7 fig 4"}, {"name": "Standing Back Extension", "area": "SPINE", "desc": "Stand up, feet hip-width apart. Place your hands on your lower back, fingers pointing down. Gently lean back and look slightly up, opening through your lower spine \u2014 only as far as feels comfortable, never into pain. Hold 5 seconds, return to neutral, repeat 5 times. A quick standing antidote to hours of slumping forward.", "mind": false, "src": "Spine \u00b7 fig 6"}, {"name": "Seated Forward Fold", "area": "SPINE", "desc": "Sit toward the front of your chair, feet flat and slightly apart. Let your upper body fold forward between your knees, arms and head hanging heavy toward the floor. Relax your neck completely and breathe into your lower back. Hold 20-30 seconds, then slowly roll up one vertebra at a time. A lovely lower-back decompression you can do right at your desk.", "mind": false, "src": "Spine \u00b7 fig 7"}, {"name": "Bird-Dog", "area": "SPINE", "desc": "On all fours, hands under shoulders and knees under hips. Slowly reach your right arm forward and your left leg straight back until both are level with your spine. Keep your core tight and hips square \u2014 don't let them tip. Hold 3 seconds, return, then switch sides. Do 6 per side. Builds the deep core strength that protects and steadies a tired lower back.", "mind": false, "src": "Spine \u00b7 fig 8"}, {"name": "Glute Bridge", "area": "HIPS_GLUTES", "desc": "Lie on your back, knees bent, feet flat and hip-width apart. Press through your heels and lift your hips until your body forms a straight line from knees to shoulders. Squeeze your glutes at the top, hold 3 seconds, then lower slowly. Repeat 10 times. Strong glutes take the daily load off an aching lower back.", "mind": false, "src": "Hips & Glutes \u00b7 fig 8"}, {"name": "Standing Hamstring Stretch", "area": "LOWER_BODY", "desc": "Stand tall and place your right heel on a low surface \u2014 a step, a low drawer, or the floor just in front of you. Keep that leg straight and hinge gently forward from the hips until you feel a stretch up the back of the thigh. Keep your back long, not rounded. Hold 20 seconds per side. Tight hamstrings quietly tug on your lower back all day \u2014 this eases the pull.", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 1"}, {"name": "Wrist Extensor Stretch", "area": "WRISTS_ARMS", "desc": "Extend one arm forward, palm facing down. Let your hand drop so your fingers point toward the floor, then use your other hand to gently draw the back of your hand in toward you. Hold 15 seconds per hand. The perfect partner to the palm-up stretch for hands tired from typing and mousing all day.", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 4"}, {"name": "Ankle Pumps & Circles", "area": "LOWER_BODY", "desc": "Sitting tall, lift one foot off the floor. Point your toes away, then pull them back toward your shin \u2014 10 slow pumps. Then trace 5 slow circles with your foot in each direction. Switch feet. Keeps the blood moving in legs that have been still too long, and wakes up stiff ankles.", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 3"}, {"name": "Standing Quad Stretch", "area": "LOWER_BODY", "desc": "Stand tall, holding your chair or a wall for balance. Bend your right knee and catch your right ankle behind you, drawing your heel toward your glute. Keep your knees together and stand upright \u2014 feel the stretch down the front of your thigh. Hold 20 seconds per side. Sitting keeps these muscles short; this lengthens them back out.", "mind": false, "src": "Legs & Circ & Wrists \u00b7 fig 2"}, {"name": "5-4-3-2-1 Grounding", "area": "MIND", "desc": "Look around and name, slowly: 5 things you can see, 4 you can hear, 3 you can feel, 2 you can smell, and 1 you can taste. No rush \u2014 let each one land before the next.", "mind": true, "src": "Notice where you are"}, {"name": "One Small Reach", "area": "MIND", "desc": "Pick one tiny, kind thing to do next \u2014 text someone you like a single sentence, refill your water, open a window, step outside for a breath. Just one. Small counts.", "mind": true, "src": "A small step forward"}, {"name": "Three Slow Breaths", "area": "MIND", "desc": "Breathe in slowly through your nose for a count of four, let it out gently for a count of six. Three rounds. Let your shoulders drop a little more each time.", "mind": true, "src": "Soften, and breathe"}, {"name": "Name the Feeling", "area": "MIND", "desc": "Quietly name what you're feeling right now \u2014 \u201cthis is anxiety,\u201d \u201cthis is tiredness,\u201d \u201cthis is fine.\u201d You don't have to fix it. Just naming it loosens its grip a little.", "mind": true, "src": "However you feel is okay"}, {"name": "A Kind Word to Yourself", "area": "MIND", "desc": "Think of how you'd talk to a good friend having your exact day. Now offer yourself one sentence in that same gentle voice. You're allowed to be on your own side.", "mind": true, "src": "Be gentle with yourself"}, {"name": "A Gentle Check-In", "area": "MIND", "desc": "Interactive check-in \u2014 a savoring note plus a 1\u20135 mood scale.", "mind": true, "src": "A moment with yourself"}];
+const AREA_LABEL = {"EYES": "Eyes", "NECK": "Neck", "SHOULDERS_UPPER_BACK": "Shoulders & Upper Back", "CHEST_POSTURE": "Chest & Posture", "SPINE": "Spine", "HIPS_GLUTES": "Hips & Glutes", "LOWER_BODY": "Legs & Lower Body", "WRISTS_ARMS": "Wrists & Arms", "FULL_BODY": "Full Body", "MIND": "Mind Moments"};
+const AREA_ORDER = ["EYES", "NECK", "SHOULDERS_UPPER_BACK", "CHEST_POSTURE", "SPINE", "HIPS_GLUTES", "LOWER_BODY", "WRISTS_ARMS", "FULL_BODY", "MIND"];
+const flags = JSON.parse(localStorage.getItem('imz_qa_flags')||'{}'); // name -> 'ok'|'bad'
+let filter = 'all';
+
+function hasImg(name){ return STRETCH_IMAGE_SLUGS.has(stretchSlug(name)); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function saveFlags(){ localStorage.setItem('imz_qa_flags', JSON.stringify(flags)); render(); }
+
+function render(){
+  const root = document.getElementById('root'); root.innerHTML='';
+  const stretches = ITEMS.filter(i=>!i.mind), mind = ITEMS.filter(i=>i.mind);
+  const imgs = stretches.filter(i=>hasImg(i.name)).length;
+  document.getElementById('summary').textContent =
+    `${stretches.length} stretches · ${imgs} illustrated · ${stretches.length-imgs} on SVG fallback · ${mind.length} mind moments (no illustration)`;
+  const bad = Object.values(flags).filter(v=>v==='bad').length;
+  document.getElementById('flagcount').textContent = bad ? `${bad} flagged for regen` : '';
+  let shown=0;
+  for(const area of AREA_ORDER){
+    let list = ITEMS.filter(i=>i.area===area);
+    list = list.filter(i=>{
+      if(filter==='img') return !i.mind && hasImg(i.name);
+      if(filter==='svg') return !i.mind && !hasImg(i.name);
+      if(filter==='flagged') return flags[i.name]==='bad';
+      return true;
+    });
+    if(!list.length) continue;
+    const t=document.createElement('div'); t.className='group-title';
+    t.innerHTML = `${AREA_LABEL[area]||area} <span class="cnt">${list.length}</span>`;
+    root.appendChild(t);
+    const d=document.createElement('div'); d.className='divider'; root.appendChild(d);
+    const g=document.createElement('div'); g.className='grid';
+    for(const it of list){
+      shown++;
+      const has=hasImg(it.name);
+      const card=document.createElement('div'); card.className='card'+(flags[it.name]==='bad'?' flag-bad':'');
+      const media = it.mind ? `<div class="mind-ph"><span class="orb"></span></div>`
+                            : `<div class="media">${getStretchVisual(it.name)}</div>`;
+      const badge = it.mind ? `<span class="badge mind">mind · no illustration</span>`
+                            : `<span class="badge ${has?'img':'svg'}">${has?'illustrated':'no image · SVG'}</span>`;
+      card.innerHTML = `
+        ${media}
+        <div class="name">${it.name}</div>
+        <div class="desc">${esc(it.desc)}</div>
+        <div class="meta">
+          ${badge}
+          ${it.src?`<span class="srcline">${it.mind?'cue: ':''}${esc(it.src)}</span>`:''}
+        </div>
+        <div class="qa">
+          <button class="ok ${flags[it.name]==='ok'?'on':''}" title="looks good">✓</button>
+          <button class="bad ${flags[it.name]==='bad'?'on':''}" title="wrong / regenerate">✗</button>
+        </div>`;
+      const [okB,badB]=card.querySelectorAll('.qa button');
+      okB.onclick=()=>{ flags[it.name]= flags[it.name]==='ok'?undefined:'ok'; saveFlags(); };
+      badB.onclick=()=>{ flags[it.name]= flags[it.name]==='bad'?undefined:'bad'; saveFlags(); };
+      g.appendChild(card);
+    }
+    root.appendChild(g);
+  }
+  if(!shown){ const e=document.createElement('div'); e.className='empty'; e.textContent='Nothing here for this filter.'; root.appendChild(e); }
+}
+document.querySelectorAll('.filters button').forEach(b=>{
+  b.onclick=()=>{ filter=b.dataset.f; document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); };
+});
+render();
+</script>
+</body>
+</html>
