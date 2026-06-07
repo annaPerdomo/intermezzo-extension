@@ -198,15 +198,16 @@ function render(){
   const root = document.getElementById('root'); root.innerHTML='';
   const stretches = ITEMS.filter(i=>!i.mind), mind = ITEMS.filter(i=>i.mind);
   const imgs = stretches.filter(i=>hasImg(i.name)).length;
+  const mindImgs = mind.filter(i=>hasImg(i.name)).length;
   document.getElementById('summary').textContent =
-    `${stretches.length} stretches · ${imgs} illustrated · ${stretches.length-imgs} on SVG fallback · ${mind.length} mind moments (no illustration)`;
+    `${stretches.length} stretches · ${imgs} illustrated · ${stretches.length-imgs} on SVG fallback · ${mind.length} mind moments (${mindImgs} illustrated)`;
   const bad = Object.values(flags).filter(v=>v==='bad').length;
   document.getElementById('flagcount').textContent = bad ? `${bad} flagged for regen` : '';
   let shown=0;
   for(const area of AREA_ORDER){
     let list = ITEMS.filter(i=>i.area===area);
     list = list.filter(i=>{
-      if(filter==='img') return !i.mind && hasImg(i.name);
+      if(filter==='img') return hasImg(i.name);
       if(filter==='svg') return !i.mind && !hasImg(i.name);
       if(filter==='flagged') return flags[i.name]==='bad';
       return true;
@@ -223,7 +224,9 @@ function render(){
       const card=document.createElement('div'); card.className='card'+(flags[it.name]==='bad'?' flag-bad':'');
       let media;
       if (it.mind) {
-        media = `<div class="mind-ph"><span class="orb"></span></div>`;
+        media = has
+          ? `<div class="media">${getStretchVisual(it.name)}</div>`
+          : `<div class="mind-ph"><span class="orb"></span></div>`;
       } else if (QA_BEFORE[it.name]) {
         const before = QA_BEFORE[it.name];
         const oldVisual = before === 'svg'
@@ -242,8 +245,9 @@ function render(){
       } else {
         media = `<div class="media">${getStretchVisual(it.name)}</div>`;
       }
-      const badge = it.mind ? `<span class="badge mind">mind · no illustration</span>`
-                            : `<span class="badge ${has?'img':'svg'}">${has?'illustrated':'no image · SVG'}</span>`;
+      const badge = it.mind
+        ? `<span class="badge ${has?'img':'mind'}">${has?'mind · illustrated':'mind · no illustration'}</span>`
+        : `<span class="badge ${has?'img':'svg'}">${has?'illustrated':'no image · SVG'}</span>`;
       card.innerHTML = `
         ${media}
         <div class="name">${it.name}</div>

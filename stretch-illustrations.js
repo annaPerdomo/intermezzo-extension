@@ -1145,7 +1145,10 @@ const STRETCH_SVGS = {
 // exercise sheets; everything else falls back to the inline SVG line-art.
 const STRETCH_IMAGE_SLUGS = new Set([
   "20-20-20-eye-break",
+  "5-4-3-2-1-grounding",
   "90-90-hip-stretch",
+  "a-gentle-check-in",
+  "a-kind-word-to-yourself",
   "adductor-stretch",
   "ankle-pumps-and-circles",
   "bird-dog",
@@ -1168,9 +1171,11 @@ const STRETCH_IMAGE_SLUGS = new Set([
   "it-band-and-outer-hip-stretch",
   "knee-to-chest-stretch",
   "levator-scapulae-stretch",
+  "name-the-feeling",
   "near-far-focus-shifts",
   "neck-rolls",
   "nerve-glide-median",
+  "one-small-reach",
   "overhead-reach",
   "pec-minor-release",
   "pelvic-tilts",
@@ -1190,6 +1195,7 @@ const STRETCH_IMAGE_SLUGS = new Set([
   "supine-spinal-twist",
   "tennis-ball-rhomboid-release",
   "thread-the-needle",
+  "three-slow-breaths",
   "trapezius-release",
   "walk-and-hydrate",
   "wall-angels",
@@ -1206,6 +1212,11 @@ function stretchSlug(name) {
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+// Whether a stretch has a hand-illustrated PNG (vs. only inline SVG line-art).
+function hasStretchImage(name) {
+  return STRETCH_IMAGE_SLUGS.has(stretchSlug(name));
 }
 
 // Preferred visual for a stretch: the illustrated PNG if we have one,

@@ -370,9 +370,13 @@ function parsePhases(stretch) {
 // ---------------------------------------------------------------------------
 
 function buildMediaHTML(stretch) {
-  // Mind moments don't get a stretch illustration — they get a soft, breathing
-  // fermata (the "hold this moment" mark) to rest your eyes on while you settle.
+  // Mind moments usually get a soft, breathing fermata (the "hold this moment"
+  // mark) to rest your eyes on while you settle. A few have a hand-illustrated
+  // PNG of their own — show that when it exists, falling back to the orb.
   if (stretch.type === "mind") {
+    if (hasStretchImage(stretch.name)) {
+      return `<div class="illustration-wrap">${getStretchVisual(stretch.name)}</div>`;
+    }
     return `
       <div class="mind-visual">
         <span class="mind-orb"></span>
