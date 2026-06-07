@@ -367,6 +367,71 @@ const STRETCHES = [
     focus: "Lower back extension",
     area: AREA.SPINE,
     priority: 2
+  },
+  // === More for a tight, achy lower back + the muscles that quietly cause it ===
+  {
+    name: "Standing Back Extension",
+    duration: "30 seconds",
+    description: "Stand up, feet hip-width apart. Place your hands on your lower back, fingers pointing down. Gently lean back and look slightly up, opening through your lower spine — only as far as feels comfortable, never into pain. Hold 5 seconds, return to neutral, repeat 5 times. A quick standing antidote to hours of slumping forward.",
+    focus: "Lower back extension (anti-slump)",
+    area: AREA.SPINE,
+    priority: 3
+  },
+  {
+    name: "Seated Forward Fold",
+    duration: "40 seconds",
+    description: "Sit toward the front of your chair, feet flat and slightly apart. Let your upper body fold forward between your knees, arms and head hanging heavy toward the floor. Relax your neck completely and breathe into your lower back. Hold 20-30 seconds, then slowly roll up one vertebra at a time. A lovely lower-back decompression you can do right at your desk.",
+    focus: "Lower back decompression (at desk)",
+    area: AREA.SPINE,
+    priority: 3
+  },
+  {
+    name: "Bird-Dog",
+    duration: "50 seconds",
+    description: "On all fours, hands under shoulders and knees under hips. Slowly reach your right arm forward and your left leg straight back until both are level with your spine. Keep your core tight and hips square — don't let them tip. Hold 3 seconds, return, then switch sides. Do 6 per side. Builds the deep core strength that protects and steadies a tired lower back.",
+    focus: "Core stability for the lower back",
+    area: AREA.SPINE,
+    priority: 3
+  },
+  {
+    name: "Glute Bridge",
+    duration: "40 seconds",
+    description: "Lie on your back, knees bent, feet flat and hip-width apart. Press through your heels and lift your hips until your body forms a straight line from knees to shoulders. Squeeze your glutes at the top, hold 3 seconds, then lower slowly. Repeat 10 times. Strong glutes take the daily load off an aching lower back.",
+    focus: "Glute strength (lower-back support)",
+    area: AREA.HIPS_GLUTES,
+    priority: 2
+  },
+  {
+    name: "Standing Hamstring Stretch",
+    duration: "40 seconds",
+    description: "Stand tall and place your right heel on a low surface — a step, a low drawer, or the floor just in front of you. Keep that leg straight and hinge gently forward from the hips until you feel a stretch up the back of the thigh. Keep your back long, not rounded. Hold 20 seconds per side. Tight hamstrings quietly tug on your lower back all day — this eases the pull.",
+    focus: "Hamstrings (relieves lower-back pull)",
+    area: AREA.LOWER_BODY,
+    priority: 2
+  },
+  {
+    name: "Wrist Extensor Stretch",
+    duration: "30 seconds",
+    description: "Extend one arm forward, palm facing down. Let your hand drop so your fingers point toward the floor, then use your other hand to gently draw the back of your hand in toward you. Hold 15 seconds per hand. The perfect partner to the palm-up stretch for hands tired from typing and mousing all day.",
+    focus: "Wrists & forearm extensors (typing relief)",
+    area: AREA.WRISTS_ARMS,
+    priority: 1
+  },
+  {
+    name: "Ankle Pumps & Circles",
+    duration: "40 seconds",
+    description: "Sitting tall, lift one foot off the floor. Point your toes away, then pull them back toward your shin — 10 slow pumps. Then trace 5 slow circles with your foot in each direction. Switch feet. Keeps the blood moving in legs that have been still too long, and wakes up stiff ankles.",
+    focus: "Lower-leg circulation & ankle mobility",
+    area: AREA.LOWER_BODY,
+    priority: 1
+  },
+  {
+    name: "Standing Quad Stretch",
+    duration: "40 seconds",
+    description: "Stand tall, holding your chair or a wall for balance. Bend your right knee and catch your right ankle behind you, drawing your heel toward your glute. Keep your knees together and stand upright — feel the stretch down the front of your thigh. Hold 20 seconds per side. Sitting keeps these muscles short; this lengthens them back out.",
+    focus: "Quadriceps & front of hip",
+    area: AREA.LOWER_BODY,
+    priority: 1
   }
 ];
 

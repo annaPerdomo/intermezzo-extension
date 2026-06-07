@@ -34,7 +34,7 @@ Intermezzo nudges you at regular intervals with a short, guided wellness break. 
 ## What it does
 
 - **Smart stretch selection** — picks 1-3 stretches per break, mixing different body areas and adapting to the time of day. Morning breaks ease you in, afternoon breaks target the tension that's built up.
-- **35+ stretches** — covering neck, shoulders, spine, chest, hips, wrists, and eye-rest breaks for screen strain. Each one written like a friend is coaching you through it.
+- **50+ stretches** — covering neck, shoulders, spine, lower back, chest, hips, legs, wrists, and eye-rest breaks for screen strain. Each one written like a friend is coaching you through it.
 - **Mind moments** — some breaks end with an optional, on-device check-in for your mind: a gentle grounding prompt, a moment to savor something good, or a one-tap mood note. Care for your mind, not just your body.
 - **Reaches you in any app** — a system notification and a soft chime fire even when Chrome is in the background, so the nudge lands whether you're in Figma, a fullscreen video, or a game — not just when you're looking at the browser.
 - **Snooze** — mid-task? Snooze the reminder for a few minutes and pick it back up when you're ready.

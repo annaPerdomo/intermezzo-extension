@@ -957,6 +957,186 @@ const STRETCH_SVGS = {
   <!-- gentle extension arrow -->
   <path d="M 78 96 Q 70 88 60 86" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
   <polygon points="64,81 56,86 64,91" fill="#ffd700"/>
+</svg>`,
+
+"Standing Back Extension": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- legs -->
+  <line x1="90" y1="135" x2="85" y2="190" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="110" y1="135" x2="115" y2="190" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- feet -->
+  <line x1="85" y1="190" x2="75" y2="193" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="115" y1="190" x2="125" y2="193" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- hips -->
+  <line x1="90" y1="135" x2="110" y2="135" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso arching back -->
+  <path d="M 100 135 Q 108 105 104 78" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head tilted back -->
+  <circle cx="106" cy="60" r="16" fill="none" stroke="white" stroke-width="3"/>
+  <!-- hands on lower back -->
+  <path d="M 100 120 Q 88 124 92 134" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 104 118 Q 116 122 112 132" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- backward arch arrow -->
+  <path d="M 122 96 Q 130 111 123 128" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="118,124 123,132 128,123" fill="#ffd700"/>
+</svg>`,
+
+"Seated Forward Fold": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- chair seat -->
+  <rect x="70" y="120" width="70" height="5" rx="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- chair back -->
+  <line x1="138" y1="120" x2="138" y2="75" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+  <!-- thighs -->
+  <line x1="80" y1="124" x2="120" y2="124" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- lower leg + foot -->
+  <line x1="82" y1="124" x2="78" y2="165" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="78" y1="165" x2="68" y2="170" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso folded forward over thighs -->
+  <path d="M 110 122 Q 90 110 72 118" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head hanging down -->
+  <circle cx="62" cy="126" r="14" fill="none" stroke="white" stroke-width="3"/>
+  <!-- arms hanging toward the floor -->
+  <line x1="78" y1="116" x2="70" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="84" y1="114" x2="78" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- gravity arrow -->
+  <line x1="58" y1="146" x2="58" y2="166" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="53,163 58,171 63,163" fill="#ffd700"/>
+</svg>`,
+
+"Bird-Dog": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground line -->
+  <line x1="20" y1="160" x2="180" y2="160" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- torso (level back) -->
+  <line x1="80" y1="105" x2="125" y2="105" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- supporting arm down -->
+  <line x1="122" y1="105" x2="126" y2="155" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- supporting knee down + shin -->
+  <line x1="84" y1="105" x2="82" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="82" y1="150" x2="96" y2="156" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="137" cy="100" r="13" fill="none" stroke="white" stroke-width="3"/>
+  <!-- extended arm reaching forward (level) -->
+  <line x1="125" y1="103" x2="170" y2="95" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- extended leg reaching back (level) -->
+  <line x1="80" y1="105" x2="35" y2="113" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="35" y1="113" x2="27" y2="111" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- level highlight along the spine -->
+  <line x1="90" y1="98" x2="116" y2="98" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 4" opacity="0.7"/>
+  <!-- reach arrows -->
+  <line x1="172" y1="89" x2="183" y2="87" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="179,83 187,87 179,91" fill="#ffd700"/>
+  <line x1="32" y1="105" x2="21" y2="107" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="25,103 17,107 25,111" fill="#ffd700"/>
+</svg>`,
+
+"Glute Bridge": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- ground line -->
+  <line x1="15" y1="162" x2="185" y2="162" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- head on ground -->
+  <circle cx="32" cy="157" r="13" fill="none" stroke="white" stroke-width="3"/>
+  <!-- shoulders / upper back on ground -->
+  <line x1="45" y1="158" x2="70" y2="155" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso rising to lifted hips -->
+  <line x1="70" y1="155" x2="112" y2="118" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- thigh down from hips to knee -->
+  <line x1="112" y1="118" x2="142" y2="124" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- shin down to foot flat -->
+  <line x1="142" y1="124" x2="147" y2="159" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="147" y1="159" x2="160" y2="159" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- arm resting along the ground -->
+  <line x1="64" y1="158" x2="100" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- lift arrow under the hips -->
+  <line x1="110" y1="146" x2="110" y2="128" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="105,132 110,122 115,132" fill="#ffd700"/>
+</svg>`,
+
+"Standing Hamstring Stretch": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- step / low surface -->
+  <rect x="120" y="150" width="56" height="32" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <!-- standing leg + foot -->
+  <line x1="80" y1="120" x2="78" y2="188" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="78" y1="188" x2="68" y2="192" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- raised straight leg resting on the step -->
+  <line x1="88" y1="122" x2="128" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="128" y1="150" x2="140" y2="150" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- hips -->
+  <line x1="80" y1="120" x2="88" y2="122" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso hinged forward over the raised leg -->
+  <path d="M 84 120 Q 92 100 105 88" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="112" cy="76" r="15" fill="none" stroke="white" stroke-width="3"/>
+  <!-- arm reaching toward the foot -->
+  <line x1="100" y1="98" x2="122" y2="122" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- hamstring stretch highlight along the back of the raised thigh -->
+  <path d="M 98 132 Q 108 142 120 146" fill="none" stroke="#ffd700" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4" opacity="0.8"/>
+</svg>`,
+
+"Wrist Extensor Stretch": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- torso -->
+  <line x1="100" y1="90" x2="100" y2="160" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="100" cy="68" r="17" fill="none" stroke="white" stroke-width="3"/>
+  <!-- neck -->
+  <line x1="100" y1="85" x2="100" y2="90" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- shoulders -->
+  <line x1="73" y1="100" x2="127" y2="100" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- right arm extended forward -->
+  <line x1="127" y1="100" x2="165" y2="105" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- right hand dropped, fingers pointing down -->
+  <line x1="165" y1="105" x2="163" y2="122" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- left arm drawing the hand back -->
+  <line x1="73" y1="100" x2="90" y2="115" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 90 115 Q 125 122 162 120" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- draw-back arrow -->
+  <line x1="163" y1="124" x2="160" y2="134" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="155,130 162,138 165,128" fill="#ffd700"/>
+</svg>`,
+
+"Ankle Pumps & Circles": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- chair seat -->
+  <rect x="40" y="105" width="58" height="5" rx="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- chair back -->
+  <line x1="42" y1="105" x2="42" y2="60" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+  <!-- torso -->
+  <line x1="70" y1="106" x2="72" y2="62" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="73" cy="45" r="14" fill="none" stroke="white" stroke-width="3"/>
+  <!-- arm resting -->
+  <line x1="71" y1="78" x2="58" y2="100" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- thigh -->
+  <line x1="72" y1="108" x2="110" y2="112" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- lifted lower leg, extended forward -->
+  <line x1="110" y1="112" x2="150" y2="128" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- foot -->
+  <line x1="150" y1="128" x2="162" y2="122" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- circling arrow around the foot -->
+  <circle cx="158" cy="136" r="15" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="171,129 175,139 165,137" fill="#ffd700"/>
+</svg>`,
+
+"Standing Quad Stretch": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- standing leg + foot -->
+  <line x1="92" y1="120" x2="90" y2="188" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="90" y1="188" x2="80" y2="192" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- hips -->
+  <line x1="92" y1="120" x2="104" y2="120" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso upright -->
+  <line x1="98" y1="120" x2="100" y2="70" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="100" cy="52" r="16" fill="none" stroke="white" stroke-width="3"/>
+  <!-- bent leg: thigh down, shin folding up behind -->
+  <line x1="104" y1="120" x2="108" y2="150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="108" y1="150" x2="118" y2="120" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- foot drawn toward the glute -->
+  <line x1="118" y1="120" x2="121" y2="111" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- hand catching the ankle -->
+  <line x1="100" y1="86" x2="118" y2="118" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- other arm out for balance -->
+  <line x1="98" y1="86" x2="80" y2="104" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- pull-up arrow -->
+  <line x1="130" y1="126" x2="130" y2="112" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="125,115 130,106 135,115" fill="#ffd700"/>
+  <!-- quad stretch highlight down the front of the thigh -->
+  <path d="M 106 128 Q 110 138 108 149" fill="none" stroke="#ffd700" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4" opacity="0.8"/>
 </svg>`
 
 };
