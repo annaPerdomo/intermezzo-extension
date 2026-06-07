@@ -274,6 +274,7 @@
     .card-media {
       position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
@@ -293,11 +294,12 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      height: 100%;
+      flex: 1;          /* grow to fill, leaving room for the demo link below */
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 28px;
+      padding: 28px 28px 12px;
     }
 
     .illustration-wrap svg {
@@ -412,6 +414,83 @@
       font-size: clamp(13.5px, 1.55vh, 15px);
       font-weight: 400;
       line-height: 1.6;
+      color: var(--sage);
+    }
+
+    /* Optional YouTube how-to demo — sits in its own space beneath the diagram so
+       it never crowds the instructions. The diagram is still the primary guide;
+       the red play badge makes it clearly a YouTube demonstration link. */
+    .media-video-link {
+      position: relative;
+      z-index: 1;
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      align-self: flex-start;   /* left-justify under the diagram */
+      max-width: 100%;
+      margin-left: 14px;
+      padding: 8px 16px;
+      margin-bottom: clamp(14px, 2.4vh, 24px);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .media-video-link:hover {
+      background: rgba(46, 54, 80, 0.05);
+      transform: translateY(-1px);
+    }
+
+    /* The recognizable YouTube play badge — rounded red rectangle, white triangle. */
+    .media-video-link .yt-badge {
+      flex: none;
+      width: 32px;
+      height: 22px;
+      border-radius: 6px;
+      background: #FF0000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(255, 0, 0, 0.25);
+      transition: transform 0.15s ease;
+    }
+
+    .media-video-link:hover .yt-badge { transform: scale(1.06); }
+
+    .media-video-link .yt-tri {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 5px 0 5px 8.5px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 1px; /* optically centre the triangle */
+    }
+
+    .media-video-link .mvl-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    .media-video-link .mvl-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--olive);
+      transition: color 0.15s ease;
+    }
+
+    .media-video-link:hover .mvl-title { color: var(--forest); }
+
+    .media-video-link .mvl-out { font-size: 12px; }
+
+    .media-video-link .mvl-credit {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11.5px;
+      font-weight: 400;
+      font-style: italic;
       color: var(--sage);
     }
 

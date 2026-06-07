@@ -381,7 +381,8 @@ function buildMediaHTML(stretch) {
     `;
   }
 
-  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>`;
+  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>
+    ${buildVideoLinkHTML(stretch)}`;
 }
 
 function buildInfoHTML(stretch) {
@@ -448,6 +449,34 @@ function buildInfoHTML(stretch) {
     <hr class="stretch-divider">
     <p class="stretch-description">${stretch.description}</p>
   `;
+}
+
+// An optional YouTube how-to demo, shown beneath the diagram with full credit to
+// the creator. The diagram stays the primary guide; this only renders when a
+// video has been curated for this exercise. Opens in a new tab — never embedded.
+function buildVideoLinkHTML(stretch) {
+  const video = typeof getStretchVideo === "function" ? getStretchVideo(stretch.name) : null;
+  if (!video) return "";
+  const credit = video.creator
+    ? `<span class="mvl-credit">Demonstration by ${escapeHTML(video.creator)}</span>`
+    : "";
+  return `
+    <a class="media-video-link" href="${escapeHTML(video.url)}" target="_blank" rel="noopener noreferrer"
+       title="Watch a demonstration of this stretch on YouTube">
+      <span class="yt-badge" aria-hidden="true"><span class="yt-tri"></span></span>
+      <span class="mvl-text">
+        <span class="mvl-title">Watch a demo on YouTube <span class="mvl-out" aria-hidden="true">&#8599;</span></span>
+        ${credit}
+      </span>
+    </a>
+  `;
+}
+
+// Small escaper for any creator-supplied strings rendered via innerHTML.
+function escapeHTML(str) {
+  return String(str).replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
 }
 
 function updateProgressDots() {
