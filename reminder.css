@@ -308,6 +308,17 @@
       max-height: clamp(150px, 26vh, 260px);
     }
 
+    /* Illustrated PNGs — already coloured on-brand, just size them to match */
+    .illustration-wrap img.stretch-illo {
+      width: auto;
+      height: 100%;
+      max-height: clamp(160px, 28vh, 280px);
+      max-width: 100%;
+      object-fit: contain;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
     /* Restyle SVG line-art — olive-brown strokes, moss accents */
     .illustration-wrap svg [stroke="white"] { stroke: var(--olive); }
     .illustration-wrap svg [stroke="#ffd700"] { stroke: var(--moss); }

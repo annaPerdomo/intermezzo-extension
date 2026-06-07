@@ -1141,6 +1141,74 @@ const STRETCH_SVGS = {
 
 };
 
+// Slugs that have a hand-illustrated PNG in illustrations/. Generated from the
+// exercise sheets; everything else falls back to the inline SVG line-art.
+const STRETCH_IMAGE_SLUGS = new Set([
+  "20-20-20-eye-break",
+  "90-90-hip-stretch",
+  "adductor-stretch",
+  "ankle-pumps-and-circles",
+  "bird-dog",
+  "calf-raises",
+  "cat-cow-seated",
+  "chest-opener",
+  "child-s-pose",
+  "chin-tuck-with-resistance",
+  "chin-tucks",
+  "doorway-chest-stretch",
+  "eye-palming",
+  "figure-4-stretch",
+  "foam-roller-thoracic-extension",
+  "gentle-press-up",
+  "glute-bridge",
+  "hip-flexor-stretch",
+  "it-band-and-outer-hip-stretch",
+  "knee-to-chest-stretch",
+  "levator-scapulae-stretch",
+  "near-far-focus-shifts",
+  "neck-rolls",
+  "overhead-reach",
+  "pec-minor-release",
+  "pelvic-tilts",
+  "prone-cobra",
+  "seated-forward-fold",
+  "seated-pigeon-pose",
+  "seated-spinal-twist",
+  "shoulder-shrugs-and-rolls",
+  "slow-eye-circles",
+  "standing-back-extension",
+  "standing-forward-fold",
+  "standing-hamstring-stretch",
+  "standing-quad-stretch",
+  "suboccipital-release",
+  "supine-spinal-twist",
+  "trapezius-release",
+  "walk-and-hydrate",
+  "wall-pec-stretch-low-angle",
+  "wrist-extensor-stretch",
+  "wrist-flexor-stretch",
+]);
+
+// Turn a stretch name into its illustration slug (matches the build script).
+function stretchSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/—/g, " ")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Preferred visual for a stretch: the illustrated PNG if we have one,
+// otherwise the inline SVG line-art.
+function getStretchVisual(name) {
+  const slug = stretchSlug(name);
+  if (STRETCH_IMAGE_SLUGS.has(slug)) {
+    return `<img class="stretch-illo" src="illustrations/${slug}.png" alt="" draggable="false">`;
+  }
+  return getStretchSVG(name);
+}
+
 // Get SVG for a stretch by name, or return a generic placeholder
 function getStretchSVG(name) {
   return STRETCH_SVGS[name] || `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">

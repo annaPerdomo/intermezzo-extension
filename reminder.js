@@ -381,8 +381,10 @@ function buildMediaHTML(stretch) {
     `;
   }
 
-  return `<div class="illustration-wrap">${getStretchSVG(stretch.name)}</div>
-    ${buildVideoLinkHTML(stretch)}`;
+  return `
+    <div class="illustration-wrap">${getStretchVisual(stretch.name)}</div>
+    ${buildVideoLinkHTML(stretch)}
+  `;
 }
 
 function buildInfoHTML(stretch) {
