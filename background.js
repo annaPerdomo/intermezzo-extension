@@ -499,6 +499,199 @@ const MIND_EXERCISES = [
     priority: 0
   },
   {
+    name: "Hand on Heart",
+    type: "mind",
+    mindType: "compassion",
+    duration: "40 seconds",
+    description: "Rest a hand over the centre of your chest and feel its warmth and a little weight. Take a few easy breaths there. This is a small, real kindness you can give yourself any time.",
+    focus: "Soothing touch, settling the body",
+    cue: "You're here, and that's enough",
+    priority: 0
+  },
+  {
+    name: "Where Are Your Feet?",
+    type: "mind",
+    mindType: "ground",
+    duration: "30 seconds",
+    description: "Notice your feet on the floor — the contact, the weight, the support underneath you. The ground has been holding you up this whole time. Let it.",
+    focus: "Quick grounding, out of the head",
+    cue: "Right here, right now",
+    priority: 0
+  },
+  {
+    name: "A Long Exhale",
+    type: "mind",
+    mindType: "breathe",
+    duration: "30 seconds",
+    description: "Breathe in, then take a second small sip of air on top. Now let it all go in one long, slow exhale, like a quiet sigh. Do it twice. The body reads a long out-breath as “safe.”",
+    focus: "Fast calm for the nervous system",
+    cue: "Let the breath go",
+    priority: 1
+  },
+  {
+    name: "Unclench",
+    type: "mind",
+    mindType: "ground",
+    duration: "40 seconds",
+    description: "Travel through the usual holding places — jaw, shoulders, hands, belly. Wherever you find tension, let it soften by just a few percent. Not all the way. Just a little is plenty.",
+    focus: "Releasing the tension you didn't notice",
+    cue: "Soften what's holding",
+    priority: 0
+  },
+  {
+    name: "Rest Your Eyes Far Away",
+    type: "mind",
+    mindType: "ground",
+    duration: "30 seconds",
+    description: "Look up and find the furthest thing you can see — out a window, down the hall, across the room. Let your eyes rest there a few slow breaths. Your gaze, and your mind, can widen.",
+    focus: "Easing screen strain and a narrowed focus",
+    cue: "Look up and out",
+    priority: 0
+  },
+  {
+    name: "Savor One Good Thing",
+    type: "mind",
+    mindType: "savor",
+    duration: "40 seconds",
+    description: "Bring to mind one small thing you liked recently — a taste, a song, a message, a patch of sun. Replay it for a few seconds and let yourself actually enjoy it again. Good moments count twice when you revisit them.",
+    focus: "Savoring, against the pull to rush past the good",
+    cue: "Linger on something good",
+    priority: 1
+  },
+  {
+    name: "Send a Good Thought",
+    type: "mind",
+    mindType: "connect",
+    duration: "40 seconds",
+    description: "Picture someone you care about, anyone at all. Silently wish them one good thing — “I hope your day is gentle.” Warmth sent quietly outward tends to warm you a little too.",
+    focus: "Connection and kindness, lifting the mood",
+    cue: "Someone you care about",
+    priority: 0
+  },
+  {
+    name: "Put It Down for a Minute",
+    type: "mind",
+    mindType: "release",
+    duration: "40 seconds",
+    description: "Name the thing that's been tugging at your attention. Now imagine setting it gently on a shelf — it'll still be there later. You're allowed to put a worry down for a minute and just breathe.",
+    focus: "Permission to pause a worry",
+    cue: "You can set it down",
+    priority: 0
+  },
+  {
+    name: "One Thing Ahead",
+    type: "mind",
+    mindType: "activate",
+    duration: "30 seconds",
+    description: "Name one small thing you're looking forward to — even tiny. Dinner, a show, a weekend, a hot shower. Let yourself feel a flicker of it. A little something ahead is its own kind of fuel.",
+    focus: "A gentle pull forward, toward hope",
+    cue: "Something small to come",
+    priority: 0
+  },
+  // --- CBT-rooted moments -------------------------------------------------
+  // Each maps to a recognized cognitive-behavioural technique, kept in the
+  // gentle, invitational house voice — a soft on-ramp, never a worksheet.
+  {
+    name: "Thought or Fact?",
+    type: "mind",
+    mindType: "reframe",
+    duration: "45 seconds",
+    description: "Catch the thought that's weighing on you right now. Ask it, gently: is this a fact, or a thought my mind is handing me? Thoughts can feel completely true and still not be facts.",
+    focus: "Cognitive defusion — loosening a sticky thought",
+    cue: "A thought is not a fact",
+    priority: 1
+  },
+  {
+    name: "I'm Having the Thought That…",
+    type: "mind",
+    mindType: "reframe",
+    duration: "40 seconds",
+    description: "Take the thought that's stuck and quietly put four words in front of it: “I'm having the thought that…” Notice the small bit of space that opens. You're the one noticing the thought — you aren't the thought.",
+    focus: "Stepping back from a harsh thought",
+    cue: "Make a little space",
+    priority: 0
+  },
+  {
+    name: "Name the Thinking Trap",
+    type: "mind",
+    mindType: "reframe",
+    duration: "45 seconds",
+    description: "Notice a worried thought and see if it fits a familiar shape — all-or-nothing, jumping to the worst, assuming what others think. You don't have to argue with it. Just naming the pattern loosens its hold.",
+    focus: "Spotting common thinking traps",
+    cue: "Notice the pattern",
+    priority: 0
+  },
+  {
+    name: "What's Most Likely?",
+    type: "mind",
+    mindType: "reframe",
+    duration: "45 seconds",
+    description: "Anxiety likes to show you the worst version of things. For a moment, ask instead: what's the most likely outcome, not the scariest one? And if a hard thing did come — you've made it through hard things before.",
+    focus: "Decatastrophizing — right-sizing a fear",
+    cue: "Most likely, not worst case",
+    priority: 0
+  },
+  {
+    name: "A Fairer Thought",
+    type: "mind",
+    mindType: "reframe",
+    duration: "45 seconds",
+    description: "Take the harsh thing your mind is saying about you or your day. Now find a fairer, more balanced version — not forced sunshine, just truer. “This is hard, and I'm still showing up” often fits better than the harsh one.",
+    focus: "Balanced thinking, in place of the harsh story",
+    cue: "True and kind can both fit",
+    priority: 1
+  },
+  {
+    name: "The Next Five Minutes",
+    type: "mind",
+    mindType: "activate",
+    duration: "40 seconds",
+    description: "When everything feels heavy, the mind says wait until you feel like it. It often works the other way — the doing comes first, and the feeling follows a little. Pick one thing you could do for just five minutes. Motion, not motivation.",
+    focus: "Behavioural activation against the freeze",
+    cue: "Start small, start anyway",
+    priority: 1
+  },
+  {
+    name: "Opposite Action",
+    type: "mind",
+    mindType: "activate",
+    duration: "40 seconds",
+    description: "Notice what the low mood is nudging you to do — curl up, cancel, go quiet. Just for now, consider one small move in the opposite direction. You don't have to feel it first to take the step.",
+    focus: "Gently acting against the pull of low mood",
+    cue: "One step the other way",
+    priority: 0
+  },
+  {
+    name: "Catch One Good Fact",
+    type: "mind",
+    mindType: "evidence",
+    duration: "40 seconds",
+    description: "A low mood quietly filters out the good. Push back, gently — find one small fact from today that went okay, and let it count. You're gathering the evidence your mind tends to skip past.",
+    focus: "Building a positive-data log against the negative filter",
+    cue: "Let one good thing count",
+    priority: 0
+  },
+  {
+    name: "Soften a 'Should'",
+    type: "mind",
+    mindType: "reframe",
+    duration: "40 seconds",
+    description: "Listen for a “should” or “must” running underneath — I should be further along, I must not get this wrong. Try trading it for “it would be nice if,” and notice how the pressure eases a little.",
+    focus: "Easing the pressure of should-statements",
+    cue: "Less should, more soft",
+    priority: 0
+  },
+  {
+    name: "Feelings Aren't Facts",
+    type: "mind",
+    mindType: "reframe",
+    duration: "40 seconds",
+    description: "When a feeling is loud, the mind treats it as proof — I feel like a failure, so I must be one. Gently separate the two: this is a feeling moving through you, not a verdict on who you are. Feelings are real, and they aren't facts.",
+    focus: "Unhooking from emotional reasoning",
+    cue: "A feeling, not a verdict",
+    priority: 0
+  },
+  {
     // Interactive check-in. Its card is rendered specially in reminder.js (a
     // savoring note + mood scale), so `description` stays empty — the flag below
     // is what the renderer keys off of.

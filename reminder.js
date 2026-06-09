@@ -555,6 +555,24 @@ function showExercise(index) {
   // Render left column (media)
   cardMedia.innerHTML = buildMediaHTML(stretch);
 
+  // If a mind moment is mapped to an illustration whose PNG hasn't been generated
+  // yet, the <img> will 404. Fall back to the soft breathing orb rather than show
+  // a broken-image icon. (Attached programmatically — extension CSP blocks inline
+  // onerror handlers.)
+  if (isMind) {
+    const illo = cardMedia.querySelector("img.stretch-illo");
+    if (illo) {
+      illo.addEventListener("error", () => {
+        cardMedia.innerHTML = `
+      <div class="mind-visual">
+        <span class="mind-orb"></span>
+        ${glyphSVG("fermata", 56, { cls: "mind-mark", color: "var(--moss)" })}
+      </div>
+    `;
+      }, { once: true });
+    }
+  }
+
   // Render right column (info)
   stretchInfo.innerHTML = buildInfoHTML(stretch);
 
