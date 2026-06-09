@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F1EEF2"></stop>
-      <stop offset="62%" stop-color="#E3E5EF"></stop>
-      <stop offset="100%" stop-color="#E2DEE6"></stop>
+      <stop offset="0%" stop-color="#717BA0"></stop>
+      <stop offset="55%" stop-color="#636C8D"></stop>
+      <stop offset="100%" stop-color="#51586F"></stop>
     </linearGradient>
   </defs>
 
   <rect width="32" height="32" rx="7" fill="url(#bg)"></rect>
-  <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="6.4" fill="none" stroke="#2E3650" stroke-width="0.7" opacity="0.1"></rect>
+  <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="6.4" fill="none" stroke="#FBF8F3" stroke-width="0.7" opacity="0.18"></rect>
 
-  
+
   <g transform="translate(16 16) scale(0.02914) translate(-179 500.5)">
-    <path d="M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" fill="#2E3650"></path>
+    <path d="M104-878L147-878L307-683Q257-624 230-581Q203-538 203-494L203-494Q203-457 227-416.50Q251-376 303-314L303-314L287-292Q243-320 205-320L205-320Q177-320 163-301.50Q149-283 149-257L149-257Q149-225 162.50-196.50Q176-168 199-142L199-142L186-123Q117-173 84-214Q51-255 51-303L51-303Q51-346 78-366Q105-386 143-386L143-386Q173-386 221-363L221-363L221-365L67-570Q168-659 168-736L168-736Q168-797 104-878L104-878Z" fill="#FBF8F3"></path>
   </g>
 </svg>
