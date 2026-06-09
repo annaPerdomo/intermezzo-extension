@@ -810,6 +810,7 @@ h2.section-title {
 }
 .split.warm .split-list .tick { background: rgba(192, 138, 134, 0.16); color: var(--terra-deep); }
 .split-list b { font-weight: 600; }
+.mind-aside { margin-top: 22px; font-size: 14px; line-height: 1.55; color: var(--moss); }
 
 /* ===== Mind-moment mock cards ===== */
 .mind-examples { display: flex; flex-direction: column; gap: 16px; }
