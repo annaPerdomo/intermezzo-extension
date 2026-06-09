@@ -1,189 +1,203 @@
-# Illustration Restyle
+# Illustration Cohesion Restyle
 
-Goal: make all 52 exercise illustrations look like **one cohesive set** in the calm
-"Interlude" line style — deep ink-navy fine lines, no fills, no faces, soft lavender-slate
-motion accents, transparent background. The peach glow seen in the app is a CSS layer behind
-the figure, **not** baked into the PNG.
+Restyle only the PNGs in `illustrations/` that do **not** have a matching sibling named
+`<slug>.old.png`.
 
-## Target style (every illustration must match)
+Scope examples:
 
-- **One line color:** deep desaturated ink-navy `#2A3048` for all line work.
-- **Thin, light, even** stroke weight, smooth rounded caps. Fine-lined and calm — not bold,
-  not sketchy, no double-lines, no pencil texture.
-- **Pure outline.** No color fills anywhere — no filled hair, no solid shapes, no shading.
-- **No facial features at all:** blank head, no eyes/nose/mouth/eyelashes. Simple androgynous
-  short hair or plain head shape. Gender-neutral body — relaxed, simple proportions, neither
-  curvy nor muscular; clothing suggested with a few light lines.
-- **Motion accents** in soft lavender-slate `#8490A8` only — thin arrows/curves at the same
-  light weight as the body lines. No yellow, no orange, no peach, no "spark" emphasis marks.
-- **Transparent background**, centered, generous padding. No canvas border, no baked-in glow.
-- **Keep each pose exactly** — body position, framing, motion direction. Only the style changes.
+- Process `illustrations/wall-angels.png` when `illustrations/wall-angels.old.png` does not exist.
+- Skip `illustrations/cat-cow-seated.png` when `illustrations/cat-cow-seated.old.png` exists.
+- Never process files ending in `.old.png`.
+- Leave `illustrations/walk-and-hydrate.png` unchanged. Use it only as the hair and figure-design
+  reference.
+- Use `illustrations/restyled/5-4-3-2-1-grounding.png` as the canonical reference for line weight,
+  line opacity, color visibility, and overall legibility.
 
-`walk-and-hydrate.png` is the closest existing image to this look — use it as the north star.
+## Target Style
 
----
+Apply the following style consistently to every eligible illustration:
 
-## Restyle all illustrations at once
+- Use deep desaturated ink-navy `#2A3048` for all figure and object line work.
+- Match the apparent line weight of `illustrations/restyled/5-4-3-2-1-grounding.png` at the final
+  `400x400` size. The grounding illustration is the source of truth; do not rely on a generated-size
+  pixel calculation when it conflicts with the visual match.
+- Use the same stroke width for the body, hair, clothing, props, and motion accents. Small
+  anti-aliased edge differences are acceptable, but no element should look intentionally thicker
+  or thinner than another.
+- Use clearly visible, medium-light, even strokes with smooth rounded caps and joins.
+- Lines must remain easy to see at normal display size. Do not use hairline, faint, delicate,
+  ultra-fine, or low-opacity strokes.
+- Keep the artwork calm and clean: no bold, sketchy, doubled, or pencil-textured lines.
+- Use pure outlines only. Do not add filled hair, solid shapes, shading, gradients, or texture.
+- Eye-exercise exception: `20-20-20-eye-break.png`, `near-far-focus-shifts.png`, and
+  `slow-eye-circles.png` may use a flat muted blue-slate `#66758A` iris fill and a small flat
+  `#F4F4F7` circular highlight. Their sight lines, focus arrows, motion paths, arrowheads, and
+  target circles must use `#8490A8`.
+- `eye-palming.png` remains outline-only because the eyes are covered. Its side relaxation marks
+  must use `#8490A8`.
+- Do not draw facial features: no eyes, nose, mouth, eyebrows, or eyelashes.
+- Keep bodies gender-neutral, with relaxed, simple proportions and clothing indicated by only a
+  few light lines.
+- Use soft lavender-slate `#8490A8` only for motion arrows and motion curves. Do not use yellow,
+  orange, peach, or spark-like emphasis marks.
+- Use a transparent background with no border, shadow, glow, or environmental backdrop.
+- Center each illustration with generous and visually consistent padding.
+- Preserve the source pose, framing, props, exercise mechanics, and motion direction exactly.
 
-This script restyles **every** `illustrations/*.png` (skipping `*.old.png`) in one run via the
-OpenAI images/edits endpoint (`gpt-image-1`). Each source PNG is fed in so the pose is preserved.
-Outputs land in `illustrations/restyled/` — review them, then move the good ones over the originals.
+## Hair Standard
 
-Requires: `bash`, `curl`, `python3`, and `sips` (macOS, for resize). `OPENAI_API_KEY` must be set.
+Use `illustrations/walk-and-hydrate.png` as the exact hair reference for all human figures:
 
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
+- Give every visible head the same simple, androgynous short hairstyle.
+- Match its rounded, close-to-the-head outer silhouette and single smooth side-swept interior
+  curve.
+- Draw the hair as thin navy outlines only, with no fill, strands, texture, highlights, or extra
+  detail.
+- Keep the face completely blank.
+- Adapt the same hairstyle naturally to side, rear, tilted, or partially obscured head angles
+  without changing its recognizable design.
+- When the pose or viewing angle makes hair inappropriate or invisible, do not invent visible
+  hair merely to force it into the image.
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IN_DIR="$ROOT/illustrations"
-OUT_DIR="$ROOT/illustrations/restyled"
-MODEL="gpt-image-1"
-GEN_SIZE="1024x1024"     # gpt-image-1: 1024x1024 | 1024x1536 | 1536x1024 | auto
-FINAL_SIZE="400"         # originals are 400x400
-QUALITY="high"           # low | medium | high
-PARALLEL="${PARALLEL:-3}" # concurrent requests; lower if you hit rate limits
+`walk-and-hydrate.png` is the reference for figure treatment and especially hair.
+`illustrations/restyled/5-4-3-2-1-grounding.png` is the reference for stroke thickness, darkness,
+and visibility. The existing peach and yellow accents in `walk-and-hydrate.png` are **not**
+reference colors; the target colors above take precedence.
 
-read -r -d '' PROMPT <<'EOF' || true
-Restyle this exercise illustration into a single cohesive calm line-art style.
-Keep the EXACT same pose, body position, framing, and motion direction — change only the style.
+## Prompt Construction
 
-- ONE line color: deep desaturated ink-navy #2A3048 for ALL line work.
-- Thin, light, even stroke weight with smooth rounded caps. Fine-lined and calm — not bold,
-  not sketchy, no double-lines, no pencil texture.
-- Pure outline. NO color fills anywhere — no filled hair, no solid shapes, no shading.
-- NO facial features at all: blank head, no eyes/nose/mouth/eyelashes. Simple androgynous short
-  hair or plain head shape. Gender-neutral body — relaxed simple proportions, neither curvy nor
-  muscular; clothing suggested with a few light lines.
-- Motion accents in soft lavender-slate #8490A8 only — thin arrows/curves at the same light
-  weight as the body lines. No yellow, no orange, no peach, no "spark" emphasis marks.
-- Transparent background, centered, generous padding. No canvas border, no shading, no
-  background glow.
-EOF
+Every image-edit prompt must identify all three image roles explicitly:
 
-[[ -n "${OPENAI_API_KEY:-}" ]] || { echo "ERROR: OPENAI_API_KEY is not set." >&2; exit 1; }
-mkdir -p "$OUT_DIR"
+- The current original PNG is the edit target and controls pose, framing, props, and motion.
+- `walk-and-hydrate.png` controls hair shape and simplified figure treatment.
+- `illustrations/restyled/5-4-3-2-1-grounding.png` controls exact apparent stroke weight, opacity,
+  navy color visibility, rounded line treatment, and padding.
 
-restyle_one() {
-  local src="$1" slug out
-  slug="$(basename "$src" .png)"
-  out="$OUT_DIR/$slug.png"
-  echo "==> $slug"
-  if ! curl -sS https://api.openai.com/v1/images/edits \
-      -H "Authorization: Bearer $OPENAI_API_KEY" \
-      -F "model=$MODEL" \
-      -F "image[]=@$src" \
-      -F "size=$GEN_SIZE" \
-      -F "quality=$QUALITY" \
-      -F "background=transparent" \
-      -F "prompt=$PROMPT" \
-    | python3 - "$out" <<'PY'
-import sys, json, base64
-out = sys.argv[1]
-data = json.load(sys.stdin)
-if "error" in data:
-    sys.stderr.write("   API error: %s\n" % data["error"].get("message", data["error"])); sys.exit(2)
-try:
-    b64 = data["data"][0]["b64_json"]
-except (KeyError, IndexError):
-    sys.stderr.write("   Unexpected response: %s\n" % json.dumps(data)[:400]); sys.exit(2)
-open(out, "wb").write(base64.b64decode(b64))
-print("   wrote", out)
-PY
-  then
-    echo "   FAILED $slug" >&2; return 1
-  fi
-  command -v sips >/dev/null && sips -Z "$FINAL_SIZE" "$out" >/dev/null && echo "   resized ${FINAL_SIZE}px"
-}
-export -f restyle_one
-export OUT_DIR MODEL GEN_SIZE FINAL_SIZE QUALITY PROMPT OPENAI_API_KEY
+Include this instruction verbatim in every generation and retry prompt:
 
-# Every illustration except the *.old.png backups, restyled $PARALLEL at a time.
-find "$IN_DIR" -maxdepth 1 -name '*.png' ! -name '*.old.png' -print0 \
-  | xargs -0 -P "$PARALLEL" -I {} bash -c 'restyle_one "$@"' _ {}
+> Match the visible line weight and darkness of the approved 5-4-3-2-1 Grounding restyle. At
+> 400x400, the new illustration must be equally easy to see. Do not make the lines thinner,
+> fainter, more delicate, or more transparent than that reference.
 
-echo
-echo "Done. Review $OUT_DIR, then move the keepers over the originals in $IN_DIR."
-```
+Do not use phrases such as `extremely fine`, `hairline`, `ultra-thin`, or generated-size targets
+such as `2-3 px at 1024x1024`. Those instructions produced lines that became too faint after
+resizing.
 
-### Run it
+## Workflow
 
-```bash
-export OPENAI_API_KEY=sk-...
-PARALLEL=3 bash scripts/restyle-all.sh      # if you save the block above as a file
-# or paste the block straight into a terminal
-```
+At the start of the first session:
 
-Tips:
-- Review `illustrations/restyled/` side by side before promoting — line color, weight, the
-  faceless head, lavender accents, and no fills should look identical across the set.
-- Re-run individual slugs by pointing `find` at a single file, or just delete the bad outputs
-  and rerun (existing good ones get overwritten harmlessly).
-- Lower `PARALLEL` if you hit rate limits; raise it to go faster.
+1. Compute and print the exact eligible file list using the matching-sibling rule above.
+2. Confirm that the expected set contains 25 images after excluding `walk-and-hydrate.png`.
+3. Sort the list alphabetically and preserve that order for all later batches.
 
----
+Create `illustrations/restyled/` and write each result there using the original filename. Do not
+overwrite, rename, or modify anything directly in `illustrations/`.
 
-## Per-file motion cues (reference)
+## Batch Limit
 
-The edits endpoint preserves the pose from the source image, so these are just a sanity check
-for what each illustration should show.
+Work on exactly one batch of no more than four illustrations per session:
 
-### Neck & upper
-- **neck-rolls** — Seated figure from behind; circular arrow (halo) around the head.
-- **chin-tucks** — Side profile; arrow showing the chin pulling straight back.
-- **trapezius-release** — Hand over the top of the head pulling it toward the shoulder; arrow at the top of the head.
-- **levator-scapulae-stretch** — Head turned ~45°, chin dropped toward the armpit, hand on the back of the head; downward arrow.
-- **chin-tuck-with-resistance** — Fingers on the chin pushing it back while resisting; arrow at the chin.
-- **suboccipital-release** — Lying on the back, two dots at the base of the skull (tennis balls).
+1. Select the next four eligible files in alphabetical order that do not already have an accepted
+   output in `illustrations/restyled/`.
+2. Open and inspect only those four source images, `walk-and-hydrate.png`, and the approved
+   `illustrations/restyled/5-4-3-2-1-grounding.png` line-weight reference. Do not inspect or
+   generate any later images during this session.
+3. Briefly note the four sources' main style deviations, including their apparent line width.
+4. Generate and visually review only those four outputs.
+5. Re-run failed images within the same batch until all four pass or a specific blocker is found.
+6. Print the batch report and stop. Wait for an explicit request to continue before opening or
+   processing the next batch.
 
-### Shoulders / chest / arms
-- **shoulder-shrugs-and-rolls** — Seated, shoulders lifted toward the ears; upward arrows + a small roll-back circular arrow.
-- **chest-opener** — Standing, hands clasped behind the back, arms lifted; arrow lifting the arms up and back.
-- **doorway-chest-stretch** — Forearms on a doorframe at shoulder height, one foot forward, leaning in; arrow opening across the chest.
-- **pec-minor-release** — Facing a corner, a ball pressed below the collarbone, leaning in; dot at the release point.
-- **wall-pec-stretch-low-angle** — Beside a wall, forearm on it elbow below shoulder (~45°), body turned away; arrow at the lower chest.
-- **overhead-reach** — Standing, fingers interlaced palms up reaching overhead, gentle side lean; arrow showing the lean.
+For the final batch, process whichever eligible files remain, even if fewer than four.
 
-### Wrists
-- **wrist-flexor-stretch** — One arm forward palm up, other hand pulling the fingers down and back; arrow at the fingers.
-- **wrist-extensor-stretch** — One arm forward palm down, fingers pointing to the floor, other hand drawing the back of the hand in; arrow at the back of the hand.
+Feed each original PNG into the image-edit operation so its pose and composition remain intact.
 
-### Lower back (lying / seated)
-- **knee-to-chest-stretch** — Lying on the back, one knee hugged toward the chest; arrow pulling the knee in.
-- **pelvic-tilts** — Lying on the back, knees bent, pelvis tilted to flatten the lower back; curved arrow at the pelvis.
-- **child-s-pose** — From hands and knees, hips sat back toward the heels, arms reaching forward, forehead down; arrow settling back and down.
-- **supine-spinal-twist** — Lying on the back, arms in a T, bent knees dropped to one side, head turned the other way; curved arrow showing the twist.
-- **gentle-press-up** — Lying face down on the forearms (sphinx), hips relaxed, lower back gently extended; arrow lifting the chest.
-- **standing-back-extension** — Standing, hands on the lower back, leaning gently back; arrow showing the backward lean.
-- **seated-forward-fold** — Seated at the front of a chair, folded forward between the knees, arms and head heavy; downward fold arrow.
-- **seated-spinal-twist** — Seated tall, hand on the opposite knee, torso twisting, looking over the shoulder; curved rotation arrow.
-- **cat-cow-seated** — Seated on the edge of a chair, hands on knees, spine arching then rounding; curved spinal-flex arrow.
-- **prone-cobra** — Lying face down, arms at the sides palms down, chest lifted, shoulder blades squeezed; arrow lifting the chest.
-- **foam-roller-thoracic-extension** — Lying back over a foam roller across the spine, knees bent, arms falling open; arrow showing the chest opening.
+After every batch, visually compare each output against:
 
-### Hips / glutes / legs
-- **hip-flexor-stretch** — Standing lunge, one foot back, front knee bent, hips sinking forward; arrow at the front of the back hip.
-- **figure-4-stretch** — Seated, ankle crossed over the opposite knee, leaning forward with a gentle press; arrow pressing the knee down.
-- **seated-pigeon-pose** — Seated in a chair, ankle on the opposite thigh, leaning forward from the hips; forward-lean arrow.
-- **it-band-and-outer-hip-stretch** — Standing, one foot crossed behind, hips leaning to the side, opposite arm overhead; arrow along the outer side.
-- **adductor-stretch** — Wide stance, toes out, weight on one bent knee, other leg straight; arrow at the inner straight-leg thigh.
-- **90-90-hip-stretch** — Seated on the floor, front leg bent 90° in front, other leg 90° to the side, leaning over the front shin; forward-lean arrow.
-- **glute-bridge** — Lying on the back, knees bent, hips lifted into a straight line; upward arrow at the hips.
-- **standing-hamstring-stretch** — Standing, one heel on a low surface leg straight, hinging forward, back long; arrow up the back of the straight thigh.
-- **standing-quad-stretch** — Standing holding a chair, one ankle caught behind, heel drawn toward the glute, knees together; arrow at the heel.
+- Its source, to confirm that the pose, framing, props, and motion direction were preserved.
+- `walk-and-hydrate.png`, to compare figure treatment, spacing, and hair.
+- `illustrations/restyled/5-4-3-2-1-grounding.png`, to compare line thickness, darkness,
+  visibility, rounded line treatment, and padding.
+- All previously accepted outputs, to maintain consistency across the complete set.
 
-### Movement / circulation
-- **bird-dog** — On all fours, one arm forward and the opposite leg back, level with the spine; arrows extending the arm and leg.
-- **calf-raises** — Standing behind a chair, rising onto the toes; upward arrow at the heels.
-- **ankle-pumps-and-circles** — Seated, one foot lifted, toes pointing then flexing; circular arrow tracing ankle circles.
-- **walk-and-hydrate** — Cheerful figure walking with a water bottle; light motion lines suggesting the walk.
+Re-run any output that contains:
 
-### Eyes
-- **20-20-20-eye-break**, **eye-palming**, **near-far-focus-shifts**, **slow-eye-circles** — eye-care
-  pictograms; restyle the line color/weight to match but keep their simple icon framing.
+- Facial features or visibly different hair.
+- Filled regions, shading, texture, heavy lines, uneven strokes, or visibly inconsistent line
+  widths.
+- Lines that are thinner, fainter, or harder to see than the approved grounding reference.
+- Incorrect line or motion-accent colors.
+- Lost or altered pose details, props, framing, or motion direction.
+- An opaque background, baked-in glow, border, or inconsistent padding.
 
-### Newer additions
-- **bruegger-s-relief-position**, **cross-body-shoulder-stretch**, **eagle-arms**,
-  **nerve-glide-median**, **prone-y-raise**, **scapular-squeeze**, **standing-forward-fold**,
-  **tennis-ball-rhomboid-release**, **thread-the-needle**, **wall-angels** — restyle to the same
-  target; keep whatever pose the source PNG already shows.
+For line-width QA, inspect each output at `100%` size after resizing to `400x400`, directly beside
+the approved grounding reference. Figure outlines, hair, clothing, props, and arrows must have the
+same apparent weight and visibility as the grounding illustration. Reject obvious `1 px` or
+hairline details, low-opacity lines, tapered brush strokes, mixed bold and fine sections, or any
+result that disappears sooner than the grounding reference when viewed at normal size. A solid
+`2-3 px` appearance is acceptable when it visually matches the reference.
+
+Do not use post-processing to compensate for a failed line weight by thinning, expanding, eroding,
+or dilating the generated artwork. Regenerate from the original source with the approved grounding
+image as the visual line-weight reference. Post-processing may only remove the chroma-key
+background, normalize the two exact colors, and resize once to `400x400`.
+
+## Output Requirements
+
+Verify that every final output:
+
+- Is a `400x400` PNG.
+- Has a genuinely transparent background.
+- Is centered with generous, consistent padding.
+- Uses `#2A3048` for figure and object outlines.
+- Uses `#8490A8` only for motion accents.
+- Uses the same clearly visible apparent stroke width and opacity as
+  `illustrations/restyled/5-4-3-2-1-grounding.png`, approximately `2-3 px` at the final `400x400`
+  size, across the figure, hair, clothing, props, and motion accents.
+- Uses the `walk-and-hydrate.png` hairstyle wherever hair is visible.
+- Is faceless and gender-neutral.
+- Contains no fills, shading, gradients, texture, borders, or glow.
+- Eye-exercise exceptions may contain the approved flat iris fills, highlights, and lavender-slate
+  action elements described above.
+- Preserves the original exercise pose and meaning.
+
+Do not process all 25 illustrations in one session. Complete one batch, report its results, and
+stop. Once all batches are eventually complete, print a final report listing every eligible file,
+whether it passed initially or required regeneration, and any remaining concerns.
+
+## Current Acceptance State
+
+- Expanded scope override: restyle every base PNG in `illustrations/` that does not yet have an
+  accepted output in `illustrations/restyled/`, even when a matching `<slug>.old.png` backup
+  exists. Continue to use the base PNG as the edit target and never process the `.old.png` file.
+- Accepted canonical reference: `5-4-3-2-1-grounding.png`.
+- Accepted after regeneration against the canonical line-weight reference:
+  `20-20-20-eye-break.png`, `90-90-hip-stretch.png`, and `a-gentle-check-in.png`.
+- Accepted eye-exercise family: `eye-palming.png`, `near-far-focus-shifts.png`, and
+  `slow-eye-circles.png`.
+- Accepted batch: `a-kind-word-to-yourself.png`, `bruegger-s-relief-position.png`,
+  `cross-body-shoulder-stretch.png`, and `eagle-arms.png`.
+- Accepted batch: `figure-4-stretch.png`, `knee-to-chest-stretch.png`,
+  `name-the-feeling.png`, and `nerve-glide-median.png`.
+- Accepted batch: `one-small-reach.png`, `overhead-reach.png`, `prone-cobra.png`,
+  and `prone-y-raise.png`. The first `prone-cobra.png` generation was rejected because it changed
+  the source into a hands-under-shoulders press-up; the accepted regeneration preserves arms
+  extended back alongside the torso.
+- Accepted batch: `scapular-squeeze.png`, `standing-forward-fold.png`,
+  `tennis-ball-rhomboid-release.png`, and `thread-the-needle.png`.
+- Accepted final batch: `three-slow-breaths.png` and `wall-angels.png`.
+- Accepted expanded-scope batch: `adductor-stretch.png`, `ankle-pumps-and-circles.png`,
+  `bird-dog.png`, and `calf-raises.png`. `ankle-pumps-and-circles.png` and `calf-raises.png`
+  required regeneration to remove facial-profile details.
+- Accepted expanded-scope batch: `cat-cow-seated.png`, `chest-opener.png`,
+  `child-s-pose.png`, `chin-tuck-with-resistance.png`, and `chin-tucks.png`.
+  `cat-cow-seated.png` required regeneration to remove facial-profile details;
+  `chest-opener.png` required regeneration for rear-view hair treatment; and
+  `chin-tuck-with-resistance.png` required regeneration to preserve the source hand placement.
+- Accepted expanded-scope batch: `doorway-chest-stretch.png`,
+  `foam-roller-thoracic-extension.png`, `gentle-press-up.png`, `glute-bridge.png`,
+  and `hip-flexor-stretch.png`.
+- Accepted expanded-scope batch: `it-band-and-outer-hip-stretch.png`,
+  `levator-scapulae-stretch.png`, `neck-rolls.png`, `pec-minor-release.png`,
+  and `pelvic-tilts.png`.
