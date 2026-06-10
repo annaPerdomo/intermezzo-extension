@@ -567,9 +567,8 @@ h2.section-title {
   color: var(--moss); margin-top: 26px;
 }
 /* Break panel — faithful to the in-app reminder screen */
+.ex-stage { position: relative; max-width: 920px; margin: 0 auto; }
 .ex-panel {
-  max-width: 920px;
-  margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.65);
@@ -580,9 +579,20 @@ h2.section-title {
   grid-template-columns: 6fr 4fr;
   min-height: 300px;
 }
+/* Nav chevrons — the in-app break lets you page between exercises */
+.ex-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); border: none;
+  color: var(--sage); font-size: 19px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(46, 54, 80, 0.12);
+}
+.ex-prev { left: -19px; }
+.ex-next { right: -19px; }
 .ex-media {
   position: relative;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   overflow: hidden;
   background: linear-gradient(135deg, #E6E4EE 0%, #DADEEC 100%);
 }
@@ -591,21 +601,50 @@ h2.section-title {
   background: radial-gradient(ellipse at 55% 50%, rgba(138,147,178,0.16) 0%, rgba(192,138,134,0.10) 45%, transparent 75%);
   pointer-events: none;
 }
-.ex-play {
+/* Line-art guide — strokes recoloured on-brand the same way the app does
+   (white → olive, the gold accent arrow → moss). */
+.ex-illo {
   position: relative; z-index: 1;
-  width: 56px; height: 56px; border-radius: 50%;
-  background: rgba(255,255,255,0.85);
+  flex: 1; min-height: 0; width: 100%;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  color: var(--forest);
+  padding: 26px 26px 6px;
 }
-.ex-vlabel {
-  position: absolute; left: 18px; bottom: 16px; z-index: 1;
-  font-family: var(--sans);
-  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--sage); opacity: 0.5;
+.ex-illo svg { width: 100%; height: auto; max-height: 230px; }
+.ex-illo svg [stroke="white"] { stroke: var(--olive); }
+.ex-illo svg [stroke="#ffd700"] { stroke: var(--moss); }
+.ex-illo svg [fill="#ffd700"] { fill: var(--moss); }
+.ex-illo svg [stroke^="rgba(255,255,255"] { stroke: rgba(46,54,80,0.22); }
+/* Credited "Watch a demo" link, beneath the diagram (a YouTube link in-app) */
+.ex-demo {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 11px;
+  margin-bottom: 16px; text-decoration: none;
+}
+.ex-yt {
+  width: 30px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  background: #FF0000;
+  display: flex; align-items: center; justify-content: center;
+}
+.ex-yt-tri {
+  width: 0; height: 0;
+  border-left: 8px solid #fff;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-left: 2px;
+}
+.ex-demo-text { display: flex; flex-direction: column; line-height: 1.25; }
+.ex-demo-title { font-size: 13px; font-weight: 500; color: var(--forest); }
+.ex-demo-credit {
+  font-size: 11px; color: var(--sage); opacity: 0.85;
 }
 .ex-content { padding: clamp(22px, 3vh, 34px) 36px; display: flex; flex-direction: column; }
+/* Phase label above the ring — e.g. "Right side · 1 of 2" */
+.ex-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.ex-phase {
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--moss); white-space: nowrap;
+}
 .ex-name {
   font-family: var(--serif);
   font-weight: 300;
@@ -956,6 +995,7 @@ h2.section-title {
   .stretch-aside { grid-template-columns: 1fr; }
   .ex-panel { grid-template-columns: 1fr; }
   .ex-media { min-height: 200px; }
+  .ex-nav { display: none; }
 }
 @media (max-width: 640px) {
   .wrap { padding: 0 20px; }
