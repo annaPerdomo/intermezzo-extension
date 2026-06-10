@@ -11,3 +11,7 @@ store-screenshots/
 
 # Source illustration sheets — local only; the sliced PNGs in illustrations/ are tracked
 generated-images/
+
+# Local dev tooling — the deployed site builds from site/; these are convenience only
+/index.html
+.vscode/
