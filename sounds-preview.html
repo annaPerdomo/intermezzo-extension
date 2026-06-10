@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Intermezzo — Sound check</title>
+  <style>
+    :root {
+      --forest: #2f3a2f; --moss: #6b7d5e; --sand: #efe7da;
+      --cream: #fbf8f3; --ink: #3a4034; --line: #e2d8c8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; padding: 48px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(1200px 600px at 50% -10%, #fffdf9, var(--cream));
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .wrap { width: 100%; max-width: 640px; }
+    h1 { font-size: 1.7rem; font-weight: 600; margin: 0 0 4px; color: var(--forest); }
+    .sub { margin: 0 0 28px; color: var(--moss); line-height: 1.5; }
+    .vol {
+      display: flex; align-items: center; gap: 14px;
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      padding: 14px 18px; margin-bottom: 24px;
+    }
+    .vol label { font-weight: 600; font-size: 0.92rem; }
+    .vol input[type=range] { flex: 1; accent-color: var(--moss); }
+    .vol .pct { width: 48px; text-align: right; color: var(--moss); font-variant-numeric: tabular-nums; }
+    .grid { display: grid; gap: 12px; }
+    .cue {
+      width: 100%; text-align: left; cursor: pointer;
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      padding: 16px 18px; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .cue:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(47,58,47,.08); border-color: var(--moss); }
+    .cue:active { transform: translateY(0); }
+    .cue .name { font-weight: 600; font-size: 1.02rem; color: var(--forest); }
+    .cue .name .tag {
+      font-weight: 600; font-size: .72rem; color: var(--moss);
+      background: var(--sand); border-radius: 999px; padding: 2px 9px; margin-left: 8px; vertical-align: middle;
+    }
+    .cue .desc { color: #6f6a5e; font-size: .9rem; line-height: 1.45; }
+    .seq {
+      margin-top: 22px; width: 100%; cursor: pointer;
+      background: var(--forest); color: var(--cream); border: 0; border-radius: 14px;
+      padding: 16px; font-size: 1rem; font-weight: 600; letter-spacing: .2px;
+      transition: opacity .12s ease;
+    }
+    .seq:hover { opacity: .92; }
+    .seq .small { display: block; font-weight: 400; font-size: .82rem; opacity: .8; margin-top: 3px; }
+    footer { margin-top: 26px; color: #9a9486; font-size: .8rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Intermezzo — Sound check</h1>
+    <p class="sub">Audition the break's sound vocabulary. A small chamber ensemble in D major
+      — warm cello, gentle harp, soft bell — designed to be calming and to never startle.
+      Click any cue to hear it.</p>
+
+    <div class="vol">
+      <label for="vol">Volume</label>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="1">
+      <span class="pct" id="volLabel">100%</span>
+    </div>
+
+    <div class="grid">
+      <button class="cue" data-cue="reminder">
+        <span class="name">Reminder<span class="tag">calls you to the break</span></span>
+        <span class="desc">A rising D-major arpeggio over a cello drone — the signature “time for an interlude.” The only cue that reaches you across other apps.</span>
+      </button>
+      <button class="cue" data-cue="rest">
+        <span class="name">Work → Rest<span class="tag">settle</span></span>
+        <span class="desc">The rising start run played in reverse — a light harp tinkle descending home, settling gently into rest for a moment.</span>
+      </button>
+      <button class="cue" data-cue="resume">
+        <span class="name">Rest → Work<span class="tag">keep going · also the start</span></span>
+        <span class="desc">A rising pentatonic harp run — momentum and encouragement, leaning forward. This is also what plays when you start an exercise.</span>
+      </button>
+      <button class="cue" data-cue="complete">
+        <span class="name">Exercise complete<span class="tag">well done</span></span>
+        <span class="desc">A small V→I cadence resolving to a warm D-major glow — “that’s one, beautifully done.”</span>
+      </button>
+      <button class="cue" data-cue="celebrate">
+        <span class="name">Celebration<span class="tag">whole break done</span></span>
+        <span class="desc">A soft-attack chord that blooms into a full D major with a settling bell shimmer — grand, but it grows in so it can’t startle.</span>
+      </button>
+    </div>
+
+    <button class="seq" id="seq">
+      Play the full by-ear sequence
+      <span class="small">start → rest → resume → complete → celebrate</span>
+    </button>
+
+    <footer>This is a developer audition page — it isn’t linked from the extension UI.
+      All sounds are synthesized live by <code>sounds.js</code>; nothing is recorded or sent anywhere.</footer>
+  </div>
+
+  <script src="sounds.js"></script>
+  <script src="sounds-preview.js"></script>
+</body>
+</html>
