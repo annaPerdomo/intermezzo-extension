@@ -601,19 +601,19 @@ h2.section-title {
   background: radial-gradient(ellipse at 55% 50%, rgba(138,147,178,0.16) 0%, rgba(192,138,134,0.10) 45%, transparent 75%);
   pointer-events: none;
 }
-/* Line-art guide — strokes recoloured on-brand the same way the app does
-   (white → olive, the gold accent arrow → moss). */
+/* Hand-drawn exercise illustration — the same asset the extension renders. */
 .ex-illo {
   position: relative; z-index: 1;
   flex: 1; min-height: 0; width: 100%;
   display: flex; align-items: center; justify-content: center;
   padding: 26px 26px 6px;
 }
-.ex-illo svg { width: 100%; height: auto; max-height: 230px; }
-.ex-illo svg [stroke="white"] { stroke: var(--olive); }
-.ex-illo svg [stroke="#ffd700"] { stroke: var(--moss); }
-.ex-illo svg [fill="#ffd700"] { fill: var(--moss); }
-.ex-illo svg [stroke^="rgba(255,255,255"] { stroke: rgba(46,54,80,0.22); }
+.ex-illo img {
+  width: auto; height: 100%;
+  max-height: 240px; max-width: 100%;
+  object-fit: contain;
+  -webkit-user-select: none; user-select: none;
+}
 /* Credited "Watch a demo" link, beneath the diagram (a YouTube link in-app) */
 .ex-demo {
   position: relative; z-index: 1;
