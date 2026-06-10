@@ -1,5 +1,6 @@
 const enabledToggle = document.getElementById("enabledToggle");
-const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn):not(.mind-btn):not(.video-btn)");
+const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn):not(.mind-btn):not(.video-btn):not(.pause-btn)");
+const pauseBtn = document.querySelector(".pause-btn");
 const countBtns = document.querySelectorAll(".count-btn");
 const mindBtns = document.querySelectorAll(".mind-btn");
 const mindIndicator = document.getElementById("mindIndicator");
@@ -21,6 +22,12 @@ const testWebhookBtn = document.getElementById("testWebhook");
 const webhookStatusEl = document.getElementById("webhookStatus");
 
 const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3, 90: 4, 120: 5 };
+// "Pause" is the far-right segment of the cadence scale — selecting it stops
+// reminders (the same enabled:false state the Reminders toggle drives). Picking
+// any numeric interval resumes. currentInterval remembers the chosen cadence so
+// resuming from Pause restores it instead of snapping back to a default.
+const PAUSE_INDEX = 6;
+let currentInterval = 30;
 // 0 = "Mix" (random 2–3), sits in the last slot of the track
 const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
 const MIND_INDEX = { off: 0, occasional: 1, always: 2 };
@@ -72,7 +79,8 @@ chrome.storage.local.get(
     webhookNameEl.value = data.webhookName || "";
     webhookUrlEl.value = data.webhookUrl || "";
 
-    highlightInterval(interval);
+    currentInterval = interval;
+    highlightInterval(interval, !enabled);
     highlightCount(count);
     highlightMind(mindLevel);
     highlightVideo(data.videoMode || "link");
@@ -130,18 +138,31 @@ function setWebhookStatus(text, kind) {
   webhookStatusEl.className = "webhook-status" + (kind ? " " + kind : "");
 }
 
-// Toggle reminders
+// Toggle reminders — keep the cadence row's "Pause" segment in sync, since both
+// controls drive the same enabled state.
 enabledToggle.addEventListener("change", () => {
   chrome.storage.local.set({ enabled: enabledToggle.checked });
+  highlightInterval(currentInterval, !enabledToggle.checked);
 });
 
-// Interval buttons
+// Interval buttons — choosing a cadence also resumes reminders if they were
+// Paused, so the picker reads as one scale: 15m … 2hr … Pause.
 intervalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const minutes = parseInt(btn.dataset.minutes, 10);
-    chrome.storage.local.set({ intervalMinutes: minutes });
-    highlightInterval(minutes);
+    currentInterval = minutes;
+    chrome.storage.local.set({ intervalMinutes: minutes, enabled: true });
+    enabledToggle.checked = true;
+    highlightInterval(minutes, false);
   });
+});
+
+// Pause — the far end of the cadence scale. Stops reminders (same state as the
+// Reminders toggle off); the chosen interval is remembered for when you resume.
+pauseBtn.addEventListener("click", () => {
+  chrome.storage.local.set({ enabled: false });
+  enabledToggle.checked = false;
+  highlightInterval(currentInterval, true);
 });
 
 // Exercises-per-break buttons
@@ -183,11 +204,12 @@ stretchNowBtn.addEventListener("click", async () => {
   window.close();
 });
 
-function highlightInterval(minutes) {
+function highlightInterval(minutes, paused = false) {
   intervalBtns.forEach((btn) => {
-    btn.classList.toggle("active", parseInt(btn.dataset.minutes, 10) === minutes);
+    btn.classList.toggle("active", !paused && parseInt(btn.dataset.minutes, 10) === minutes);
   });
-  const index = INTERVAL_INDEX[minutes] ?? 1;
+  pauseBtn.classList.toggle("active", paused);
+  const index = paused ? PAUSE_INDEX : (INTERVAL_INDEX[minutes] ?? 1);
   indicator.style.transform = `translateX(${index * 100}%)`;
 }
 
