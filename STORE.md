@@ -7,7 +7,7 @@ repo or toggle Developer mode — they just click **Add to Chrome**.
 ## Before you submit
 
 - [ ] Register a Chrome Web Store developer account (one-time **$5** fee).
-- [ ] Confirm `manifest.json` version is bumped for each upload (currently `1.1.0`).
+- [ ] Confirm `manifest.json` version is bumped for each upload (currently `1.0.0`).
 - [ ] Zip the extension folder (see "Packaging" below).
 - [ ] Host `PRIVACY.md` somewhere public (e.g. the GitHub repo) and have the URL
       ready — the store requires a privacy policy link because the extension
@@ -15,14 +15,15 @@ repo or toggle Developer mode — they just click **Add to Chrome**.
 
 ## Packaging
 
-From the project root, create the upload zip (excludes git, docs, and OS junk):
+From the project root, create the upload zip:
 
 ```bash
-zip -r intermezzo.zip . \
-  -x ".git/*" -x "*.DS_Store" -x "STORE.md" -x "PRIVACY.md" -x "README.md"
+./scripts/build-zip.sh
 ```
 
-Upload `intermezzo.zip` in the Web Store Developer Dashboard → **Add new item**.
+This builds `intermezzo-<version>.zip` from an explicit allowlist of the files the
+extension loads at runtime (the marketing site, demo pages, and docs are excluded).
+Upload it in the Web Store Developer Dashboard → **Add new item**.
 
 ## Store listing copy
 

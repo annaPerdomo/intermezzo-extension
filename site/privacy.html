@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — Intermezzo</title>
+<meta name="description" content="Intermezzo's privacy policy. Private by default: your settings, streaks, and mood check-ins stay on your device. No account, no server, no analytics." />
+<link rel="canonical" href="https://intermezzo.care/privacy" />
+<meta name="theme-color" content="#E7E4EC" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Intermezzo" />
+<meta property="og:url" content="https://intermezzo.care/privacy" />
+<meta property="og:title" content="Privacy Policy — Intermezzo" />
+<meta property="og:description" content="Private by default. Your data stays on your device. No account, no server, no analytics." />
+<meta property="og:image" content="https://intermezzo.care/icon128.png" />
+<meta name="twitter:card" content="summary" />
+
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+  /* ===== Privacy page — scoped legal prose ===== */
+  .legal {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 120px 32px 96px;
+    position: relative;
+    z-index: 1;
+  }
+  .legal-head { margin-bottom: 44px; }
+  .legal-head .eyebrow { display: block; margin-bottom: 14px; }
+  .legal h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(38px, 5.2vw, 58px);
+    line-height: 1.05;
+    letter-spacing: 0.3px;
+    color: var(--olive);
+  }
+  .legal .updated {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--moss);
+    font-style: italic;
+    font-family: var(--serif);
+  }
+  .legal .intro {
+    margin-top: 20px;
+    font-size: clamp(16px, 1.6vw, 18px);
+    line-height: 1.6;
+    color: var(--sage);
+  }
+  .legal h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(24px, 3vw, 32px);
+    color: var(--olive);
+    margin: 48px 0 16px;
+    letter-spacing: 0.2px;
+  }
+  .legal h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 21px;
+    color: var(--forest);
+    margin: 30px 0 12px;
+  }
+  .legal p { font-size: 16px; line-height: 1.68; color: var(--sage); margin: 0 0 16px; }
+  .legal ul { margin: 0 0 18px; padding-left: 22px; }
+  .legal li { font-size: 16px; line-height: 1.62; color: var(--sage); margin-bottom: 10px; }
+  .legal strong { color: var(--olive); font-weight: 600; }
+  .legal a { color: var(--forest); text-decoration: underline; text-underline-offset: 2px; }
+  .legal a:hover { color: var(--forest-dark); }
+  .legal .callout {
+    margin: 22px 0;
+    padding: 18px 22px;
+    background: var(--card-strong);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--terra);
+    border-radius: 14px;
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--olive);
+  }
+  .legal .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 56px;
+    font-family: var(--sans);
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--forest);
+    text-decoration: none;
+  }
+  .legal .back:hover { color: var(--forest-dark); }
+</style>
+</head>
+<body>
+
+<div class="bg-base"></div>
+<div class="bg-breath"></div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">
+      <img class="mark" src="icon128.png" alt="Intermezzo" width="34" height="34" />
+      <span class="name">Intermezzo</span>
+    </a>
+    <nav class="nav-links">
+      <a href="/#why">Why</a>
+      <a href="/#features">Features</a>
+      <a href="/#body">Body</a>
+      <a href="/#mind">Mind</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm is-soon" href="/#install">
+      <svg class="chrome-dot" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.6H21M8.7 13.9L4.2 6.2M15.3 13.9L10.8 21.6" stroke="currentColor" stroke-width="1.4" opacity="0.5"/></svg>
+      Coming soon
+    </a>
+  </div>
+</header>
+
+<!-- ===== LEGAL ===== -->
+<main class="legal">
+  <div class="legal-head">
+    <span class="eyebrow">Privacy</span>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: June 4, 2026</p>
+    <p class="intro">
+      Intermezzo is built to be private by default. It exists to gently remind you to
+      move, and it collects as little as possible to do that.
+    </p>
+  </div>
+
+  <h2>What Intermezzo stores</h2>
+  <p>
+    All of your settings and activity stay <strong>on your own device</strong>, using
+    Chrome's local extension storage (<code>chrome.storage.local</code>). This includes:
+  </p>
+  <ul>
+    <li>Your reminder settings (interval, exercises per break, delivery style, sound, and your &ldquo;Mind moments&rdquo; preference)</li>
+    <li>Today's stretch history and your daily streak count</li>
+    <li>An inactivity timer used to pause reminders while you're away</li>
+    <li>Your optional accountability webhook URL and display name</li>
+  </ul>
+
+  <h3>Mind moments (optional well-being check-ins)</h3>
+  <p>
+    If you use the optional &ldquo;Mind moments&rdquo; features, the following also stay
+    <strong>only on your device</strong> and are never sent anywhere:
+  </p>
+  <ul>
+    <li><strong>Mood check-ins</strong> — the one-tap &ldquo;how are you feeling?&rdquo; ratings you choose at the end of a break.</li>
+    <li><strong>Saved notes</strong> — anything you type into the &ldquo;one small thing that went okay&rdquo; prompt. These are kept as a small private list, just for you.</li>
+  </ul>
+  <p>
+    These are gentle self-reflection aids, <strong>not</strong> medical or clinical
+    records, and they are <strong>never</strong> included in the accountability webhook
+    message (see below) or sent to the developer or anyone else. The optional support
+    resource that may appear after several low check-ins is just a link — nothing about
+    your moods or notes leaves your device when it shows.
+  </p>
+  <p>
+    Intermezzo has <strong>no account, no server, and no analytics</strong>. None of this
+    data is sent to the developer or to any third party — with one exception that you
+    turn on yourself, described below.
+  </p>
+
+  <h2>The optional accountability webhook</h2>
+  <p>
+    If — and only if — you paste a Discord or Slack <strong>webhook URL</strong> into the
+    &ldquo;Stretch together&rdquo; setting, Intermezzo will send a short message to that
+    channel when you complete a stretch break, for example:
+  </p>
+  <p class="callout">🌿 Anna just finished a stretch break — 4 breaks today. Your turn to move?</p>
+  <p>
+    The message contains only the display name you chose and your stretch-break count for
+    the day. It <strong>never</strong> includes your mood check-ins or saved notes. It is
+    sent directly from your browser to the URL you provided. Clearing the URL field turns
+    this off completely. Intermezzo never sends anything to a webhook you did not configure.
+  </p>
+
+  <h2>Permissions and why they're used</h2>
+  <ul>
+    <li><strong>alarms</strong> — schedule your reminder intervals.</li>
+    <li><strong>storage</strong> — save your settings and streak locally.</li>
+    <li><strong>notifications</strong> — show the system notification that reminds you to stretch.</li>
+    <li><strong>idle</strong> — pause reminders when you step away, and resume when you're back.</li>
+    <li><strong>offscreen</strong> — play the reminder chime even when Chrome is in the background.</li>
+    <li><strong>host access to discord.com / slack.com</strong> — only used to deliver the optional accountability message to a webhook URL you enter yourself.</li>
+  </ul>
+
+  <h2>Data deletion</h2>
+  <p>
+    Uninstalling Intermezzo removes all locally stored data. You can also clear your
+    webhook URL and name at any time from the popup.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about privacy? Open an issue on the
+    <a href="https://github.com/annaPerdomo/intermezzo-extension">project repository</a>.
+  </p>
+
+  <a class="back" href="/">← Back to Intermezzo</a>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="/">
+      <img class="mark" src="icon128.png" alt="Intermezzo" width="34" height="34" />
+      <span class="name">Intermezzo</span>
+    </a>
+    <span class="footer-note">Breathe. Stretch. Be kind to your body and mind.</span>
+    <nav class="footer-links">
+      <a href="/#why">Why</a>
+      <a href="/#body">Body</a>
+      <a href="/#mind">Mind</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
