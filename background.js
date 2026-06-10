@@ -1185,38 +1185,6 @@ chrome.idle.onStateChanged.addListener(async (newState) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// Accountability webhook — optionally ping a Discord/Slack channel when a
-// break is completed, so a friend group or team can keep each other moving.
-// ---------------------------------------------------------------------------
-
-async function postWebhook() {
-  const { webhookUrl, webhookName, streak = 0 } =
-    await chrome.storage.local.get(["webhookUrl", "webhookName", "streak"]);
-
-  if (!webhookUrl) return { ok: false, reason: "no-url" };
-
-  const who = (webhookName && webhookName.trim()) || "Someone";
-  const text =
-    `${who} just finished an interlude — ${streak} ` +
-    `${streak === 1 ? "interlude" : "interludes"} today. Your turn ♩`;
-
-  // Slack incoming webhooks expect { text }, Discord expects { content }.
-  const isSlack = /hooks\.slack\.com/i.test(webhookUrl);
-  const body = isSlack ? { text } : { content: text };
-
-  try {
-    const res = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    return { ok: res.ok, status: res.status };
-  } catch (e) {
-    return { ok: false, reason: String(e) };
-  }
-}
-
 // Set up alarm on install or update
 chrome.runtime.onInstalled.addListener(async () => {
   // Fill in defaults ONLY for keys that aren't set yet, so a reload or an update
@@ -1279,11 +1247,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // keep message channel open for async response
   }
 
-  if (message.action === "breakCompleted") {
-    postWebhook().then((result) => sendResponse(result));
-    return true;
-  }
-
   if (message.action === "newStretches") {
     // "New stretch" from the completion screen — hand back a fresh set so the
     // user can keep going without closing the tab.
@@ -1329,11 +1292,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
       sendResponse({ ok: true, stretch: chosen.stretch });
     })();
-    return true;
-  }
-
-  if (message.action === "testWebhook") {
-    postWebhook().then((result) => sendResponse(result));
     return true;
   }
 });

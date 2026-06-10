@@ -4,11 +4,6 @@
   "version": "1.0.0",
   "description": "Gentle reminders to take breaks, stretch, fix your posture, and care for your mind throughout the work day.",
   "permissions": ["alarms", "storage", "notifications", "idle", "offscreen"],
-  "host_permissions": [
-    "https://discord.com/*",
-    "https://discordapp.com/*",
-    "https://hooks.slack.com/*"
-  ],
   "background": {
     "service_worker": "background.js"
   },

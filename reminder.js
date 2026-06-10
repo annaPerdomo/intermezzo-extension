@@ -663,10 +663,6 @@ function onExerciseComplete() {
 function showDone() {
   cue("celebrate", 0.32);
 
-  // Let the background ping the accountability webhook (Discord/Slack), if the
-  // user set one up. Fire-and-forget — never block the celebration on it.
-  chrome.runtime.sendMessage({ action: "breakCompleted" }).catch(() => {});
-
   activeScreen.classList.add("fade-out");
 
   setTimeout(() => {

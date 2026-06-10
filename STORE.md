@@ -56,7 +56,6 @@ matter which app you're in. Move more, ache less.
 > • Snooze, adjustable intervals (15 min – 2 hr), and 1–3 exercises per break
 > • Guided timers with per-side countdowns and illustrations
 > • Streak tracking and a little confetti when you finish
-> • Optional: post to a Discord/Slack channel to stretch alongside friends
 >
 > Calm, private, and account-free. Your data stays on your device.
 
@@ -76,13 +75,13 @@ matter which app you're in. Move more, ache less.
 | `notifications` | Show the reminder so it surfaces over other apps. |
 | `idle` | Pause reminders while the user is away and resume on return. |
 | `offscreen` | Play the reminder chime while Chrome is in the background. |
-| `host_permissions` (discord.com, slack.com) | Deliver the optional accountability message to a webhook the user enters themselves. |
 
 - [ ] **Single purpose statement:** "Remind users to take stretch and movement
       breaks." (Required field.)
-- [ ] **Data usage:** Declare that data is stored locally and, if the webhook is
-      configured, a stretch-completion message is sent to the user's chosen URL.
-      Not sold or used for advertising.
+- [ ] **Remote code:** No — all scripts are bundled; no eval or remote `<script>`.
+- [ ] **Data usage:** The extension collects no user data. Everything (settings,
+      streak, history, mood check-ins) stays on-device via `chrome.storage.local`
+      and is never transmitted. Not sold or used for advertising.
 
 ## After submission
 
