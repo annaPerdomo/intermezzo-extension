@@ -391,7 +391,10 @@
 
     /* === Right column — text + timer === */
     .card-content {
-      padding: clamp(20px, 3vh, 36px) 38px;
+      /* Slimmer bottom padding than top so the timer footer settles close to
+         the card's lower edge — matched by the video link's bottom margin on
+         the media side so both columns bottom out together. */
+      padding: clamp(20px, 3vh, 36px) 38px clamp(14px, 2vh, 18px);
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -442,7 +445,9 @@
       max-width: 100%;
       margin-left: 14px;
       padding: 8px 16px;
-      margin-bottom: clamp(14px, 2.4vh, 24px);
+      /* Matches .card-content's bottom padding so the demo link and the timer
+         footer share the same baseline above the card's bottom edge. */
+      margin-bottom: clamp(14px, 2vh, 18px);
       border-radius: 12px;
       text-decoration: none;
       transition: background 0.15s ease, transform 0.15s ease;
@@ -505,17 +510,30 @@
       color: var(--sage);
     }
 
+    /* The "Watch a demo" pop-out trigger reuses the link styling but is a real
+       <button> (it opens a focused window rather than navigating). */
+    button.media-video-link {
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font: inherit;
+    }
+
     /* Timer footer — ring (with its phase label) on the left, the Reroll and
        Start controls on the right. The break is started right here in the card. */
     .timer-area {
-      /* A consistent gap above the divider — never crammed against a long
-         description, never floating far below a short one. */
-      margin-top: clamp(18px, 3.5vh, 34px);
+      /* Anchored to the bottom of the card: margin-top:auto consumes any slack
+         so the footer sits just above the card's bottom padding rather than
+         floating in the middle when the instructions are short. A short
+         description grows the gap above; a long one still keeps the padding-top
+         breathing room below the text. flex-end lines the Reroll/Start buttons
+         up with the bottom of the timer ring. */
+      margin-top: auto;
+      padding-top: clamp(16px, 2.6vh, 24px);
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
       gap: 24px;
-      padding-top: clamp(16px, 2.6vh, 24px);
       border-top: 1px solid rgba(138, 147, 178, 0.25);
     }
 
@@ -615,6 +633,13 @@
     .phase-switch-anim {
       animation: phasePulse 1.5s ease-in-out;
     }
+
+    /* Rest intervals — a warm terracotta ring (vs. the moss work ring) so a
+       glance reads "recovering, not working." */
+    .phase-label.resting { color: var(--terra); }
+    .timer-area.resting .timer-ring-progress { stroke: var(--terra); }
+    .timer-area.resting .timer-ring-glow { stroke: var(--terra); }
+    .timer-area.resting .timer-display { color: var(--terra); }
 
     @keyframes phasePulse {
       0% { opacity: 0; transform: scale(0.8); }

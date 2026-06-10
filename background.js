@@ -88,7 +88,7 @@ const STRETCHES = [
   },
   {
     name: "Wall Angels",
-    duration: "45 seconds",
+    duration: "64 seconds",
     description: "Stand with your back flat against a wall. Raise your arms to a 'goal post' position against the wall, then slowly slide them up overhead and back down. Repeat 8 times.",
     focus: "Shoulders, thoracic spine & posture",
     area: AREA.SHOULDERS_UPPER_BACK,
@@ -306,7 +306,7 @@ const STRETCHES = [
   },
   {
     name: "Eye Palming",
-    duration: "40 seconds",
+    duration: "30 seconds",
     description: "Rub your palms together for a few seconds until they feel warm. Gently cup them over your closed eyes without pressing on the eyeballs. Rest in the warm darkness and breathe slowly for 30 seconds. A lovely little reset for tired, dry eyes.",
     focus: "Eye relaxation & dryness relief",
     area: AREA.EYES,
@@ -346,7 +346,7 @@ const STRETCHES = [
   },
   {
     name: "Child's Pose",
-    duration: "45 seconds",
+    duration: "30 seconds",
     description: "From hands and knees, sit your hips back toward your heels and reach your arms forward along the floor, resting your forehead down. Let your lower back round and lengthen. Breathe slowly for 30 seconds. A soothing decompression for a tired, tight lower back.",
     focus: "Lower back & hip lengthening",
     area: AREA.SPINE,
@@ -379,7 +379,7 @@ const STRETCHES = [
   },
   {
     name: "Seated Forward Fold",
-    duration: "40 seconds",
+    duration: "30 seconds",
     description: "Sit toward the front of your chair, feet flat and slightly apart. Let your upper body fold forward between your knees, arms and head hanging heavy toward the floor. Relax your neck completely and breathe into your lower back. Hold 20-30 seconds, then slowly roll up one vertebra at a time. A lovely lower-back decompression you can do right at your desk.",
     focus: "Lower back decompression (at desk)",
     area: AREA.SPINE,
@@ -987,16 +987,21 @@ async function playReminderChime(volume = 0.4) {
 // Reminder delivery
 // ---------------------------------------------------------------------------
 
-// A reminder is now a two-step flow so it works for people who spend most of
-// their day outside Chrome:
+// A reminder is a two-step flow so it works for people who spend most of their
+// day outside Chrome:
 //   1. showReminder() — pick stretches, chime, and surface a system
-//      notification (which appears over other apps). With "auto" style it also
-//      opens the break tab right away (the original behaviour).
-//   2. openBreakTab() — fires when the user accepts (clicks the notification),
-//      counts the streak, and opens the guided break.
+//      notification (which appears over other apps). It also preloads the break
+//      in a background-ready tab, so it's waiting the instant you click in. With
+//      "auto" style the break instead opens in front of you right away.
+//   2. openBreakTab() — fires when you accept (click the notification) and
+//      brings the waiting break forward. The interlude is only counted once the
+//      page is actually seen (see countInterlude), so a reminder you ignore
+//      never inflates your streak.
 async function showReminder() {
   const stretches = await pickStretches();
-  await chrome.storage.local.set({ currentStretches: stretches });
+  // Fresh break — reset the per-break "counted" guard so this interlude can
+  // count toward the streak the moment it's actually seen.
+  await chrome.storage.local.set({ currentStretches: stretches, interludeCounted: false });
 
   // Clear any paused/snooze state — the repeating alarm handles the next fire.
   await chrome.storage.local.remove("alarmRemainingMs");
@@ -1007,46 +1012,98 @@ async function showReminder() {
   const { reminderStyle = "notify" } = await chrome.storage.local.get("reminderStyle");
 
   if (reminderStyle === "auto") {
-    // Open the break immediately (original behaviour) — best when you live in
-    // the browser. Still chimes above for anyone glancing away.
+    // Open the break in front of you immediately — best when you live in the
+    // browser. Still chimes above for anyone glancing away.
     openBreakTab();
     return;
   }
 
-  // Notify-first: a system notification can surface over a fullscreen app, so
-  // you actually notice the nudge instead of a tab opening silently behind it.
+  // Notify + ready: a system notification can surface over a fullscreen app, so
+  // you actually notice the nudge. The break also preloads in a background tab,
+  // ready the instant you click in — without yanking you out of whatever you're
+  // doing first.
   const lead = stretches[0] ? stretches[0].name : "Time to move";
   chrome.notifications.create(NOTIFICATION_ID, {
     type: "basic",
     iconUrl: "icons/icon128.png",
-    title: "Time for a stretch break 🌿",
-    message: `${lead} — take a gentle moment for your body.`,
+    title: "Time for an interlude ♪",
+    message: `${lead} — a gentle moment to reset.`,
     priority: 2,
     requireInteraction: true,
-    buttons: [{ title: "Stretch now" }, { title: "Snooze 5 min" }]
+    buttons: [{ title: "Start interlude" }, { title: "Snooze 5 min" }]
   });
+  prefetchBreakTab();
 }
 
-// Open the guided break tab and count it toward today's streak.
+// Bring the guided break forward (notification click/button, "auto", or
+// "Stretch Now"). Reuses the background-ready tab if one is waiting, so we
+// reveal the very break you were nudged about instead of stacking up new tabs.
 async function openBreakTab() {
   await chrome.notifications.clear(NOTIFICATION_ID);
-
-  const { streak = 0 } = await chrome.storage.local.get("streak");
-  await chrome.storage.local.set({
-    streak: streak + 1,
-    activeStartTime: Date.now(),
-    accumulatedInactiveMs: 0
-  });
-
-  const tab = await chrome.tabs.create({
-    url: chrome.runtime.getURL("reminder.html"),
-    active: true
-  });
+  // refresh:true so a break tab left open from a previous interval (e.g. in
+  // "auto" mode) always surfaces this reminder's stretches, not stale ones.
+  const tab = await revealOrCreateBreakTab({ active: true, refresh: true });
   // Bring Chrome to the front so the break is actually visible even if another
   // app currently has focus.
   if (tab && tab.windowId != null) {
     chrome.windows.update(tab.windowId, { focused: true }).catch(() => {});
   }
+  // The interlude is counted by countInterlude() once the page reports it's
+  // visible — so it lands the same whether you click the notification or just
+  // switch to the waiting tab yourself.
+}
+
+// Open the break quietly in a background tab, ready for when you click in. It
+// doesn't steal focus and doesn't count on its own — looking at it is what
+// counts — so a reminder you never open simply never lands.
+async function prefetchBreakTab() {
+  await revealOrCreateBreakTab({ active: false, refresh: true });
+}
+
+// Reuse the break tab we already opened if it's still around, otherwise create
+// one. Tracking a single tab id keeps ignored reminders from piling up a stack
+// of break tabs. `refresh` re-points the tab at a fresh break (picking up this
+// reminder's stretches); `active` decides whether to surface it.
+async function revealOrCreateBreakTab({ active, refresh = false }) {
+  const url = chrome.runtime.getURL("reminder.html");
+  const { breakTabId } = await chrome.storage.local.get("breakTabId");
+
+  if (breakTabId != null) {
+    try {
+      const existing = await chrome.tabs.get(breakTabId);
+      if (existing) {
+        const props = {};
+        if (refresh) props.url = url;       // re-point at this reminder's break
+        if (active) props.active = true;    // surface it
+        if (Object.keys(props).length) await chrome.tabs.update(breakTabId, props);
+        return existing;
+      }
+    } catch (e) {
+      // The tab was closed since we opened it — fall through and make a new one.
+    }
+  }
+
+  const tab = await chrome.tabs.create({ url, active });
+  await chrome.storage.local.set({ breakTabId: tab.id });
+  return tab;
+}
+
+// Count the interlude exactly once, the moment the break is actually seen.
+// Opening a background-ready tab doesn't count on its own — that's what keeps a
+// reminder you never look at from inflating the streak — but the instant the
+// page becomes visible (clicked in, or switched to), it lands here. Resetting
+// the inactive timer here, on engagement, also means "you just moved" is only
+// recorded when you genuinely take the break.
+async function countInterlude() {
+  const { interludeCounted, streak = 0 } =
+    await chrome.storage.local.get(["interludeCounted", "streak"]);
+  if (interludeCounted) return;
+  await chrome.storage.local.set({
+    interludeCounted: true,
+    streak: streak + 1,
+    activeStartTime: Date.now(),
+    accumulatedInactiveMs: 0
+  });
 }
 
 // Snooze: show the same kind of reminder again after a short delay.
@@ -1070,8 +1127,15 @@ chrome.notifications.onClicked.addListener((id) => {
 
 chrome.notifications.onButtonClicked.addListener((id, buttonIndex) => {
   if (id !== NOTIFICATION_ID) return;
-  if (buttonIndex === 0) openBreakTab();   // Stretch now
+  if (buttonIndex === 0) openBreakTab();   // Start interlude
   else snoozeReminder();                   // Snooze 5 min
+});
+
+// Forget the break tab once it's closed, so we never try to reveal a dead id.
+chrome.tabs.onRemoved.addListener((tabId) => {
+  chrome.storage.local.get("breakTabId", ({ breakTabId }) => {
+    if (breakTabId === tabId) chrome.storage.local.remove("breakTabId");
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1134,8 +1198,8 @@ async function postWebhook() {
 
   const who = (webhookName && webhookName.trim()) || "Someone";
   const text =
-    `🌿 ${who} just finished a stretch break — ${streak} ` +
-    `${streak === 1 ? "break" : "breaks"} today. Your turn to move?`;
+    `${who} just finished an interlude — ${streak} ` +
+    `${streak === 1 ? "interlude" : "interludes"} today. Your turn ♩`;
 
   // Slack incoming webhooks expect { text }, Discord expects { content }.
   const isSlack = /hooks\.slack\.com/i.test(webhookUrl);
@@ -1154,12 +1218,20 @@ async function postWebhook() {
 }
 
 // Set up alarm on install or update
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({
+chrome.runtime.onInstalled.addListener(async () => {
+  // Fill in defaults ONLY for keys that aren't set yet, so a reload or an update
+  // never wipes the user's existing choices (interval, videoMode, streak, …).
+  const defaults = {
     enabled: true, intervalMinutes: 30, exerciseCount: 1, streak: 0,
-    reminderStyle: "notify", soundEnabled: true, snoozeMinutes: 5,
+    reminderStyle: "notify", soundEnabled: true, snoozeMinutes: 5, videoMode: "link",
     activeStartTime: Date.now(), accumulatedInactiveMs: 0, inactiveTimerDate: todayKey()
-  });
+  };
+  const existing = await chrome.storage.local.get(Object.keys(defaults));
+  const missing = {};
+  for (const [key, value] of Object.entries(defaults)) {
+    if (existing[key] === undefined) missing[key] = value;
+  }
+  if (Object.keys(missing).length) await chrome.storage.local.set(missing);
   setupAlarm();
 });
 
@@ -1188,13 +1260,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Messages aimed at the offscreen audio doc aren't ours to handle.
   if (message.target === "offscreen") return;
 
+  if (message.action === "interludeEngaged") {
+    // The break page is on screen now — count the interlude (once).
+    countInterlude();
+    return; // fire-and-forget, no response needed
+  }
+
   if (message.action === "triggerNow") {
     // "Stretch Now" from the popup always opens the break directly. Pick a fresh
     // set first so it honors the current "exercises per break" setting instead
     // of replaying whatever was last stored.
     (async () => {
       const stretches = await pickStretches();
-      await chrome.storage.local.set({ currentStretches: stretches });
+      await chrome.storage.local.set({ currentStretches: stretches, interludeCounted: false });
       await openBreakTab();
       sendResponse({ ok: true });
     })();

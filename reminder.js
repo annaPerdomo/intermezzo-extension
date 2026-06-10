@@ -1,114 +1,31 @@
 // ---------------------------------------------------------------------------
-// Cello chime — a warm, bowed-string voice via Web Audio API. The rebrand
-// retired the singing bowl for something that sounds like a comforting cello:
-// detuned sawtooths through a mellow low-pass for the body, a sub-octave sine
-// for warmth, gentle vibrato, and a slow bowed swell into a long release.
+// Sound cues — the whole break's audio vocabulary lives in the shared sounds.js
+// (loaded before this script), so the overlay, the offscreen reminder and the
+// sound-check page all stay in sync. Here we only decide *when* each cue plays.
+//
+// Every in-break sound now respects the "Sounds" toggle: turn it off and the
+// break is silent end to end. We cache the setting and keep it current so
+// flipping it mid-break takes effect right away.
 // ---------------------------------------------------------------------------
 
-// One bowed-cello note. Returns the time (seconds, ctx clock) it finishes, so
-// callers can schedule overlapping notes and know when to close the context.
-function playCelloVoice(ctx, master, freq, startAt, opts = {}) {
-  const attack  = opts.attack  ?? 0.16;   // slow bow onset
-  const sustain = opts.sustain ?? 0.85;   // held body
-  const release = opts.release ?? 1.4;    // long, soft tail
-  const peak    = (opts.gain ?? 1) * (opts.peak ?? 0.85);
-  const cutoff  = opts.cutoff ?? Math.min(2600, freq * 6 + 480);
-  const end     = startAt + attack + sustain + release;
+let soundEnabled = true;
 
-  // Amplitude: gentle swell up, hold, long exponential release.
-  const vca = ctx.createGain();
-  vca.gain.setValueAtTime(0.0001, startAt);
-  vca.gain.exponentialRampToValueAtTime(peak, startAt + attack);
-  vca.gain.setValueAtTime(peak, startAt + attack + sustain);
-  vca.gain.exponentialRampToValueAtTime(0.0001, end);
+chrome.storage.local.get("soundEnabled", (data) => {
+  soundEnabled = data.soundEnabled !== false;
+});
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.soundEnabled) {
+    soundEnabled = changes.soundEnabled.newValue !== false;
+  }
+});
 
-  // Mellow low-pass tames the sawtooth edge into a warm cello body; the cutoff
-  // opens a little as the bow settles.
-  const lp = ctx.createBiquadFilter();
-  lp.type = "lowpass";
-  lp.Q.value = 0.7;
-  lp.frequency.setValueAtTime(cutoff * 0.55, startAt);
-  lp.frequency.linearRampToValueAtTime(cutoff, startAt + attack + 0.12);
-  lp.connect(vca);
-  vca.connect(master);
-
-  // Gentle vibrato — the shimmer of a bowed string.
-  const lfo = ctx.createOscillator();
-  const lfoGain = ctx.createGain();
-  lfo.type = "sine";
-  lfo.frequency.value = 5.1;
-  lfoGain.gain.value = freq * 0.006;
-  lfo.connect(lfoGain);
-
-  // Two slightly detuned saws (chorus/body) + a quiet sub-octave sine (warmth).
-  const partials = [
-    { type: "sawtooth", detune: -5, octave: 1,   level: 0.40 },
-    { type: "sawtooth", detune: 6,  octave: 1,   level: 0.40 },
-    { type: "sine",     detune: 0,  octave: 0.5, level: 0.42 },
-  ];
-  partials.forEach((p) => {
-    const osc = ctx.createOscillator();
-    osc.type = p.type;
-    osc.frequency.value = freq * p.octave;
-    osc.detune.value = p.detune;
-    lfoGain.connect(osc.frequency);
-    const g = ctx.createGain();
-    g.gain.value = p.level;
-    osc.connect(g);
-    g.connect(lp);
-    osc.start(startAt);
-    osc.stop(end + 0.05);
-  });
-  lfo.start(startAt);
-  lfo.stop(end + 0.05);
-
-  return end;
-}
-
-function newCelloContext(volume) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const master = ctx.createGain();
-  master.gain.value = volume;
-  // A soft compressor glues the overlapping voices and guards against clipping.
-  const comp = ctx.createDynamicsCompressor();
-  master.connect(comp);
-  comp.connect(ctx.destination);
-  return { ctx, master };
-}
-
-function playChime(volume = 0.32) {
-  const { ctx, master } = newCelloContext(volume);
-  const now = ctx.currentTime;
-
-  // A warm open fifth (D3 + A3) — a comforting cello double-stop, the second
-  // note entering a beat later like a bow settling onto the string.
-  let end = playCelloVoice(ctx, master, 146.83, now, { gain: 0.55 });
-  end = Math.max(end, playCelloVoice(ctx, master, 220.0, now + 0.13, { gain: 0.45 }));
-
-  setTimeout(() => ctx.close(), Math.max(2500, (end - now + 0.4) * 1000));
-}
-
-function playCompletionChime() {
-  const { ctx, master } = newCelloContext(0.3);
-  const now = ctx.currentTime;
-
-  // A soft, resolving D-major chord — cello voices swelling in one after another
-  // and settling together. A warm "beautifully done" cadence.
-  const notes = [
-    { f: 146.83, t: 0.0,  g: 0.5 },  // D3
-    { f: 220.0,  t: 0.18, g: 0.42 }, // A3
-    { f: 293.66, t: 0.36, g: 0.42 }, // D4
-    { f: 369.99, t: 0.54, g: 0.34 }, // F#4
-  ];
-  let end = now;
-  notes.forEach((n) => {
-    end = Math.max(
-      end,
-      playCelloVoice(ctx, master, n.f, now + n.t, { gain: n.g, sustain: 1.2, release: 1.9 })
-    );
-  });
-
-  setTimeout(() => ctx.close(), Math.max(3200, (end - now + 0.5) * 1000));
+// Play a named cue from sounds.js, honoring the toggle. Null-safe: if the audio
+// module didn't load it simply does nothing (the cues are already throw-proof).
+function cue(name, volume) {
+  if (!soundEnabled) return;
+  if (typeof IntermezzoSounds !== "undefined" && IntermezzoSounds[name]) {
+    IntermezzoSounds[name](volume);
+  }
 }
 
 // DOM elements
@@ -278,92 +195,21 @@ let totalPhaseSeconds = 0;
 let remainingSeconds = 0;
 let timerInterval = null;
 let state = "READY"; // READY, RUNNING, PAUSED, COMPLETE
+// How exercise demos play: "link" opens YouTube in a new tab (default, never
+// contacts Google until clicked); "inline" plays them in place during the break.
+let videoMode = "link";
 // Which exercises have been carried all the way through — drives the dots so a
 // finished exercise still reads as "done" even though we no longer auto-advance.
 const completed = new Set();
 
 // ---------------------------------------------------------------------------
 // Duration & phase parsing
+//
+// The timing engine (parseDuration, parsePhases, and friends) lives in the shared
+// timer-phases.js, loaded before this script — the SAME module the QA gallery uses,
+// so the gallery preview always matches what the break actually runs. We just call
+// the globals it exposes (parseDuration, parsePhases).
 // ---------------------------------------------------------------------------
-
-function parseDuration(str) {
-  const match = str.match(/(\d+)\s*(second|minute)/i);
-  if (!match) return 30;
-  const num = parseInt(match[1], 10);
-  return match[2].toLowerCase().startsWith("minute") ? num * 60 : num;
-}
-
-function parsePhases(stretch) {
-  const desc = stretch.description;
-  const totalSec = parseDuration(stretch.duration);
-
-  // Extract per-hold duration from description (e.g. "Hold for 15 seconds")
-  const holdMatch = desc.match(/hold\b[^.]*?(\d+)\s*seconds?/i);
-  const holdSec = holdMatch ? parseInt(holdMatch[1], 10) : null;
-
-  // Extract rep count (e.g. "Repeat 3 times", "Repeat twice")
-  let reps = null;
-  const repeatMatch = desc.match(/repeat\s+(?:\w+\s+)*?(twice|thrice|three|four|five|six|\d+)\s*times?/i);
-  if (repeatMatch) {
-    const word = repeatMatch[1].toLowerCase();
-    const wordMap = { twice: 2, thrice: 3, three: 3, four: 4, five: 5, six: 6 };
-    reps = wordMap[word] || parseInt(word, 10);
-  }
-
-  // Detect side-switching
-  const hasSides =
-    /per\s+(side|hand|arm|leg)/i.test(desc) ||
-    /switch\s+(sides|which)/i.test(desc) ||
-    /then\s+switch/i.test(desc) ||
-    /other\s+(side|shoulder)/i.test(desc) ||
-    /both\s+sides/i.test(desc) ||
-    /do\s+both/i.test(desc);
-
-  // Detect direction-switching
-  const hasDirections = /each\s+direction/i.test(desc);
-
-  // Determine body-part labels for sides
-  let sideA = "Right side";
-  let sideB = "Left side";
-  if (/per\s+hand/i.test(desc)) { sideA = "Right hand"; sideB = "Left hand"; }
-  else if (/per\s+arm/i.test(desc)) { sideA = "Right arm"; sideB = "Left arm"; }
-  else if (/per\s+leg/i.test(desc)) { sideA = "Right leg"; sideB = "Left leg"; }
-
-  // Side-switching exercises — use per-side hold time if available
-  if (hasSides) {
-    const perSide = holdSec || Math.round(totalSec / 2);
-    return [
-      { label: sideA, seconds: perSide, type: "side" },
-      { label: sideB, seconds: perSide, type: "side" },
-    ];
-  }
-
-  // Direction exercises
-  if (hasDirections) {
-    const half = Math.round(totalSec / 2);
-    return [
-      { label: "First direction", seconds: half, type: "direction" },
-      { label: "Other direction", seconds: totalSec - half, type: "direction" },
-    ];
-  }
-
-  // Rep-based holds — only create guided rounds for substantial holds (≥8s)
-  // with a manageable number of reps (2–6). Quick reps like "hold 3s × 8"
-  // stay as a single timed phase.
-  if (holdSec && holdSec >= 8 && reps && reps >= 2 && reps <= 6) {
-    const result = [];
-    for (let i = 0; i < reps; i++) {
-      result.push({
-        label: `Round ${i + 1} of ${reps}`,
-        seconds: holdSec,
-        type: "rep",
-      });
-    }
-    return result;
-  }
-
-  return [{ label: null, seconds: totalSec, type: "single" }];
-}
 
 // ---------------------------------------------------------------------------
 // Rendering
@@ -457,17 +303,60 @@ function buildInfoHTML(stretch) {
   `;
 }
 
+// All demo opens route through the Intermezzo site's /go redirect rather than
+// straight to YouTube, so YouTube logs "intermezzo.care" as the External traffic
+// source in each creator's analytics — a small bit of credit for the views we send
+// their way. Canonical youtube.com URLs stay in stretch-videos.js (for upkeep /
+// oEmbed checks); we wrap them at click time. Falls back to the direct URL if the
+// id can't be parsed. (Note: this makes demo opens depend on intermezzo.care being
+// reachable — a fine trade on static Vercel hosting.)
+const DEMO_REDIRECT_BASE = "https://www.intermezzo.care/go";
+
+function ytId(url) {
+  const m = String(url).match(/[?&]v=([^&]+)/) ||
+            String(url).match(/youtu\.be\/([^?&]+)/) ||
+            String(url).match(/embed\/([^?&]+)/);
+  return m ? m[1] : null;
+}
+
+function demoHref(video) {
+  if (!video || !video.url) return "#";
+  const id = ytId(video.url);
+  return id ? `${DEMO_REDIRECT_BASE}?v=${encodeURIComponent(id)}` : video.url;
+}
+
 // An optional YouTube how-to demo, shown beneath the diagram with full credit to
 // the creator. The diagram stays the primary guide; this only renders when a
-// video has been curated for this exercise. Opens in a new tab — never embedded.
+// video has been curated for this exercise. Honors the user's videoMode setting:
+//   • "link"   — a link that opens YouTube in a new tab (default).
+//   • "inline" — a button that opens the demo in a small pop-out window floating
+//                over the break (see openDemoPopup), so the break tab isn't lost.
+// (Direct in-page <iframe> embedding isn't viable: since late 2025 YouTube refuses
+// to start embeds that lack an HTTP referrer, and Chrome won't send one from a
+// chrome-extension:// page — the player throws "Error 153". A pop-out window plays
+// YouTube's own page top-level, so there's no embedder-referrer check.)
 function buildVideoLinkHTML(stretch) {
   const video = typeof getStretchVideo === "function" ? getStretchVideo(stretch.name) : null;
   if (!video) return "";
   const credit = video.creator
     ? `<span class="mvl-credit">Demonstration by ${escapeHTML(video.creator)}</span>`
     : "";
+
+  if (videoMode === "inline") {
+    return `
+      <button type="button" class="media-video-link mvl-inline"
+              title="Open the demo in a small window over your break">
+        <span class="yt-badge" aria-hidden="true"><span class="yt-tri"></span></span>
+        <span class="mvl-text">
+          <span class="mvl-title">Watch a demo <span class="mvl-out" aria-hidden="true">&#10697;</span></span>
+          ${credit}
+        </span>
+      </button>
+    `;
+  }
+
   return `
-    <a class="media-video-link" href="${escapeHTML(video.url)}" target="_blank" rel="noopener noreferrer"
+    <a class="media-video-link" href="${escapeHTML(demoHref(video))}" target="_blank" rel="noopener noreferrer"
        title="Watch a demonstration of this stretch on YouTube">
       <span class="yt-badge" aria-hidden="true"><span class="yt-tri"></span></span>
       <span class="mvl-text">
@@ -476,6 +365,38 @@ function buildVideoLinkHTML(stretch) {
       </span>
     </a>
   `;
+}
+
+// In "inline" mode the demo button opens a pop-out window. Hook it up after each
+// render (no-op when there's no inline button — e.g. link mode or mind cards).
+function wireMediaVideo(stretch) {
+  const btn = cardMedia.querySelector(".mvl-inline");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const video = typeof getStretchVideo === "function" ? getStretchVideo(stretch.name) : null;
+    openDemoPopup(video);
+  });
+}
+
+// Open the demo in a small, focused popup window centered over the break window,
+// so watching it never buries or replaces the break tab.
+function openDemoPopup(video) {
+  if (!video || !video.url) return;
+  const W = 900, H = 600;
+  const make = (left, top) => chrome.windows.create({
+    url: demoHref(video), type: "popup", width: W, height: H, focused: true,
+    ...(left != null ? { left, top } : {}),
+  });
+  try {
+    chrome.windows.getCurrent((win) => {
+      if (chrome.runtime.lastError || !win || win.left == null) { make(); return; }
+      const left = Math.max(0, Math.round(win.left + ((win.width || 1280) - W) / 2));
+      const top = Math.max(0, Math.round(win.top + ((win.height || 800) - H) / 2));
+      make(left, top);
+    });
+  } catch (e) {
+    make();
+  }
 }
 
 // Small escaper for any creator-supplied strings rendered via innerHTML.
@@ -554,6 +475,7 @@ function showExercise(index) {
 
   // Render left column (media)
   cardMedia.innerHTML = buildMediaHTML(stretch);
+  wireMediaVideo(stretch);
 
   // If a mind moment is mapped to an illustration whose PNG hasn't been generated
   // yet, the <img> will 404. Fall back to the soft breathing orb rather than show
@@ -607,6 +529,11 @@ function setupPhase(phaseIndex) {
   totalPhaseSeconds = phase.seconds;
   remainingSeconds = phase.seconds;
 
+  // Rest intervals get a calmer, warm-toned ring so a glance tells you whether
+  // you're working or recovering.
+  const resting = phase.kind === "rest";
+  timerArea.classList.toggle("resting", resting);
+
   // Reset ring instantly then re-enable transition
   timerRing.style.transition = "none";
   timerGlow.style.transition = "none";
@@ -619,12 +546,8 @@ function setupPhase(phaseIndex) {
   updateTimerDisplay();
 
   if (phase.label) {
-    let text = phase.label;
-    // Add position counter for side/direction phases
-    if ((phase.type === "side" || phase.type === "direction") && phases.length > 1) {
-      text += ` \u00b7 ${phaseIndex + 1} of ${phases.length}`;
-    }
-    phaseLabel.textContent = text;
+    phaseLabel.textContent = phase.label;
+    phaseLabel.classList.toggle("resting", resting);
     phaseLabel.style.display = "block";
   } else {
     phaseLabel.style.display = "none";
@@ -643,12 +566,17 @@ function updateTimerDisplay() {
 }
 
 function startRunning() {
+  // A genuine first start (not a resume from pause) gets the encouraging rising
+  // "resume" cue — the same one that plays when a rest ends and the next movement
+  // begins. Stepping into the first exercise is just like stepping out of a rest.
+  const wasReady = state === "READY";
   state = "RUNNING";
   startBtn.textContent = "Pause";
   startBtn.hidden = false;
   startBtn.disabled = false;
   rerollBtn.disabled = true; // no swapping mid-stretch
   updateArrows();
+  if (wasReady) cue("resume", 0.28);
   tick();
 }
 
@@ -677,36 +605,34 @@ function pauseRunning() {
 }
 
 function onPhaseComplete() {
-  playChime(0.25);
+  // Distinct cues at each transition let you follow a held exercise by ear:
+  //   - last phase done            -> "complete" (this exercise is finished)
+  //   - a hold/side/round -> rest  -> "rest"     (settle, breathe out)
+  //   - rest -> the next hold      -> "resume"   (keep going)
+  // Flowing rep sets (and the little resets between reps) stay silent except for
+  // the final "complete", so a rhythmic set you sink into isn't chopped up.
+  const finished = phases[currentPhase];
+  const next = phases[currentPhase + 1];
+  const isLast = currentPhase === phases.length - 1;
+  if (isLast) {
+    cue("complete", 0.3);
+  } else if (finished && finished.kind === "work" && next && next.kind === "rest") {
+    cue("rest", 0.24);
+  } else if (finished && finished.kind === "rest" && next && next.kind === "work") {
+    cue("resume", 0.28);
+  }
+
   currentPhase++;
 
   if (currentPhase < phases.length) {
-    const nextPhase = phases[currentPhase];
-    let transitionText, delay;
-
-    if (nextPhase.type === "side") {
-      transitionText = "Switch sides";
-      delay = 2000;
-    } else if (nextPhase.type === "direction") {
-      transitionText = "Switch direction";
-      delay = 2000;
-    } else if (nextPhase.type === "rep") {
-      transitionText = "Rest \u2014 next round";
-      delay = 2500;
-    } else {
-      transitionText = "Next";
-      delay = 1500;
-    }
-
-    phaseLabel.textContent = "\u2728 " + transitionText;
-    phaseLabel.style.display = "block";
+    // The rest periods are real, counted phases now, so we just roll straight
+    // into the next one \u2014 work \u2192 rest \u2192 work \u2014 with a gentle label pulse. No
+    // silent gaps; the ring keeps guiding the whole way through.
+    setupPhase(currentPhase);
+    phaseLabel.classList.remove("phase-switch-anim");
+    void phaseLabel.offsetWidth;
     phaseLabel.classList.add("phase-switch-anim");
-
-    setTimeout(() => {
-      phaseLabel.classList.remove("phase-switch-anim");
-      setupPhase(currentPhase);
-      startRunning();
-    }, delay);
+    tick();
   } else {
     onExerciseComplete();
   }
@@ -718,6 +644,8 @@ function onExerciseComplete() {
   state = "COMPLETE";
   completed.add(currentIndex);
 
+  timerArea.classList.remove("resting");
+  phaseLabel.classList.remove("resting");
   phaseLabel.textContent = "\u2713 Complete";
   phaseLabel.style.display = "block";
 
@@ -733,7 +661,7 @@ function onExerciseComplete() {
 // ---------------------------------------------------------------------------
 
 function showDone() {
-  playCompletionChime();
+  cue("celebrate", 0.32);
 
   // Let the background ping the accountability webhook (Discord/Slack), if the
   // user set one up. Fire-and-forget — never block the celebration on it.
@@ -1091,9 +1019,21 @@ function wireCheckInCard() {
 // Init
 // ---------------------------------------------------------------------------
 
-chrome.storage.local.get("currentStretches", (data) => {
+chrome.storage.local.get(["currentStretches", "videoMode"], (data) => {
   stretches = data.currentStretches || [];
+  videoMode = data.videoMode || "link";
   if (stretches.length > 0) {
     showExercise(0);
   }
 });
+
+// Tell the background the break is actually on screen, so the interlude is
+// counted exactly once — whether it opened in front of you or waited quietly in
+// a background tab until you switched to it. A reminder you never look at never
+// counts. The background dedupes, so reporting again on re-focus is harmless.
+function reportEngaged() {
+  if (document.visibilityState !== "visible") return;
+  chrome.runtime.sendMessage({ action: "interludeEngaged" }).catch(() => {});
+}
+document.addEventListener("visibilitychange", reportEngaged);
+reportEngaged();

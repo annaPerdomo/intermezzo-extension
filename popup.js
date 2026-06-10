@@ -1,8 +1,10 @@
 const enabledToggle = document.getElementById("enabledToggle");
-const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn):not(.mind-btn)");
+const intervalBtns = document.querySelectorAll(".interval-btn:not(.count-btn):not(.mind-btn):not(.video-btn)");
 const countBtns = document.querySelectorAll(".count-btn");
 const mindBtns = document.querySelectorAll(".mind-btn");
 const mindIndicator = document.getElementById("mindIndicator");
+const videoBtns = document.querySelectorAll(".video-btn");
+const videoIndicator = document.getElementById("videoIndicator");
 const stretchNowBtn = document.getElementById("stretchNow");
 const streakEl = document.getElementById("streak");
 const indicator = document.getElementById("intervalIndicator");
@@ -22,6 +24,7 @@ const INTERVAL_INDEX = { 15: 0, 30: 1, 45: 2, 60: 3, 90: 4, 120: 5 };
 // 0 = "Mix" (random 2–3), sits in the last slot of the track
 const COUNT_INDEX = { 1: 0, 2: 1, 3: 2, 0: 3 };
 const MIND_INDEX = { off: 0, occasional: 1, always: 2 };
+const VIDEO_INDEX = { link: 0, inline: 1 };
 
 // Tolerate the older "gentle"/"more" labels so a saved value still highlights
 // the right button after the rename.
@@ -52,7 +55,7 @@ const ENCOURAGING_PHRASES = [
 // Load saved settings
 chrome.storage.local.get(
   ["enabled", "intervalMinutes", "exerciseCount", "streak",
-   "reminderStyle", "soundEnabled", "webhookUrl", "webhookName", "mindLevel"],
+   "reminderStyle", "soundEnabled", "webhookUrl", "webhookName", "mindLevel", "videoMode"],
   (data) => {
     const enabled = data.enabled !== false;
     const interval = data.intervalMinutes || 30;
@@ -72,6 +75,7 @@ chrome.storage.local.get(
     highlightInterval(interval);
     highlightCount(count);
     highlightMind(mindLevel);
+    highlightVideo(data.videoMode || "link");
     updateStreakDisplay(streak);
   }
 );
@@ -158,6 +162,15 @@ mindBtns.forEach((btn) => {
   });
 });
 
+// Demo playback: open on YouTube (new tab) vs play inline on the break page
+videoBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const mode = btn.dataset.video;
+    chrome.storage.local.set({ videoMode: mode });
+    highlightVideo(mode);
+  });
+});
+
 // Stretch now
 stretchNowBtn.addEventListener("click", async () => {
   stretchNowBtn.disabled = true;
@@ -193,6 +206,15 @@ function highlightMind(level) {
   });
   const index = MIND_INDEX[level] ?? 1;
   mindIndicator.style.transform = `translateX(${index * 100}%)`;
+}
+
+function highlightVideo(mode) {
+  if (mode !== "link" && mode !== "inline") mode = "link";
+  videoBtns.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.video === mode);
+  });
+  const index = VIDEO_INDEX[mode] ?? 0;
+  videoIndicator.style.transform = `translateX(${index * 100}%)`;
 }
 
 function updateStreakDisplay(streak) {
