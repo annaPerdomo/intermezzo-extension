@@ -818,12 +818,44 @@ h2.section-title {
 .footer-links a { font-size: 13.5px; color: var(--sage); text-decoration: none; transition: color 0.2s; }
 .footer-links a:hover { color: var(--olive); }
 
+/* ===== Creator credit ===== */
+.footer-credit { margin-top: 26px; text-align: center; }
+.footer-credit p {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14.5px;
+  letter-spacing: 0.2px;
+  color: var(--moss);
+}
+.footer-credit .beating-heart {
+  color: var(--terra);
+  flex-shrink: 0;
+  transform: translateY(0.5px);
+  animation: heartbeat 4.2s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 88%, 100% { transform: translateY(0.5px) scale(1); }
+  92%           { transform: translateY(0.5px) scale(1.18); }
+  96%           { transform: translateY(0.5px) scale(1.06); }
+}
+.footer-credit a {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--terra-deep);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-credit a:hover { color: var(--olive); text-decoration: underline; text-underline-offset: 2px; }
+
 /* ===== Reveal on scroll ===== */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .bg-breath, .popup-card, .fermata-rule .glyph { animation: none !important; }
+  .bg-breath, .popup-card, .fermata-rule .glyph, .footer-credit .beating-heart { animation: none !important; }
 }
 
 /* ===== Popup mind-moments mini control ===== */

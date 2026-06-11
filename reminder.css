@@ -1248,4 +1248,59 @@
       .btn-reroll .reroll-glyph,
       .btn-reroll:hover .reroll-glyph,
       .btn-reroll.spin .reroll-glyph { animation: none; transform: none; }
+      .credit-heart { animation: none; }
+    }
+
+    /* === Creator credit — a quiet signature, fixed to the foot of the page
+       so it sits gently beneath both the active and completed screens. === */
+    .creator-credit {
+      position: fixed;
+      left: 50%;
+      bottom: clamp(12px, 2.4vh, 22px);
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Cormorant', Georgia, serif;
+      font-style: italic;
+      font-size: 15px;
+      letter-spacing: 0.2px;
+      color: var(--sage);
+      opacity: 0.82;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+    .creator-credit:hover { opacity: 1; }
+
+    .credit-heart {
+      color: var(--terra);
+      flex-shrink: 0;
+      transform: translateY(0.5px);
+      animation: creditBeat 4.2s ease-in-out infinite;
+    }
+
+    @keyframes creditBeat {
+      0%, 88%, 100% { transform: translateY(0.5px) scale(1); }
+      92%           { transform: translateY(0.5px) scale(1.18); }
+      96%           { transform: translateY(0.5px) scale(1.06); }
+    }
+
+    .creator-credit a {
+      font-style: normal;
+      font-weight: 500;
+      color: var(--forest);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .creator-credit a:hover {
+      color: var(--forest-dark);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* On short screens the page scrolls (see height:620px rule above), so let
+       the credit ride at the end of the flow instead of pinning over content. */
+    @media (max-height: 620px) {
+      .creator-credit { position: static; transform: none; margin: 24px auto 8px; }
     }
