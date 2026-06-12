@@ -1040,9 +1040,12 @@ async function showReminder() {
 // reveal the very break you were nudged about instead of stacking up new tabs.
 async function openBreakTab() {
   await chrome.notifications.clear(NOTIFICATION_ID);
-  // refresh:true so a break tab left open from a previous interval (e.g. in
-  // "auto" mode) always surfaces this reminder's stretches, not stale ones.
-  const tab = await revealOrCreateBreakTab({ active: true, refresh: true });
+  // Refresh so a break tab left open from a previous interval (e.g. in "auto"
+  // mode) surfaces this reminder's stretches, not stale ones — but never reload
+  // a break that's already been engaged (the notification can linger after the
+  // user has switched to the tab and started; a reload would wipe their progress).
+  const { interludeCounted } = await chrome.storage.local.get("interludeCounted");
+  const tab = await revealOrCreateBreakTab({ active: true, refresh: !interludeCounted });
   // Bring Chrome to the front so the break is actually visible even if another
   // app currently has focus.
   if (tab && tab.windowId != null) {

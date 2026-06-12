@@ -201,6 +201,9 @@ let videoMode = "link";
 // Which exercises have been carried all the way through — drives the dots so a
 // finished exercise still reads as "done" even though we no longer auto-advance.
 const completed = new Set();
+// Whether a full break has been finished this session — once true, "Skip for
+// now" no longer un-counts the interlude (the credit was earned).
+let breakCompleted = false;
 
 // ---------------------------------------------------------------------------
 // Duration & phase parsing
@@ -661,6 +664,7 @@ function onExerciseComplete() {
 // ---------------------------------------------------------------------------
 
 function showDone() {
+  breakCompleted = true;
   cue("celebrate", 0.32);
 
   activeScreen.classList.add("fade-out");
@@ -799,13 +803,24 @@ doneBtn.addEventListener("click", () => {
   }
 });
 
+// Skipping un-counts the interlude that was credited when this break appeared.
+// But once a break has been completed this session ("Another interlude" then
+// skip), that credit was genuinely earned — leave it be. The write finishes
+// before the window closes, so the decrement can't be lost mid-flight.
 skipBtn.addEventListener("click", () => {
   if (timerInterval) clearInterval(timerInterval);
-  chrome.storage.local.get("streak", (data) => {
-    const streak = Math.max((data.streak || 1) - 1, 0);
-    chrome.storage.local.set({ streak });
+  if (breakCompleted) {
+    window.close();
+    return;
+  }
+  chrome.storage.local.get(["streak", "streakDate"], (data) => {
+    if (data.streakDate === todayStamp()) {
+      const streak = Math.max((data.streak || 1) - 1, 0);
+      chrome.storage.local.set({ streak }, () => window.close());
+    } else {
+      window.close();
+    }
   });
-  window.close();
 });
 
 // Navigate freely — moving away just resets that exercise's timer.
