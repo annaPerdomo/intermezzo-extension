@@ -9,8 +9,9 @@ SUBMIT-CHECKLIST.md
 intermezzo-*.zip
 store-screenshots/
 store-promo/
-scripts/promo-tiles/
-scripts/store-frames/
+
+# Local tooling — packaging, asset generators, prompt notes
+scripts/
 
 # Source illustration sheets — local only; the sliced PNGs in illustrations/ are tracked
 generated-images/
