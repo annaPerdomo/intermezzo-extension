@@ -296,3 +296,5 @@ chrome.storage.local.get("stretchHistory", (data) => {
     historyList.appendChild(item);
   });
 });
+
+document.getElementById("footerVersion").textContent = `v${chrome.runtime.getManifest().version}`;

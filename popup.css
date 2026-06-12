@@ -294,6 +294,11 @@
     }
     .footer-link:hover { opacity: 0.8; }
 
+    .footer-version {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
     /* === Entrance Animations === */
     .content > .card, .content > .cta-btn {
       animation: cardEnter 0.4s ease-out both;
