@@ -14,11 +14,20 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Chrome_Extension-4285F4?style=flat&logo=googlechrome&logoColor=white" alt="Chrome Extension" />
+  <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><img src="https://img.shields.io/chrome-web-store/v/djlmhgokdfglhcdelkgljakecafpjbpj?style=flat&logo=googlechrome&logoColor=white&color=4285F4&label=Chrome%20Web%20Store" alt="Chrome Web Store version" /></a>
+  <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><img src="https://img.shields.io/chrome-web-store/users/djlmhgokdfglhcdelkgljakecafpjbpj?style=flat&color=7b8a6e&label=users" alt="Chrome Web Store users" /></a>
   <img src="https://img.shields.io/badge/Manifest_V3-FFC107?style=flat&logo=googlechrome&logoColor=black" alt="Manifest V3" />
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" alt="HTML5" />
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/privacy-100%25%20on--device-5b6e8c?style=flat" alt="Privacy: 100% on-device" />
+</p>
+
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><strong>➕ Add to Chrome</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://intermezzo.care"><strong>intermezzo.care</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><img src="docs/images/hero.png" alt="Intermezzo — for your body, and your mind. Guided stretch and mind-moment cards." width="100%" /></a>
 </p>
 
 ---
@@ -44,9 +53,34 @@ Intermezzo nudges you at regular intervals with a short, guided wellness break. 
 - **Streak tracking** — see how many interludes you've completed today.
 - **Motivational finish** — a little confetti and a kind word when you complete your stretches. You earned it.
 
+## A look inside
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/guided-break.png" alt="A guided break: Seated Spinal Twist with illustration, per-side countdown, and a linked video demo" /></td>
+    <td width="50%"><img src="docs/images/mind-moment.png" alt="A mind moment: 5-4-3-2-1 grounding prompt at the end of a break" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Short, guided stretch breaks — per-side timers, clear instructions, video demos</em></td>
+    <td align="center"><em>End with a mind moment — grounding, savoring, or a private mood check-in</em></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/images/popup.png" alt="The popup: toggle reminders, set your interval, Stretch Now, streaks and history" width="75%" />
+  <br />
+  <em>Reminders on your schedule — every 15 minutes to every 2 hours, snooze when you're mid-task</em>
+</p>
+
 ## Install
 
-This extension isn't on the Chrome Web Store yet. To install it manually:
+### From the Chrome Web Store (recommended)
+
+One click, auto-updates included:
+
+**[➕ Add Intermezzo to Chrome](https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj)**
+
+### From source (for tinkering)
 
 1. Clone this repo
    ```
@@ -74,7 +108,7 @@ Each exercise has a description, a visual, and a countdown timer. Navigate betwe
 
 ## Publishing
 
-Want to share Intermezzo with friends without the "Load unpacked" dance? See [STORE.md](STORE.md) for a step-by-step Chrome Web Store publishing guide, listing copy, and permission justifications.
+Intermezzo is live on the [Chrome Web Store](https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj). See [STORE.md](STORE.md) for the publishing guide used to get it there — listing copy, permission justifications, and the packaging script for new releases.
 
 ## Design
 
