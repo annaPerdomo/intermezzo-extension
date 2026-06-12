@@ -1095,12 +1095,15 @@ async function revealOrCreateBreakTab({ active, refresh = false }) {
 // the inactive timer here, on engagement, also means "you just moved" is only
 // recorded when you genuinely take the break.
 async function countInterlude() {
-  const { interludeCounted, streak = 0 } =
-    await chrome.storage.local.get(["interludeCounted", "streak"]);
+  const { interludeCounted, streak = 0, streakDate } =
+    await chrome.storage.local.get(["interludeCounted", "streak", "streakDate"]);
   if (interludeCounted) return;
+  const today = todayKey();
   await chrome.storage.local.set({
     interludeCounted: true,
-    streak: streak + 1,
+    // The streak is a per-day count ("interludes today") — a new day starts over.
+    streak: streakDate === today ? streak + 1 : 1,
+    streakDate: today,
     activeStartTime: Date.now(),
     accumulatedInactiveMs: 0
   });

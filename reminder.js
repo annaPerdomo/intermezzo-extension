@@ -687,8 +687,9 @@ function showDone() {
   doneMessage.textContent =
     MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 
-  chrome.storage.local.get("streak", (data) => {
-    const streak = data.streak || 0;
+  chrome.storage.local.get(["streak", "streakDate"], (data) => {
+    // The streak is a per-day count — a value from a previous day reads as 0.
+    const streak = data.streakDate === todayStamp() ? data.streak || 0 : 0;
     statBreaks.textContent = streak;
     statBreaksLabel.textContent = streak === 1 ? "Interlude today" : "Interludes today";
     motivationalEl.textContent =

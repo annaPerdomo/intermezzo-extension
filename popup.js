@@ -57,14 +57,16 @@ const ENCOURAGING_PHRASES = [
 
 // Load saved settings
 chrome.storage.local.get(
-  ["enabled", "intervalMinutes", "exerciseCount", "streak",
+  ["enabled", "intervalMinutes", "exerciseCount", "streak", "streakDate",
    "reminderStyle", "soundEnabled", "mindLevel", "videoMode"],
   (data) => {
     const enabled = data.enabled !== false;
     const interval = data.intervalMinutes || 30;
     // Default to 1 — a single exercise is the easiest to actually do.
     const count = data.exerciseCount ?? 1;
-    const streak = data.streak || 0;
+    // The streak counts today's interludes — yesterday's value reads as 0.
+    const today = new Date().toISOString().slice(0, 10);
+    const streak = data.streakDate === today ? data.streak || 0 : 0;
     const mindLevel = normalizeMind(data.mindLevel);
 
     enabledToggle.checked = enabled;
