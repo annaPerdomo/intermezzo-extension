@@ -8,6 +8,9 @@ SUBMIT-CHECKLIST.md
 # Chrome Web Store build + listing artifacts
 intermezzo-*.zip
 store-screenshots/
+store-promo/
+scripts/promo-tiles/
+scripts/store-frames/
 
 # Source illustration sheets — local only; the sliced PNGs in illustrations/ are tracked
 generated-images/

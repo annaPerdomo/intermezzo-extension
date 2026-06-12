@@ -64,9 +64,17 @@ matter which app you're in. Move more, ache less.
 ## Required assets
 
 - [ ] **Icon** — 128×128 (already in `icons/icon128.png`).
-- [ ] **Screenshots** — 1280×800 or 640×400, at least one. Suggested shots:
-      the popup, an active break with the timer ring, and the done/confetti screen.
-- [ ] **Small promo tile** — 440×280 (optional but recommended).
+- [x] **Screenshots** — 1280×800, four framed slides in `store-screenshots/`
+      (`0-cover.png` → `3-popup.png`, upload in that order). Raw UI captures
+      live in `store-screenshots/raw/`; frames are generated from
+      `scripts/store-frames/` (local tooling, untracked) — see the README there.
+- [x] **Small promo tile** — 440×280, JPEG or 24-bit PNG (no alpha):
+      `store-promo/small-promo-tile-440x280.png`.
+- [x] **Marquee promo tile** — 1400×560, JPEG or 24-bit PNG (no alpha):
+      `store-promo/marquee-promo-tile-1400x560.png`.
+
+Both tiles are generated from `scripts/promo-tiles/` (local tooling, untracked)
+— see the README there to regenerate after a branding change.
 
 ## Permission justifications (store review asks for these)
 
