@@ -15,7 +15,6 @@
 
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><img src="https://img.shields.io/chrome-web-store/v/djlmhgokdfglhcdelkgljakecafpjbpj?style=flat&logo=googlechrome&logoColor=white&color=4285F4&label=Chrome%20Web%20Store" alt="Chrome Web Store version" /></a>
-  <a href="https://chromewebstore.google.com/detail/intermezzo/djlmhgokdfglhcdelkgljakecafpjbpj"><img src="https://img.shields.io/chrome-web-store/users/djlmhgokdfglhcdelkgljakecafpjbpj?style=flat&color=7b8a6e&label=users" alt="Chrome Web Store users" /></a>
   <img src="https://img.shields.io/badge/Manifest_V3-FFC107?style=flat&logo=googlechrome&logoColor=black" alt="Manifest V3" />
   <img src="https://img.shields.io/badge/privacy-100%25%20on--device-5b6e8c?style=flat" alt="Privacy: 100% on-device" />
 </p>
