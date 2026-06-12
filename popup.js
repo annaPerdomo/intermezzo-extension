@@ -154,8 +154,11 @@ stretchNowBtn.addEventListener("click", async () => {
   try {
     await chrome.runtime.sendMessage({ action: "triggerNow" });
   } catch {
-    // Service worker may have been waking up — retry once
-    await chrome.runtime.sendMessage({ action: "triggerNow" });
+    // Service worker may have been waking up — retry once. If the retry fails
+    // too, still close cleanly rather than leaving the popup stuck disabled.
+    try {
+      await chrome.runtime.sendMessage({ action: "triggerNow" });
+    } catch {}
   }
   window.close();
 });
@@ -203,9 +206,16 @@ function updateStreakDisplay(streak) {
   }
 }
 
-// Live countdown to next reminder
+// Live countdown to next reminder — whichever fires sooner, the regular
+// interval alarm or a pending snooze.
 function updateCountdown() {
-  chrome.alarms.get("intermezzo-reminder", (alarm) => {
+  Promise.all([
+    chrome.alarms.get("intermezzo-reminder"),
+    chrome.alarms.get("intermezzo-snooze"),
+  ]).then(([main, snooze]) => {
+    const alarm = [main, snooze]
+      .filter(Boolean)
+      .sort((a, b) => a.scheduledTime - b.scheduledTime)[0];
     if (alarm) {
       const remaining = Math.max(0, alarm.scheduledTime - Date.now());
       const mins = Math.floor(remaining / 60000);
