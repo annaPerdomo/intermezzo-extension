@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Intermezzo",
-  "version": "1.0.0",
+  "name": "Intermezzo — Stretch & Wellness Breaks",
+  "short_name": "Intermezzo",
+  "version": "1.0.1",
   "description": "Gentle reminders to take breaks, stretch, fix your posture, and care for your mind throughout the work day.",
+  "homepage_url": "https://intermezzo.care",
   "permissions": ["alarms", "storage", "notifications", "idle", "offscreen"],
   "background": {
     "service_worker": "background.js"

@@ -7,7 +7,9 @@ repo or toggle Developer mode — they just click **Add to Chrome**.
 ## Before you submit
 
 - [ ] Register a Chrome Web Store developer account (one-time **$5** fee).
-- [ ] Confirm `manifest.json` version is bumped for each upload (currently `1.0.0`).
+- [ ] Confirm `manifest.json` version is bumped for each upload (currently `1.0.1`,
+      which renames the extension to "Intermezzo — Stretch & Wellness Breaks" so
+      the store title explains what it does; `short_name` keeps browser UI compact).
 - [ ] Zip the extension folder (see "Packaging" below).
 - [ ] Host `PRIVACY.md` somewhere public (e.g. the GitHub repo) and have the URL
       ready — the store requires a privacy policy link because the extension
