@@ -41,9 +41,10 @@
   function restPhase(label, seconds) {
     return { label, seconds, kind: "rest" };
   }
-  // One rep of a flowing set (Cat-Cow ×8, Calf Raises ×15…). Reps run back-to-back
-  // with no rest, and only the last one chimes — so the timer paces every round
-  // without a chime on each.
+  // One rep of a flowing set (Cat-Cow ×8, Calf Raises ×15…). Deliberate reps get
+  // a counted reset rest between them (and chime at each rest boundary); quick
+  // pulses run back-to-back with no rests, so they flow as one unbroken rhythm
+  // and only the final "complete" chimes.
   function repPhase(label, seconds) {
     return { label, seconds, kind: "rep" };
   }

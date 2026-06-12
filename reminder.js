@@ -608,20 +608,22 @@ function pauseRunning() {
 }
 
 function onPhaseComplete() {
-  // Distinct cues at each transition let you follow a held exercise by ear:
-  //   - last phase done            -> "complete" (this exercise is finished)
-  //   - a hold/side/round -> rest  -> "rest"     (settle, breathe out)
-  //   - rest -> the next hold      -> "resume"   (keep going)
-  // Flowing rep sets (and the little resets between reps) stay silent except for
-  // the final "complete", so a rhythmic set you sink into isn't chopped up.
+  // Distinct cues at each transition let you follow the exercise by ear:
+  //   - last phase done              -> "complete" (this exercise is finished)
+  //   - work/rep -> a counted rest   -> "rest"     (settle, breathe out)
+  //   - rest over -> the next effort -> "resume"   (keep going)
+  // Keying off the rest boundary (rather than the "work" kind) means paced rep
+  // sets with reset rests between them (Glute Bridge, Cat-Cow…) chime too, while
+  // fast continuous pulses (Calf Raises) have no rest phases and stay one
+  // unbroken rhythm — no chime chops them up.
   const finished = phases[currentPhase];
   const next = phases[currentPhase + 1];
   const isLast = currentPhase === phases.length - 1;
   if (isLast) {
     cue("complete", 0.3);
-  } else if (finished && finished.kind === "work" && next && next.kind === "rest") {
+  } else if (finished && finished.kind !== "rest" && next && next.kind === "rest") {
     cue("rest", 0.24);
-  } else if (finished && finished.kind === "rest" && next && next.kind === "work") {
+  } else if (finished && finished.kind === "rest" && next && next.kind !== "rest") {
     cue("resume", 0.28);
   }
 
